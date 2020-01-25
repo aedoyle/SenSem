@@ -1,0 +1,57 @@
+<html>
+	<head>
+		<title>Game</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+		<script src="js/three.js"></script>
+		<script>
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+			
+			var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+			var material = new THREE.MeshBasicMaterial( { color: 0x6833FF } );
+			var cube = new THREE.Mesh( geometry, material );
+			scene.add( cube );
+			 geometry = new THREE.ConeGeometry( 2, 5, 5 );
+			 material = new THREE.MeshBasicMaterial( {color: 0xFF3333} );
+			var cone = new THREE.Mesh( geometry, material );
+			scene.add( cone );
+			geometry = new THREE.SphereGeometry( 2, 5, 5 );
+			material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+			var sphere = new THREE.Mesh( geometry, material );
+			scene.add( sphere );
+			sphere.translateZ(-10);
+			sphere.translateX(-10);
+			cone.translateZ(-5);
+			cube.translateX(5);
+			camera.position.z = 5;
+			
+
+
+			var animate = function () {
+				requestAnimationFrame( animate );
+				cone.rotateZ(.01);
+				cone.rotateX(.02);
+				cone.rotateY(.03);
+			
+				cube.rotateZ(.01);
+				cube.rotateY(.02);
+				cube.rotateX(.03);
+				sphere.rotateZ(.01);
+				sphere.rotateY(.02);
+				sphere.rotateX(.03);
+				renderer.render( scene, camera );
+			};
+
+			animate();
+		</script>
+	</body>
+</html>
