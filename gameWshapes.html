@@ -176,7 +176,42 @@
 			cone.translateZ(-5);
 			cube.translateX(5);
 			camera.position.z = 5;
-			
+			var box;
+			geometry = new THREE.BoxGeometry( 3, 3, 3 );
+			for( var i = 10; i < 1000; i+= 10){
+	
+				box = new THREE.Mesh(geometry, material);
+				scene.add(box);
+				box.translateX(i);
+			}
+			for( var i = 10; i < 1000; i+= 10){
+				box = new THREE.Mesh(geometry, material);
+				scene.add(box);
+				box.translateX(-i);
+			}
+			for( var i = 10; i < 1000; i+= 10){
+				box = new THREE.Mesh(geometry, material);
+				scene.add(box);
+				box.translateZ(i);
+			}
+			for( var i = 10; i < 1000; i+= 10){
+				box = new THREE.Mesh(geometry, material);
+				scene.add(box);
+				box.translateZ(-i);
+			}
+						for( var i = 10; i < 1000; i+= 10){
+				box = new THREE.Mesh(geometry, material);
+				scene.add(box);
+				box.translateX(i);
+				box.translateZ(i);
+
+			}
+			for( var i = 10; i < 1000; i+= 10){
+				box = new THREE.Mesh(geometry, material);
+				scene.add(box);
+				box.translateX(-i);
+				box.translateZ(-i);
+			}
 
 
 			var animate = function () {
