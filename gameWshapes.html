@@ -173,33 +173,38 @@
 			scene.add( sphere );
 			sphere.translateZ(-10);
 			sphere.translateX(-10);
+			sphere.translateY(20);
 			cone.translateZ(-5);
 			cube.translateX(5);
 			camera.position.z = 5;
 			var box;
 			geometry = new THREE.BoxGeometry( 3, 3, 3 );
 			for( var i = 10; i < 1000; i+= 10){
-	
+				material = new THREE.MeshBasicMaterial( {color:  (Math.random() * 0xffffff)});
 				box = new THREE.Mesh(geometry, material);
 				scene.add(box);
 				box.translateX(i);
 			}
 			for( var i = 10; i < 1000; i+= 10){
+				material = new THREE.MeshBasicMaterial( {color:  (Math.random() * 0xffffff)});
 				box = new THREE.Mesh(geometry, material);
 				scene.add(box);
 				box.translateX(-i);
 			}
 			for( var i = 10; i < 1000; i+= 10){
+				material = new THREE.MeshBasicMaterial( {color:  (Math.random() * 0xffffff)});
 				box = new THREE.Mesh(geometry, material);
 				scene.add(box);
 				box.translateZ(i);
 			}
 			for( var i = 10; i < 1000; i+= 10){
+				material = new THREE.MeshBasicMaterial( {color:  (Math.random() * 0xffffff)});
 				box = new THREE.Mesh(geometry, material);
 				scene.add(box);
 				box.translateZ(-i);
 			}
-						for( var i = 10; i < 1000; i+= 10){
+			for( var i = 10; i < 1000; i+= 10){
+				material = new THREE.MeshBasicMaterial( {color:  (Math.random() * 0xffffff)});
 				box = new THREE.Mesh(geometry, material);
 				scene.add(box);
 				box.translateX(i);
@@ -207,6 +212,7 @@
 
 			}
 			for( var i = 10; i < 1000; i+= 10){
+				material = new THREE.MeshBasicMaterial( {color:  (Math.random() * 0xffffff)});
 				box = new THREE.Mesh(geometry, material);
 				scene.add(box);
 				box.translateX(-i);
