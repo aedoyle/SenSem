@@ -14,7 +14,7 @@
 			<div id="instructions">
 				<span style="font-size:40px">Click to play</span>
 				<br />
-				(W, A, S, D = Move, SPACE = Jump, MOUSE = Look around)
+				(W, A, S, D = Move, MOUSE = Look around)
 			</div>
 
 		</div>
@@ -120,7 +120,7 @@
 							moveRight = true;
 							break;
 						case 32: // space
-							if ( canJump === true ) velocity.y += 350;
+							if ( canJump === true ) controls.getObject().translateY(10);
 							canJump = false;
 							break;
 					}
@@ -192,25 +192,24 @@
 				sphere.rotateY(.02);
 				sphere.rotateX(.03);
 				if ( controlsEnabled ) {
+					var delta = 1;
 
-					var time = performance.now();
-					var delta = ( time - prevTime ) / 1000;
-					velocity.x -= velocity.x * 10.0 * delta;
-					velocity.z -= velocity.z * 10.0 * delta;
-					velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
-					if ( moveForward ) velocity.z -= 400.0 * delta;
-					if ( moveBackward ) velocity.z += 400.0 * delta;
-					if ( moveLeft ) velocity.x -= 400.0 * delta;
-					if ( moveRight ) velocity.x += 400.0 * delta;
-					controls.getObject().translateX( velocity.x * delta );
-					controls.getObject().translateY( velocity.y * delta );
-					controls.getObject().translateZ( velocity.z * delta );
-					if ( controls.getObject().position.y < 10 ) {
-						velocity.y = 0;
-						controls.getObject().position.y = 10;
-						canJump = true;
+					if(moveForward){
+						controls.getObject().translateZ(-delta);
 					}
-					prevTime = time;
+					if(moveBackward){
+						controls.getObject().translateZ(delta);
+					}
+					if(moveLeft){
+						controls.getObject().translateX(-delta);
+					}
+					if(moveRight){
+						controls.getObject().translateX(delta);
+					}
+					if ( controls.getObject().position.y != 0  ) {
+						controls.getObject().position.y = 0;
+
+					}
 				}
 				renderer.render( scene, camera );
 			};
