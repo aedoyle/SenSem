@@ -220,6 +220,9 @@
 			}
 
 
+			
+			
+			
 			var animate = function () {
 				requestAnimationFrame( animate );
 				cone.rotateZ(.01);
@@ -232,6 +235,12 @@
 				sphere.rotateZ(.01);
 				sphere.rotateY(.02);
 				sphere.rotateX(.03);
+				var player = new THREE.Vector3();
+				camera.getWorldPosition(player);             //This line plus the previous line create and empty vector and copy the current position of the player into it, 
+															//so we can make something chase the player. 
+				
+				cone.translateOnAxis(cone.worldToLocal(player), .01);				
+				
 				if ( controlsEnabled ) {
 					var delta = 1;
 
