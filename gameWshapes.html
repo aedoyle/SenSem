@@ -99,7 +99,7 @@
                 scene.fog = new THREE.Fog(0xffffff, 0, 750);
 
 				//Creates a pointLight 
-				var light = new THREE.PointLight(0xaabbcc);
+				var light = new THREE.PointLight(0xaabbcc, .5, 63, 1.0);
                 light.position.set(0.5, 1, 0.75);
 				//This sets the light to the position of the camera
                 camera.add(light);
