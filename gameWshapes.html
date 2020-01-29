@@ -98,10 +98,13 @@
 				scene = new THREE.Scene();
                 scene.fog = new THREE.Fog(0xffffff, 0, 750);
 
+				//Creates a pointLight 
+				var light = new THREE.PointLight(0xaabbcc);
+                light.position.set(0.5, 1, 0.75);
+				//This sets the light to the position of the camera
+                camera.add(light);
+				//scene.add( light );
 
-				var light = new THREE.HemisphereLight(0xaabbcc);
-				light.position.set( 0.5, 1, 0.75 );
-				scene.add( light );
 				controls = new THREE.PointerLockControls( camera );
 				scene.add( controls.getObject() );
 				var onKeyDown = function ( event ) {
