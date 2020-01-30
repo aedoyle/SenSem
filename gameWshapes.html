@@ -99,14 +99,16 @@
                 scene.fog = new THREE.Fog(0xffffff, 0, 750);
 
 				//Creates a pointLight 
-				var light = new THREE.PointLight(0xaabbcc, .5, 63, 1.0);
+												//color, intensity, distance, 
+				var light = new THREE.PointLight(0xaabbcc, .7, 77, 2.0);
                 light.position.set(0.5, 1, 0.75);
 				//This sets the light to the position of the camera
                 camera.add(light);
 				//scene.add( light );
 
 				controls = new THREE.PointerLockControls( camera );
-				scene.add( controls.getObject() );
+                scene.add(controls.getObject());
+
 				var onKeyDown = function ( event ) {
 					switch ( event.keyCode ) {
 						case 38: // up
@@ -127,7 +129,15 @@
 						case 32: // space
 							if ( canJump === true ) controls.getObject().translateY(10);
 							canJump = false;
-							break;
+                            break;
+                        case 17: //ctrl
+                            if (light.visible == true) {
+                                light.visible = false;
+                                break;
+                            }
+                            else {
+                                light.visible = true;
+                            }
 					}
 				};
 				var onKeyUp = function ( event ) {
