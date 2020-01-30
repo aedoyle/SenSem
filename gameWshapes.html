@@ -96,12 +96,19 @@
 			function init() {
 				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 				scene = new THREE.Scene();
-				scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
-				var light = new THREE.HemisphereLight( 0xeeeeff, 0x777788, 0.75 );
-				light.position.set( 0.5, 1, 0.75 );
-				scene.add( light );
+                scene.fog = new THREE.Fog(0xffffff, 0, 750);
+
+				//Creates a pointLight 
+												//color, intensity, distance, 
+				var light = new THREE.PointLight(0xaabbcc, 2.2, 77, 2.0);
+                light.position.set(0.5, 1, 0.75);
+				//This sets the light to the position of the camera
+                camera.add(light);
+				//scene.add( light );
+
 				controls = new THREE.PointerLockControls( camera );
-				scene.add( controls.getObject() );
+                scene.add(controls.getObject());
+
 				var onKeyDown = function ( event ) {
 					switch ( event.keyCode ) {
 						case 38: // up
@@ -122,7 +129,15 @@
 						case 32: // space
 							if ( canJump === true ) controls.getObject().translateY(10);
 							canJump = false;
-							break;
+                            break;
+                        case 17: //ctrl
+                            if (light.visible == true) {
+                                light.visible = false;
+                                break;
+                            }
+                            else {
+                                light.visible = true;
+                            }
 					}
 				};
 				var onKeyUp = function ( event ) {
@@ -160,15 +175,15 @@
 		
 		
 			var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-			var material = new THREE.MeshBasicMaterial( { color: 0x6833FF } );
+			var material = new THREE.MeshLambertMaterial( { color: 0x6833FF } );
 			var cube = new THREE.Mesh( geometry, material );
 			scene.add( cube );
 			 geometry = new THREE.ConeGeometry( 2, 5, 5 );
-			 material = new THREE.MeshBasicMaterial( {color: 0xFF3333} );
+			 material = new THREE.MeshLambertMaterial( {color: 0xFF3333} );
 			var cone = new THREE.Mesh( geometry, material );
 			scene.add( cone );
 			geometry = new THREE.SphereGeometry( 2, 5, 5 );
-			material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+			material = new THREE.MeshLambertMaterial( {color: 0xffff00} );
 			var sphere = new THREE.Mesh( geometry, material );
 			scene.add( sphere );
 			sphere.translateZ(-10);
@@ -180,31 +195,31 @@
 			var box;
 			geometry = new THREE.BoxGeometry( 3, 3, 3 );
 			for( var i = 10; i < 1000; i+= 10){
-				material = new THREE.MeshBasicMaterial( {color:  (Math.random() * 0xffffff)});
+				material = new THREE.MeshLambertMaterial( {color:  (Math.random() * 0xffffff)});
 				box = new THREE.Mesh(geometry, material);
 				scene.add(box);
 				box.translateX(i);
 			}
 			for( var i = 10; i < 1000; i+= 10){
-				material = new THREE.MeshBasicMaterial( {color:  (Math.random() * 0xffffff)});
+				material = new THREE.MeshLambertMaterial( {color:  (Math.random() * 0xffffff)});
 				box = new THREE.Mesh(geometry, material);
 				scene.add(box);
 				box.translateX(-i);
 			}
 			for( var i = 10; i < 1000; i+= 10){
-				material = new THREE.MeshBasicMaterial( {color:  (Math.random() * 0xffffff)});
+				material = new THREE.MeshLambertMaterial( {color:  (Math.random() * 0xffffff)});
 				box = new THREE.Mesh(geometry, material);
 				scene.add(box);
 				box.translateZ(i);
 			}
 			for( var i = 10; i < 1000; i+= 10){
-				material = new THREE.MeshBasicMaterial( {color:  (Math.random() * 0xffffff)});
+				material = new THREE.MeshLambertMaterial( {color:  (Math.random() * 0xffffff)});
 				box = new THREE.Mesh(geometry, material);
 				scene.add(box);
 				box.translateZ(-i);
 			}
 			for( var i = 10; i < 1000; i+= 10){
-				material = new THREE.MeshBasicMaterial( {color:  (Math.random() * 0xffffff)});
+				material = new THREE.MeshLambertMaterial( {color:  (Math.random() * 0xffffff)});
 				box = new THREE.Mesh(geometry, material);
 				scene.add(box);
 				box.translateX(i);
@@ -212,7 +227,7 @@
 
 			}
 			for( var i = 10; i < 1000; i+= 10){
-				material = new THREE.MeshBasicMaterial( {color:  (Math.random() * 0xffffff)});
+				material = new THREE.MeshLambertMaterial( {color:  (Math.random() * 0xffffff)});
 				box = new THREE.Mesh(geometry, material);
 				scene.add(box);
 				box.translateX(-i);
