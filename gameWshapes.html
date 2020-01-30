@@ -9,6 +9,7 @@
 	<body>
 		<script src="js/three.js"></script>
 		<script src="js/PointerLockControls.js"></script>
+		<script src="js/GLTFLoader.js"></script>
 				<div id="blocker">
 
 			<div id="instructions">
@@ -28,7 +29,32 @@
 			// PointerLock Control source code taken from https://codepen.io/tembling/pen/reZjEw
 			
 			var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
-		
+
+			var loader = new THREE.GLTFLoader();
+			loader.load(
+				// resource URL
+				'js/Objects/Desk2.0.glb',
+				// called when the resource is loaded
+				function (gltf) {
+
+					scene.add(gltf.scene);
+
+				},
+				// called while loading is progressing
+				function (xhr) {
+
+					console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+
+				},
+				// called when loading has errors
+				function (error) {
+
+					console.log(error);
+
+				});
+
+
+
 		
 		var blocker = document.getElementById( 'blocker' );
 			var instructions = document.getElementById( 'instructions' );
