@@ -208,6 +208,7 @@
 			 material = new THREE.MeshLambertMaterial( {color: 0xFF3333} );
 			var cone = new THREE.Mesh( geometry, material );
 			scene.add( cone );
+			cone.name = "cone";
 			geometry = new THREE.SphereGeometry( 2, 5, 5 );
 			material = new THREE.MeshLambertMaterial( {color: 0xffff00} );
 			var sphere = new THREE.Mesh( geometry, material );
@@ -237,39 +238,38 @@
 			}
 			
 			
-			function stopPlayer(){
-				moveForward = false;
-			}
+
 			
 			
 			var raycaster = new THREE.Raycaster(); 
 			var raycasterB = new THREE.Raycaster();
-
+			var seeCone = false; 
 	
 			
 			
-			
 			var animate = function () {
+				var coneInArray = false; 
 				requestAnimationFrame( animate );
 				var direction = new THREE.Vector3();
 				camera.getWorldDirection(direction);
 				var position = new THREE.Vector3();		
 				camera.getWorldPosition(position);
 				raycaster.set( position, direction);
-
+				
 				var collisions = raycaster.intersectObjects(scene.children);
 				for( i = 0; i < collisions.length; i++){
 					if(collisions[i].distance < 3.3){
-						stopPlayer();
+						moveForward = false;
+					}
+					if(collisions[i].object == cone){
+						seeCone = true;
 					}
 				}
-				console.log(direction);
+				console.log(collisions);
 				
 				
 				
-				cone.rotateZ(.01);
-				cone.rotateX(.02);
-				cone.rotateY(.03);
+				
 			
 				cube.rotateZ(.01);
 				cube.rotateY(.02);
@@ -277,8 +277,12 @@
 				sphere.rotateZ(.01);
 				sphere.rotateY(.02);
 				sphere.rotateX(.03);
-				coneChase();
-				
+				if(seeCone == false){
+					cone.rotateZ(.01);
+					cone.rotateX(.02);
+					cone.rotateY(.03);
+					coneChase();
+				}
 				if ( controlsEnabled ) {
 					var delta = 1;
 
@@ -301,7 +305,15 @@
 					}
 				}
 				renderer.render( scene, camera );
-				 
+				for( i = 0; i < collisions.length; i++){
+					if(collisions[i].object == cone){
+						coneInArray = true;
+					}
+					
+				}
+				if(!coneInArray){
+					seeCone = false;
+				}
 
 			};
 		
