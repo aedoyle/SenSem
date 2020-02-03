@@ -200,24 +200,16 @@
 		
 		
 		
-			var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-			var material = new THREE.MeshLambertMaterial( { color: 0x6833FF } );
-			var cube = new THREE.Mesh( geometry, material );
-			scene.add( cube );
-			 geometry = new THREE.ConeGeometry( 2, 5, 5 );
-			 material = new THREE.MeshLambertMaterial( {color: 0xFF3333} );
+
+			var geometry = new THREE.ConeGeometry( 2, 5, 5 );
+			var material = new THREE.MeshLambertMaterial( {color: 0xFF3333} );
 			var cone = new THREE.Mesh( geometry, material );
 			scene.add( cone );
 			cone.name = "cone";
-			geometry = new THREE.SphereGeometry( 2, 5, 5 );
-			material = new THREE.MeshLambertMaterial( {color: 0xffff00} );
-			var sphere = new THREE.Mesh( geometry, material );
-			scene.add( sphere );
-			sphere.translateZ(-10);
-			sphere.translateX(-10);
-			sphere.translateY(20);
+
+
 			cone.translateZ(-5);
-			cube.translateX(5);
+
 			camera.position.z = 5;
 			var box;
 			geometry = new THREE.BoxGeometry( 3, 3, 3 );
@@ -237,8 +229,6 @@
 				cone.translateOnAxis(cone.worldToLocal(player), .01);		
 			}
 			
-			
-
 			
 			
 			var raycaster = new THREE.Raycaster(); 
@@ -270,12 +260,7 @@
 				
 				
 			
-				cube.rotateZ(.01);
-				cube.rotateY(.02);
-				cube.rotateX(.03);
-				sphere.rotateZ(.01);
-				sphere.rotateY(.02);
-				sphere.rotateX(.03);
+
 				if(seeCone == false){
 					cone.rotateZ(.01);
 					cone.rotateX(.02);
