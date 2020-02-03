@@ -22,7 +22,6 @@
 		<script>
 			var scene = new THREE.Scene();
 			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-
 			var renderer = new THREE.WebGLRenderer();
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
@@ -31,7 +30,8 @@
 			var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 
 			var loader = new THREE.GLTFLoader();
-			loader.load(
+			
+				loader.load(
 				// resource URL
 				'js/Objects/Desk2.0.glb',
 				// called when the resource is loaded
@@ -53,7 +53,7 @@
 
 				});
 
-
+		
 
 		
 		var blocker = document.getElementById( 'blocker' );
@@ -244,13 +244,13 @@
 			var raycaster = new THREE.Raycaster(); 
 			var raycasterB = new THREE.Raycaster();
 			var seeCone = false; 
-	
+			var direction = new THREE.Vector3();
 			
 			
 			var animate = function () {
 				var coneInArray = false; 
 				requestAnimationFrame( animate );
-				var direction = new THREE.Vector3();
+				
 				camera.getWorldDirection(direction);
 				var position = new THREE.Vector3();		
 				camera.getWorldPosition(position);
@@ -265,8 +265,7 @@
 						seeCone = true;
 					}
 				}
-				console.log(collisions);
-				
+			
 				
 				
 				
@@ -284,7 +283,7 @@
 					coneChase();
 				}
 				if ( controlsEnabled ) {
-					var delta = 1;
+					var delta = .6;
 
 					if(moveForward){
 						controls.getObject().translateZ(-delta);
@@ -316,6 +315,11 @@
 				}
 
 			};
+			function logDirection(){
+				console.log(direction); 
+			}
+			logDirection();
+			setInterval(logDirection, 1000);
 		
 			animate();
 		</script>
