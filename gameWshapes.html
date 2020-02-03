@@ -33,10 +33,13 @@
 				var raycasterB = new THREE.Raycaster();
 				var raycasterL = new THREE.Raycaster();
 				var raycasterR = new THREE.Raycaster(); 
+				var raycasterLP = new THREE.Raycaster();
 				var seeCone = false; 
 				var direction = new THREE.Vector3();
 				var directionB = new THREE.Vector3();
-			
+				var directionL = new THREE.Vector3();
+				var directionR = new THREE.Vector3();
+				var directionLP = new THREE.Vector3(); 
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
 			// PointerLock Control source code taken from https://codepen.io/tembling/pen/reZjEw
@@ -249,12 +252,24 @@
 				var position = new THREE.Vector3();		
 				camera.getWorldPosition(position);
 				raycaster.set( position, direction);
-				directionB.x = -direction.x;
+				directionB.x = -direction.x;					//B for Back
 				directionB.z = -direction.z;
 				directionB.y = direction.y; 
 				raycasterB.set(position, directionB);
+				directionL.x = direction.x - .7;  				// L for Left, as in Slightly to the left.
+				directionL.z = direction.z - .3;
+				directionL.y = direction.y;
+				directionL.normalize();
+				raycasterL.set(position, directionL);
+				directionLP.x = direction.x - 100;				// LP for Left Perpendicular, as in Hard Left
+				directionLP.z = direction.z - 1;
+				directionLP.y = direction.y
+				directionLP.normalize();
+				raycasterLP = new THREE.Raycaster(position, directionLP);
 				var collisions = raycaster.intersectObjects(scene.children);
 				var collisionsB = raycasterB.intersectObjects(scene.children);
+				var collisionsL = raycasterL.intersectObjects(scene.children);
+				var collisionsLP = raycasterLP.intersectObjects(scene.children);
 				for(i = 0; i < collisions.length; i++){
 					if(collisions[i].distance < 3.3){
 						moveForward = false;
@@ -263,12 +278,25 @@
 						seeCone = true;
 					}
 				}
-				
+				for(i = 0; i < collisionsL.length; i++){
+					if(collisionsL[i].distance < 3.3){
+						moveForward = false;
+					}
+					if(collisionsL[i].object == cone){
+						seeCone = true;
+					}
+				}
+				for(i = 0; i < collisionsLP.length; i++){
+					if(collisionsLP[i].distance < 3.3){
+						moveLeft = false; 
+					}
+				}
 				for(i = 0; i < collisionsB.length; i++){
 					if(collisionsB[i].distance < 3.3){
 						moveBackward = false; 
 					}
 				}
+				
 
 				if(seeCone == false){
 					cone.rotateZ(.01);
@@ -304,6 +332,11 @@
 					}
 					
 				}
+				for(i = 0; i < collisionsL.length; i++){
+					if(collisionsL[i].object == cone){
+						coneInArray = true;
+					}
+				}
 				if(!coneInArray){
 					seeCone = false;
 				}
@@ -311,9 +344,9 @@
 			};
 			function logDirection(){
 				console.log(direction); 
-				console.log(directionB);
+				console.log(directionLP);
 			}
-		//	setInterval(logDirection, 1000);
+			setInterval(logDirection, 1000);
 		
 			animate();
 		</script>
