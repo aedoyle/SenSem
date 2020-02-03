@@ -22,6 +22,7 @@
 		<script>
 			var scene = new THREE.Scene();
 			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+
 			var renderer = new THREE.WebGLRenderer();
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
@@ -30,8 +31,7 @@
 			var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 
 			var loader = new THREE.GLTFLoader();
-			
-				loader.load(
+			loader.load(
 				// resource URL
 				'js/Objects/Desk2.0.glb',
 				// called when the resource is loaded
@@ -53,7 +53,7 @@
 
 				});
 
-		
+
 
 		
 		var blocker = document.getElementById( 'blocker' );
@@ -116,7 +116,8 @@
 			var moveLeft = false;
 			var moveRight = false;
 			var canJump = false;
-			
+			var prevTime = performance.now();
+			var velocity = new THREE.Vector3();
 		
 			function init() {
 				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
@@ -133,8 +134,7 @@
 
 				controls = new THREE.PointerLockControls( camera );
                 scene.add(controls.getObject());
-				var playerBBox = new THREE.Box3().setFromObject(controls.getObject());
-				scene.add(playerBBox);
+
 				var onKeyDown = function ( event ) {
 					switch ( event.keyCode ) {
 						case 38: // up
@@ -208,7 +208,6 @@
 			 material = new THREE.MeshLambertMaterial( {color: 0xFF3333} );
 			var cone = new THREE.Mesh( geometry, material );
 			scene.add( cone );
-			cone.name = "cone";
 			geometry = new THREE.SphereGeometry( 2, 5, 5 );
 			material = new THREE.MeshLambertMaterial( {color: 0xffff00} );
 			var sphere = new THREE.Mesh( geometry, material );
@@ -227,7 +226,39 @@
 				scene.add(box);
 				box.translateX(i);
 			}
+			for( var i = 10; i < 1000; i+= 10){
+				material = new THREE.MeshLambertMaterial( {color:  (Math.random() * 0xffffff)});
+				box = new THREE.Mesh(geometry, material);
+				scene.add(box);
+				box.translateX(-i);
+			}
+			for( var i = 10; i < 1000; i+= 10){
+				material = new THREE.MeshLambertMaterial( {color:  (Math.random() * 0xffffff)});
+				box = new THREE.Mesh(geometry, material);
+				scene.add(box);
+				box.translateZ(i);
+			}
+			for( var i = 10; i < 1000; i+= 10){
+				material = new THREE.MeshLambertMaterial( {color:  (Math.random() * 0xffffff)});
+				box = new THREE.Mesh(geometry, material);
+				scene.add(box);
+				box.translateZ(-i);
+			}
+			for( var i = 10; i < 1000; i+= 10){
+				material = new THREE.MeshLambertMaterial( {color:  (Math.random() * 0xffffff)});
+				box = new THREE.Mesh(geometry, material);
+				scene.add(box);
+				box.translateX(i);
+				box.translateZ(i);
 
+			}
+			for( var i = 10; i < 1000; i+= 10){
+				material = new THREE.MeshLambertMaterial( {color:  (Math.random() * 0xffffff)});
+				box = new THREE.Mesh(geometry, material);
+				scene.add(box);
+				box.translateX(-i);
+				box.translateZ(-i);
+			}
 
 
 			
@@ -238,37 +269,14 @@
 			}
 			
 			
-
 			
-			
-			var raycaster = new THREE.Raycaster(); 
-			var raycasterB = new THREE.Raycaster();
-			var seeCone = false; 
-			var direction = new THREE.Vector3();
 			
 			
 			var animate = function () {
-				var coneInArray = false; 
 				requestAnimationFrame( animate );
-				
-				camera.getWorldDirection(direction);
-				var position = new THREE.Vector3();		
-				camera.getWorldPosition(position);
-				raycaster.set( position, direction);
-				
-				var collisions = raycaster.intersectObjects(scene.children);
-				for( i = 0; i < collisions.length; i++){
-					if(collisions[i].distance < 3.3){
-						moveForward = false;
-					}
-					if(collisions[i].object == cone){
-						seeCone = true;
-					}
-				}
-			
-				
-				
-				
+				cone.rotateZ(.01);
+				cone.rotateX(.02);
+				cone.rotateY(.03);
 			
 				cube.rotateZ(.01);
 				cube.rotateY(.02);
@@ -276,21 +284,16 @@
 				sphere.rotateZ(.01);
 				sphere.rotateY(.02);
 				sphere.rotateX(.03);
-				if(seeCone == false){
-					cone.rotateZ(.01);
-					cone.rotateX(.02);
-					cone.rotateY(.03);
-					coneChase();
-				}
+				coneChase();
+				
 				if ( controlsEnabled ) {
-					var delta = .6;
+					var delta = 1;
 
 					if(moveForward){
 						controls.getObject().translateZ(-delta);
 					}
 					if(moveBackward){
 						controls.getObject().translateZ(delta);
-
 					}
 					if(moveLeft){
 						controls.getObject().translateX(-delta);
@@ -300,27 +303,12 @@
 					}
 					if ( controls.getObject().position.y != 0  ) {
 						controls.getObject().position.y = 0;
-						
+
 					}
 				}
 				renderer.render( scene, camera );
-				for( i = 0; i < collisions.length; i++){
-					if(collisions[i].object == cone){
-						coneInArray = true;
-					}
-					
-				}
-				if(!coneInArray){
-					seeCone = false;
-				}
-
 			};
-			function logDirection(){
-				console.log(direction); 
-			}
-			logDirection();
-			setInterval(logDirection, 1000);
-		
+
 			animate();
 		</script>
 	</body>
