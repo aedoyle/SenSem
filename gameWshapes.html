@@ -40,6 +40,11 @@
 				var directionL = new THREE.Vector3();
 				var directionR = new THREE.Vector3();
 				var directionLP = new THREE.Vector3(); 
+				var collisions = {};
+				var collisionsB = {}; 
+				var collisionsL = {};
+				var collisionsLP = {}; 
+				
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
 			// PointerLock Control source code taken from https://codepen.io/tembling/pen/reZjEw
@@ -266,10 +271,10 @@
 				directionLP.y = direction.y
 				directionLP.normalize();
 				raycasterLP = new THREE.Raycaster(position, directionLP);
-				var collisions = raycaster.intersectObjects(scene.children);
-				var collisionsB = raycasterB.intersectObjects(scene.children);
-				var collisionsL = raycasterL.intersectObjects(scene.children);
-				var collisionsLP = raycasterLP.intersectObjects(scene.children);
+				collisions = raycaster.intersectObjects(scene.children);
+				collisionsB = raycasterB.intersectObjects(scene.children);
+				collisionsL = raycasterL.intersectObjects(scene.children);
+				collisionsLP = raycasterLP.intersectObjects(scene.children);
 				for(i = 0; i < collisions.length; i++){
 					if(collisions[i].distance < 3.3){
 						moveForward = false;
@@ -279,7 +284,7 @@
 					}
 				}
 				for(i = 0; i < collisionsL.length; i++){
-					if(collisionsL[i].distance < 3.3){
+					if(collisionsL[i].distance < 1.2){
 						moveForward = false;
 					}
 					if(collisionsL[i].object == cone){
@@ -343,8 +348,8 @@
 
 			};
 			function logDirection(){
-				console.log(direction); 
-				console.log(directionLP);
+		
+				console.log(collisionsL);
 			}
 			setInterval(logDirection, 1000);
 		
