@@ -263,6 +263,16 @@
                 ambientFloor.setVolume(.5);
                 ambientFloor.play();
             });
+
+			//CHASE SOUND
+            var doom1 = new THREE.PositionalAudio(listener);
+            audioLoader.load('js/Sounds/rip_and_tear.ogg', function (buffer) {
+                doom1.setBuffer(buffer);
+                doom1.setRefDistance(4);
+                doom1.play();
+            });
+			cone.add(doom1);
+
 			
 			
 
