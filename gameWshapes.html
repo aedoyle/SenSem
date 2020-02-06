@@ -266,6 +266,9 @@
 
 			//CHASE SOUND
             var doom1 = new THREE.PositionalAudio(listener);
+            //doom1.setDirectionalCone(180, 230, 0.1);
+            //var helper = new PositionalAudioHelper(doom1);
+            //doom1.add(helper);
             audioLoader.load('js/Sounds/rip_and_tear.ogg', function (buffer) {
                 doom1.setBuffer(buffer);
                 doom1.setRefDistance(4);
