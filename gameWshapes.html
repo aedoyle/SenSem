@@ -54,32 +54,33 @@
 
 			 var model;
 
-			var loader = new THREE.GLTFLoader();
-			loader.load('js/Objects/house1.1.gltf',
-				// called when the resource is loaded
-				function (gltf) {
-				    scene.add(gltf.scene);
-                    gltf.scene.rotation.y = - Math.PI/2;
-                    gltf.scene.position.set(55, -1.5, 30);
-                },
-				// called while loading is progressing
-				function (xhr) {
-					console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-				},
-				// called when loading has errors
-				function (error) {
-					console.log(error);
+            
+            function loadObjects() {
+                var loader = new THREE.GLTFLoader();
+                loader.load('js/Objects/house1.3.gltf',
+                    // called when the resource is loaded
+                    function (gltf) {
+                        scene.add(gltf.scene);
+                        gltf.scene.rotation.y = - Math.PI / 2;
+                        gltf.scene.position.set(55, -1.5, 30);
+                    },
+                    // called while loading is progressing
+                    function (xhr) {
+                        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                    },
+                    // called when loading has errors
+                    function (error) {
+                        console.log(error);
+                    });
+
+                loader.load('js/Objects/doom.gltf', function (gltf) {
+                    scene.add(gltf.scene);
+                    model = gltf;
+                    gltf.scene.position.set(55, -1.5, 19.5);
+
                 });
-
-            loader.load('js/Objects/doom.gltf', function (gltf) {
-                // scene.add(gltf.scene);
-                model = gltf;
-                //  gltf.scene.position.set(55, -1.5, 20);
-                
-            });
-
-		
-
+            }
+            loadObjects();
 		
 		var blocker = document.getElementById( 'blocker' );
 			var instructions = document.getElementById( 'instructions' );
@@ -153,6 +154,8 @@
                 flashLight.target = camera;
 				//scene.add( light );
 
+               
+
 				//Controls
 				controls = new THREE.PointerLockControls( camera );
                 scene.add(controls.getObject());
@@ -187,6 +190,10 @@
                             else {
                                 light.visible = true;
                             }
+						case 67:
+                           // camera.fov = Math.atan(Math.tan(120 * Math.PI / 360) / camera.aspect) * 360 / Math.PI; // degrees
+                          //  camera.updateProjectionMatrix();
+                            break;
 					}
 				};
 				var onKeyUp = function ( event ) {
@@ -213,7 +220,8 @@
 				document.addEventListener( 'keyup', onKeyUp, false );
 				
 		
-				window.addEventListener( 'resize', onWindowResize, false );
+                window.addEventListener('resize', onWindowResize, false);
+               
 			}
 			function onWindowResize() {
 				camera.aspect = window.innerWidth / window.innerHeight;
