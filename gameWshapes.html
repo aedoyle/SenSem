@@ -77,8 +77,7 @@
                     scene.add(gltf.scene);
                     model = gltf;
                     gltf.scene.position.set(55, -1.5, 19.5);
-
-                });
+                   });
             }
             loadObjects();
 		
@@ -145,7 +144,7 @@
 
 				//FlashLight 
 												 //color, intensity, distance, angle, penumbra, decay 
-                var flashLight = new THREE.SpotLight(0xaabbcc, 2.2, 89.0, (Math.PI / 2), 1.0, 2.0);
+                var flashLight = new THREE.SpotLight(0xaabbcc, 4.2, 89.0, (Math.PI / 2), 1.0, 2.0);
 				flashLight.angle = 0.5
                 //flashLight.position.set(0.5, 1, 0.75);
 				//This sets the light to child of camera object
@@ -275,7 +274,7 @@
             });
 
 			//CHASE SOUND
-            var doom1 = new THREE.PositionalAudio(listener);
+           /* var doom1 = new THREE.PositionalAudio(listener);
             //doom1.setDirectionalCone(180, 230, 0.1);
             //var helper = new PositionalAudioHelper(doom1);
             //doom1.add(helper);
@@ -285,7 +284,7 @@
                 doom1.play();
             });
 			cone.add(doom1);
-
+*/
 			
 			
 
@@ -359,7 +358,7 @@
 					cone.rotateX(.02);
 					cone.rotateY(.03);
 					coneChase();
-				}
+                }
 				if ( controlsEnabled ) {
 					var delta = .2;
 
@@ -398,9 +397,9 @@
 				}
 
 			};
-			function logDirection(){
-				console.log(direction);
-				console.log(directionR);
+            function logDirection() {
+                console.log(collisions);
+				//console.log(directionR);
 			}
 			setInterval(logDirection, 1000);
 		
