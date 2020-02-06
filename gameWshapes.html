@@ -30,12 +30,12 @@
 				var moveRight = false;
 				var canJump = false;		
 				var raycaster = new THREE.Raycaster(); 
-				var raycasterB = new THREE.Raycaster();
-				var raycasterL = new THREE.Raycaster();
-				var raycasterR = new THREE.Raycaster(); 
-				var raycasterLP = new THREE.Raycaster();
+				var raycasterB = new THREE.Raycaster();   //B for Back
+				var raycasterL = new THREE.Raycaster();   // L for Left, as in Slightly to the left.
+				var raycasterR = new THREE.Raycaster();   // R for Right, as in Slightly to the right
+				var raycasterLP = new THREE.Raycaster();  // LP for Left Perpendicular, as in Hard Left
 				var seeCone = false; 
-				var direction = new THREE.Vector3();
+				var direction = new THREE.Vector3();     
 				var directionB = new THREE.Vector3();
 				var directionL = new THREE.Vector3();
 				var directionR = new THREE.Vector3();
@@ -44,6 +44,7 @@
 				var collisionsB = {}; 
 				var collisionsL = {};
 				var collisionsLP = {}; 
+				var collisionsR = {};
 				
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
@@ -247,12 +248,7 @@
 			
 			
 
-			
-			
-			var animate = function () {
-				var coneInArray = false; 
-				requestAnimationFrame( animate );
-				
+			function updateRaycasters(){
 				camera.getWorldDirection(direction);
 				var position = new THREE.Vector3();		
 				camera.getWorldPosition(position);
@@ -266,15 +262,20 @@
 				directionL.y = direction.y;
 				directionL.normalize();
 				raycasterL.set(position, directionL);
+				directionR.x = -directionL.x;
+				directionR.z = directionL.z;
+				directionR.y = directionL.y;
+				raycasterR.set(position, directionR);
 				directionLP.x = direction.x - 100;				// LP for Left Perpendicular, as in Hard Left
 				directionLP.z = direction.z - 1;
 				directionLP.y = direction.y
 				directionLP.normalize();
-				raycasterLP = new THREE.Raycaster(position, directionLP);
+				raycasterLP.set(position, directionLP);
 				collisions = raycaster.intersectObjects(scene.children);
 				collisionsB = raycasterB.intersectObjects(scene.children);
 				collisionsL = raycasterL.intersectObjects(scene.children);
 				collisionsLP = raycasterLP.intersectObjects(scene.children);
+				collisionsR = raycasterR.intersectObjects(scene.children);
 				for(i = 0; i < collisions.length; i++){
 					if(collisions[i].distance < 3.3){
 						moveForward = false;
@@ -301,8 +302,17 @@
 						moveBackward = false; 
 					}
 				}
-				
+			}
+			
 
+
+
+			var animate = function () {
+				var coneInArray = false; 
+				requestAnimationFrame( animate );
+				
+				updateRaycasters();
+				
 				if(seeCone == false){
 					cone.rotateZ(.01);
 					cone.rotateX(.02);
@@ -310,7 +320,7 @@
 					coneChase();
 				}
 				if ( controlsEnabled ) {
-					var delta = .6;
+					var delta = .2;
 
 					if(moveForward){
 						controls.getObject().translateZ(-delta);
@@ -348,8 +358,8 @@
 
 			};
 			function logDirection(){
-		
-				console.log(collisionsL);
+				console.log(direction);
+				console.log(directionR);
 			}
 			setInterval(logDirection, 1000);
 		
