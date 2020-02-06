@@ -52,32 +52,34 @@
 			
 			var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 
-			var loader = new THREE.GLTFLoader();
-			
-				loader.load(
-				// resource URL
-				'js/Objects/Desk2.0.glb',
-				// called when the resource is loaded
-				function (gltf) {
+			 var model;
 
-					scene.add(gltf.scene);
+            
+            function loadObjects() {
+                var loader = new THREE.GLTFLoader();
+                loader.load('js/Objects/house1.3.gltf',
+                    // called when the resource is loaded
+                    function (gltf) {
+                        scene.add(gltf.scene);
+                        gltf.scene.rotation.y = - Math.PI / 2;
+                        gltf.scene.position.set(55, -1.5, 30);
+                    },
+                    // called while loading is progressing
+                    function (xhr) {
+                        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                    },
+                    // called when loading has errors
+                    function (error) {
+                        console.log(error);
+                    });
 
-				},
-				// called while loading is progressing
-				function (xhr) {
-
-					console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-
-				},
-				// called when loading has errors
-				function (error) {
-
-					console.log(error);
-
-				});
-
-		
-
+                loader.load('js/Objects/doom.gltf', function (gltf) {
+                    scene.add(gltf.scene);
+                    model = gltf;
+                    gltf.scene.position.set(55, -1.5, 19.5);
+                   });
+            }
+            loadObjects();
 		
 		var blocker = document.getElementById( 'blocker' );
 			var instructions = document.getElementById( 'instructions' );
@@ -142,7 +144,7 @@
 
 				//FlashLight 
 												 //color, intensity, distance, angle, penumbra, decay 
-                var flashLight = new THREE.SpotLight(0xaabbcc, 2.2, 89.0, (Math.PI / 2), 1.0, 2.0);
+                var flashLight = new THREE.SpotLight(0xaabbcc, 4.2, 89.0, (Math.PI / 2), 1.0, 2.0);
 				flashLight.angle = 0.5
                 //flashLight.position.set(0.5, 1, 0.75);
 				//This sets the light to child of camera object
@@ -150,6 +152,8 @@
                 flashLight.position.set(0, 0, 1);
                 flashLight.target = camera;
 				//scene.add( light );
+
+               
 
 				//Controls
 				controls = new THREE.PointerLockControls( camera );
@@ -185,6 +189,10 @@
                             else {
                                 light.visible = true;
                             }
+						case 67:
+                           // camera.fov = Math.atan(Math.tan(120 * Math.PI / 360) / camera.aspect) * 360 / Math.PI; // degrees
+                          //  camera.updateProjectionMatrix();
+                            break;
 					}
 				};
 				var onKeyUp = function ( event ) {
@@ -211,7 +219,8 @@
 				document.addEventListener( 'keyup', onKeyUp, false );
 				
 		
-				window.addEventListener( 'resize', onWindowResize, false );
+                window.addEventListener('resize', onWindowResize, false);
+               
 			}
 			function onWindowResize() {
 				camera.aspect = window.innerWidth / window.innerHeight;
@@ -265,7 +274,7 @@
             });
 
 			//CHASE SOUND
-            var doom1 = new THREE.PositionalAudio(listener);
+           /* var doom1 = new THREE.PositionalAudio(listener);
             //doom1.setDirectionalCone(180, 230, 0.1);
             //var helper = new PositionalAudioHelper(doom1);
             //doom1.add(helper);
@@ -275,7 +284,7 @@
                 doom1.play();
             });
 			cone.add(doom1);
-
+*/
 			
 			
 
@@ -349,7 +358,7 @@
 					cone.rotateX(.02);
 					cone.rotateY(.03);
 					coneChase();
-				}
+                }
 				if ( controlsEnabled ) {
 					var delta = .2;
 
@@ -388,9 +397,9 @@
 				}
 
 			};
-			function logDirection(){
-				console.log(direction);
-				console.log(directionR);
+            function logDirection() {
+                console.log(collisions);
+				//console.log(directionR);
 			}
 			setInterval(logDirection, 1000);
 		
