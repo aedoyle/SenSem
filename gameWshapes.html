@@ -248,7 +248,21 @@
 				var player = new THREE.Vector3();				//These two lines create an empty vector and copy the current position of the player into it,
 				camera.getWorldPosition(player);            	//so we can make something chase the player.   
 				cone.translateOnAxis(cone.worldToLocal(player), .01);		
-			}
+            }
+
+			//WORKING ON SOUND HERE
+            var listener = new THREE.AudioListener();
+            camera.add(listener);
+            var audioLoader = new THREE.AudioLoader();
+
+			//AMBIENT SOUND
+            var ambientFloor = new THREE.Audio(listener);
+            audioLoader.load('js/Sounds/floor_boards.ogg', function (buffer) {
+                ambientFloor.setBuffer(buffer);
+                ambientFloor.setLoop(true);
+                ambientFloor.setVolume(.5);
+                ambientFloor.play();
+            });
 			
 			
 
