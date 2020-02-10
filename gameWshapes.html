@@ -47,6 +47,8 @@
 				var collisionsR = {};
 				var house;
 				var doomGuy;
+				var seeDoomGuy = false;
+				var parent;
 				
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
@@ -66,6 +68,7 @@
 
 				console.log( 'Loading complete!');
 				setInterval(logDirection, 1000);
+				console.log(scene.getObjectByName("doomGuy", true));
 				animate();
 
 			};
@@ -107,6 +110,7 @@
                     doomGuy = gltf.scene;
 					scene.add(doomGuy);
                     doomGuy.position.set(55, -1.5, 19.5);
+					doomGuy.name = "doomGuy";
                    });
             }
             loadObjects();
@@ -353,12 +357,21 @@
 				collisionsL = raycasterL.intersectObjects(scene.children, true);
 				collisionsLP = raycasterLP.intersectObjects(scene.children, true);
 				collisionsR = raycasterR.intersectObjects(scene.children, true);
+				
 				for(i = 0; i < collisions.length; i++){
 					if(collisions[i].distance < 3.3){
 						moveForward = false;
 					}
 					if(collisions[i].object == cone){
 						seeCone = true;
+					}
+
+					parent = collisions[i].object;
+					while(parent){
+						parent = parent.parent;
+						if (parent == doomGuy){
+							seeDoomGuy = true; 
+						}
 					}
 				}
 				for(i = 0; i < collisionsL.length; i++){
@@ -368,6 +381,16 @@
 					if(collisionsL[i].object == cone){
 						seeCone = true;
 					}
+					if(collisionsL[i].object === doomGuy){
+						seeDoomGuy = true;
+					}				
+					parent = collisionsL[i].object;
+					while(parent){
+						parent = parent.parent;
+						if (parent == doomGuy){
+							seeDoomGuy = true; 
+						}
+					}					
 				}
 				for(i = 0; i < collisionsLP.length; i++){
 					if(collisionsLP[i].distance < 3.3){
@@ -386,8 +409,8 @@
 
 			var animate = function () {
 				var coneInArray = false; 
+				var doomGuyInArray = false;
 				requestAnimationFrame( animate );
-				doomGuyChase();
 				updateRaycasters();
 				if(seeCone == false){
 					cone.rotateZ(.01);
@@ -395,6 +418,12 @@
 					cone.rotateY(.03);
 					coneChase();
                 }
+				if(seeDoomGuy == false) {
+					doomGuyChase();
+					doomGuy.rotateY(.05);
+
+				}
+
 				if ( controlsEnabled ) {
 					var delta = .5;
 
@@ -421,21 +450,42 @@
 					if(collisions[i].object == cone){
 						coneInArray = true;
 					}
-					
+
+					parent = collisions[i].object; 
+					while(parent){
+						parent = parent.parent;
+						if (parent == doomGuy){
+							doomGuyInArray = true; 
+						}
+					}					
 				}
 				for(i = 0; i < collisionsL.length; i++){
 					if(collisionsL[i].object == cone){
 						coneInArray = true;
 					}
-				}
+
+					parent = collisions[i].object; 
+					while(parent){
+						parent = parent.parent;
+						if (parent == doomGuy){
+							doomGuyInArray = true; 
+						}
+					}					
+				}					
+				
 				if(!coneInArray){
 					seeCone = false;
 				}
-
+				if(!doomGuyInArray){
+					seeDoomGuy = false;
+				}
+				if(doomGuy.position.y != -2){
+					doomGuy.position.y = -2;
+				}
 			};
             function logDirection() {
 				console.log(collisions);
-			  //  console.log(collisions);
+			  //  console.log(scene.getObjectByName("doomGuy", true));
 				//console.log(directionR);
 			}
 			//setInterval(logDirection, 1000);
