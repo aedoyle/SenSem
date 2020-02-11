@@ -356,11 +356,16 @@
 				directionLP.y = direction.y
 				directionLP.normalize();
 				raycasterLP.set(position, directionLP);
+				directionRP.x = -directionLP.x;
+				directionRP.y = directionLP.y;
+				directionRP.z = directionLP.z;
+				raycasterRP.set(position, directionRP);
 				collisions = raycaster.intersectObjects(scene.children, true);
 				collisionsB = raycasterB.intersectObjects(scene.children, true);
 				collisionsL = raycasterL.intersectObjects(scene.children, true);
 				collisionsLP = raycasterLP.intersectObjects(scene.children, true);
 				collisionsR = raycasterR.intersectObjects(scene.children, true);
+				collisionsRP = raycasterRP.intersectObjects(scene.children, true); 
 				
 				for(i = 0; i < collisions.length; i++){
 					if(collisions[i].distance < 3.3){
@@ -413,6 +418,11 @@
 						moveLeft = false; 
 					}
 				}
+				for(i = 0; i < collisionsRP.length; i++){
+					if(collisionsRP[i].distance < 3.3){
+						moveRight = false; 
+					}
+				}				
 				for(i = 0; i < collisionsB.length; i++){
 					if(collisionsB[i].distance < 3.3){
 						moveBackward = false; 
