@@ -69,6 +69,7 @@
 				console.log( 'Loading complete!');
 				setInterval(logDirection, 1000);
 				console.log(scene.getObjectByName("doomGuy", true));
+				house.scale.set(3,3,3);
 				animate();
 
 			};
@@ -380,11 +381,23 @@
 					}
 					if(collisionsL[i].object == cone){
 						seeCone = true;
-					}
-					if(collisionsL[i].object === doomGuy){
-						seeDoomGuy = true;
-					}				
+					}		
 					parent = collisionsL[i].object;
+					while(parent){
+						parent = parent.parent;
+						if (parent == doomGuy){
+							seeDoomGuy = true; 
+						}
+					}					
+				}
+				for(i = 0; i < collisionsR.length; i++){
+					if(collisionsR[i].distance < 1.2){
+						moveForward = false;
+					}
+					if(collisionsR[i].object == cone){
+						seeCone = true;
+					}			
+					parent = collisionsR[i].object;
 					while(parent){
 						parent = parent.parent;
 						if (parent == doomGuy){
@@ -464,7 +477,20 @@
 						coneInArray = true;
 					}
 
-					parent = collisions[i].object; 
+					parent = collisionsL[i].object; 
+					while(parent){
+						parent = parent.parent;
+						if (parent == doomGuy){
+							doomGuyInArray = true; 
+						}
+					}					
+				}		
+				for(i = 0; i < collisionsR.length; i++){
+					if(collisionsR[i].object == cone){
+						coneInArray = true;
+					}
+
+					parent = collisionsR[i].object; 
 					while(parent){
 						parent = parent.parent;
 						if (parent == doomGuy){
