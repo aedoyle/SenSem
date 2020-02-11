@@ -34,17 +34,20 @@
 				var raycasterL = new THREE.Raycaster();   // L for Left, as in Slightly to the left.
 				var raycasterR = new THREE.Raycaster();   // R for Right, as in Slightly to the right
 				var raycasterLP = new THREE.Raycaster();  // LP for Left Perpendicular, as in Hard Left
+				var raycasterRP = new THREE.Raycaster();
 				var seeCone = false; 
 				var direction = new THREE.Vector3();     
 				var directionB = new THREE.Vector3();
 				var directionL = new THREE.Vector3();
 				var directionR = new THREE.Vector3();
 				var directionLP = new THREE.Vector3(); 
+				var directionRP = new THREE.Vector3();
 				var collisions = {};
 				var collisionsB = {}; 
 				var collisionsL = {};
 				var collisionsLP = {}; 
 				var collisionsR = {};
+				var collisionsRP = {};
 				var house;
 				var doomGuy;
 				var seeDoomGuy = false;
@@ -217,12 +220,12 @@
 							canJump = false;
                             break;
                         case 17: //ctrl
-                            if (light.visible == true) {
-                                light.visible = false;
+                            if (flashLight.visible == true) {
+                                flashLight.visible = false;
                                 break;
                             }
                             else {
-                                light.visible = true;
+                                flashLight.visible = true;
                             }
 						case 67:
                            // camera.fov = Math.atan(Math.tan(120 * Math.PI / 360) / camera.aspect) * 360 / Math.PI; // degrees
