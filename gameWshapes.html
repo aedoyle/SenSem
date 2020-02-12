@@ -52,6 +52,7 @@
 				var doomGuy;
 				var seeDoomGuy = false;
 				var parent;
+				var doomCollisions = {};
 				
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
@@ -361,12 +362,20 @@
 				directionRP.z = directionLP.z;
 				raycasterRP.set(position, directionRP);
 				collisions = raycaster.intersectObjects(scene.children, true);
+				doomCollisions = raycaster.intersectObject(doomGuy, true); 
+				if(doomCollisions[0]){
+					seeDoomGuy = true; 
+				}
+				
+				
 				collisionsB = raycasterB.intersectObjects(scene.children, true);
 				collisionsL = raycasterL.intersectObjects(scene.children, true);
 				collisionsLP = raycasterLP.intersectObjects(scene.children, true);
 				collisionsR = raycasterR.intersectObjects(scene.children, true);
 				collisionsRP = raycasterRP.intersectObjects(scene.children, true); 
 				
+				
+
 				for(i = 0; i < collisions.length; i++){
 					if(collisions[i].distance < 3.3){
 						moveForward = false;
@@ -375,15 +384,15 @@
 						seeCone = true;
 					}
 
-					parent = collisions[i].object;
+/*				parent = collisions[i].object;
 					while(parent){
 						parent = parent.parent;
 						if (parent == doomGuy){
 							seeDoomGuy = true; 
 						}
 					}
-				}
-				for(i = 0; i < collisionsL.length; i++){
+*/				}
+/*					for(i = 0; i < collisionsL.length; i++){
 					if(collisionsL[i].distance < 1.2){
 						moveForward = false;
 					}
@@ -413,6 +422,7 @@
 						}
 					}					
 				}
+*/				
 				for(i = 0; i < collisionsLP.length; i++){
 					if(collisionsLP[i].distance < 3.3){
 						moveLeft = false; 
@@ -523,7 +533,7 @@
 				}
 			};
             function logDirection() {
-				console.log(collisions);
+				console.log(doomCollisions);
 			  //  console.log(scene.getObjectByName("doomGuy", true));
 				//console.log(directionR);
 			}
