@@ -34,17 +34,24 @@
 				var raycasterL = new THREE.Raycaster();   // L for Left, as in Slightly to the left.
 				var raycasterR = new THREE.Raycaster();   // R for Right, as in Slightly to the right
 				var raycasterLP = new THREE.Raycaster();  // LP for Left Perpendicular, as in Hard Left
+				var raycasterRP = new THREE.Raycaster();
 				var seeCone = false; 
 				var direction = new THREE.Vector3();     
 				var directionB = new THREE.Vector3();
 				var directionL = new THREE.Vector3();
 				var directionR = new THREE.Vector3();
 				var directionLP = new THREE.Vector3(); 
+				var directionRP = new THREE.Vector3();
 				var collisions = {};
 				var collisionsB = {}; 
 				var collisionsL = {};
 				var collisionsLP = {}; 
 				var collisionsR = {};
+				var collisionsRP = {};
+				var house;
+				var doomGuy;
+				var seeDoomGuy = false;
+				var parent;
 				
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
@@ -52,17 +59,47 @@
 			
 			var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 
-			 var model;
+		
+			var manager = new THREE.LoadingManager();
+			manager.onStart = function ( url, itemsLoaded, itemsTotal ) {
 
+				console.log( 'Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
+
+			};
+
+			manager.onLoad = function ( ) {
+
+				console.log( 'Loading complete!');
+				setInterval(logDirection, 1000);
+				console.log(scene.getObjectByName("doomGuy", true));
+				house.scale.set(3,3,3);
+				animate();
+
+			};
+
+
+			manager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+
+				console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
+			};
+
+			manager.onError = function ( url ) {
+
+				console.log( 'There was an error loading ' + url );
+			};
             
             function loadObjects() {
-                var loader = new THREE.GLTFLoader();
+                var loader = new THREE.GLTFLoader(manager);
                 loader.load('js/Objects/house1.3.gltf',
                     // called when the resource is loaded
                     function (gltf) {
-                        scene.add(gltf.scene);
-                        gltf.scene.rotation.y = - Math.PI / 2;
-                        gltf.scene.position.set(55, -1.5, 30);
+                        house = gltf.scene.children[0];
+						scene.add(house);
+                        house.rotation.y = - Math.PI / 2;
+                        house.position.set(55, -1.5, 30);
+						console.log(house);
+				
+
                     },
                     // called while loading is progressing
                     function (xhr) {
@@ -74,9 +111,10 @@
                     });
 
                 loader.load('js/Objects/doom.gltf', function (gltf) {
-                    scene.add(gltf.scene);
-                    model = gltf;
-                    gltf.scene.position.set(55, -1.5, 19.5);
+                    doomGuy = gltf.scene;
+					scene.add(doomGuy);
+                    doomGuy.position.set(55, -1.5, 19.5);
+					doomGuy.name = "doomGuy";
                    });
             }
             loadObjects();
@@ -182,12 +220,12 @@
 							canJump = false;
                             break;
                         case 17: //ctrl
-                            if (light.visible == true) {
-                                light.visible = false;
+                            if (flashLight.visible == true) {
+                                flashLight.visible = false;
                                 break;
                             }
                             else {
-                                light.visible = true;
+                                flashLight.visible = true;
                             }
 						case 67:
                            // camera.fov = Math.atan(Math.tan(120 * Math.PI / 360) / camera.aspect) * 360 / Math.PI; // degrees
@@ -252,6 +290,13 @@
 
 
 
+			function doomGuyChase(){
+			var player = new THREE.Vector3();				//These two lines create an empty vector and copy the current position of the player into it,
+			camera.getWorldPosition(player);            	//so we can make something chase the player.   
+			doomGuy.translateOnAxis(doomGuy.worldToLocal(player), .01);		
+			
+			}
+			
 			
 			function coneChase(){
 				var player = new THREE.Vector3();				//These two lines create an empty vector and copy the current position of the player into it,
@@ -311,17 +356,31 @@
 				directionLP.y = direction.y
 				directionLP.normalize();
 				raycasterLP.set(position, directionLP);
-				collisions = raycaster.intersectObjects(scene.children);
-				collisionsB = raycasterB.intersectObjects(scene.children);
-				collisionsL = raycasterL.intersectObjects(scene.children);
-				collisionsLP = raycasterLP.intersectObjects(scene.children);
-				collisionsR = raycasterR.intersectObjects(scene.children);
+				directionRP.x = -directionLP.x;
+				directionRP.y = directionLP.y;
+				directionRP.z = directionLP.z;
+				raycasterRP.set(position, directionRP);
+				collisions = raycaster.intersectObjects(scene.children, true);
+				collisionsB = raycasterB.intersectObjects(scene.children, true);
+				collisionsL = raycasterL.intersectObjects(scene.children, true);
+				collisionsLP = raycasterLP.intersectObjects(scene.children, true);
+				collisionsR = raycasterR.intersectObjects(scene.children, true);
+				collisionsRP = raycasterRP.intersectObjects(scene.children, true); 
+				
 				for(i = 0; i < collisions.length; i++){
 					if(collisions[i].distance < 3.3){
 						moveForward = false;
 					}
 					if(collisions[i].object == cone){
 						seeCone = true;
+					}
+
+					parent = collisions[i].object;
+					while(parent){
+						parent = parent.parent;
+						if (parent == doomGuy){
+							seeDoomGuy = true; 
+						}
 					}
 				}
 				for(i = 0; i < collisionsL.length; i++){
@@ -330,13 +389,40 @@
 					}
 					if(collisionsL[i].object == cone){
 						seeCone = true;
+					}		
+					parent = collisionsL[i].object;
+					while(parent){
+						parent = parent.parent;
+						if (parent == doomGuy){
+							seeDoomGuy = true; 
+						}
+					}					
+				}
+				for(i = 0; i < collisionsR.length; i++){
+					if(collisionsR[i].distance < 1.2){
+						moveForward = false;
 					}
+					if(collisionsR[i].object == cone){
+						seeCone = true;
+					}			
+					parent = collisionsR[i].object;
+					while(parent){
+						parent = parent.parent;
+						if (parent == doomGuy){
+							seeDoomGuy = true; 
+						}
+					}					
 				}
 				for(i = 0; i < collisionsLP.length; i++){
 					if(collisionsLP[i].distance < 3.3){
 						moveLeft = false; 
 					}
 				}
+				for(i = 0; i < collisionsRP.length; i++){
+					if(collisionsRP[i].distance < 3.3){
+						moveRight = false; 
+					}
+				}				
 				for(i = 0; i < collisionsB.length; i++){
 					if(collisionsB[i].distance < 3.3){
 						moveBackward = false; 
@@ -344,23 +430,28 @@
 				}
 			}
 			
-
+			
 
 
 			var animate = function () {
 				var coneInArray = false; 
+				var doomGuyInArray = false;
 				requestAnimationFrame( animate );
-				
 				updateRaycasters();
-				
 				if(seeCone == false){
 					cone.rotateZ(.01);
 					cone.rotateX(.02);
 					cone.rotateY(.03);
 					coneChase();
                 }
+				if(seeDoomGuy == false) {
+					doomGuyChase();
+					doomGuy.rotateY(.05);
+
+				}
+
 				if ( controlsEnabled ) {
-					var delta = .2;
+					var delta = .5;
 
 					if(moveForward){
 						controls.getObject().translateZ(-delta);
@@ -385,25 +476,60 @@
 					if(collisions[i].object == cone){
 						coneInArray = true;
 					}
-					
+
+					parent = collisions[i].object; 
+					while(parent){
+						parent = parent.parent;
+						if (parent == doomGuy){
+							doomGuyInArray = true; 
+						}
+					}					
 				}
 				for(i = 0; i < collisionsL.length; i++){
 					if(collisionsL[i].object == cone){
 						coneInArray = true;
 					}
-				}
+
+					parent = collisionsL[i].object; 
+					while(parent){
+						parent = parent.parent;
+						if (parent == doomGuy){
+							doomGuyInArray = true; 
+						}
+					}					
+				}		
+				for(i = 0; i < collisionsR.length; i++){
+					if(collisionsR[i].object == cone){
+						coneInArray = true;
+					}
+
+					parent = collisionsR[i].object; 
+					while(parent){
+						parent = parent.parent;
+						if (parent == doomGuy){
+							doomGuyInArray = true; 
+						}
+					}					
+				}					
+				
 				if(!coneInArray){
 					seeCone = false;
 				}
-
+				if(!doomGuyInArray){
+					seeDoomGuy = false;
+				}
+				if(doomGuy.position.y != -2){
+					doomGuy.position.y = -2;
+				}
 			};
             function logDirection() {
-                console.log(collisions);
+				console.log(collisions);
+			  //  console.log(scene.getObjectByName("doomGuy", true));
 				//console.log(directionR);
 			}
-			setInterval(logDirection, 1000);
+			//setInterval(logDirection, 1000);
 		
-			animate();
+			
 		</script>
 	</body>
 </html>
