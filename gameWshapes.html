@@ -53,6 +53,7 @@
 				var seeDoomGuy = false;
 				var parent;
 				var doomCollisions = {};
+				var building; 
 				
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
@@ -117,6 +118,13 @@
                     doomGuy.position.set(55, -1.5, 19.5);
 					doomGuy.name = "doomGuy";
                    });
+                loader.load('js/Objects/scene.gltf', function (gltf) {
+                    building = gltf.scene;
+					scene.add(building);
+                    building.position.z = -200; 
+					building.name = "building";
+					building.scale.set(3, 3, 3);
+                   });				   
             }
             loadObjects();
 		
