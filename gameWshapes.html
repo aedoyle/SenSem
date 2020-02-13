@@ -20,6 +20,9 @@
 
 		</div>
 		<script>
+
+
+
 			var scene = new THREE.Scene();
 			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 			var renderer = new THREE.WebGLRenderer();
@@ -320,25 +323,34 @@
 
 			//AMBIENT SOUND
             var ambientFloor = new THREE.Audio(listener);
-            audioLoader.load('js/Sounds/floor_boards.ogg', function (buffer) {
+            audioLoader.load('js/Sounds/floorCracking.ogg', function (buffer) {
                 ambientFloor.setBuffer(buffer);
                 ambientFloor.setLoop(true);
-                ambientFloor.setVolume(.5);
+                ambientFloor.setVolume(.7);
                 ambientFloor.play();
             });
 
-			//CHASE SOUND
-           /* var doom1 = new THREE.PositionalAudio(listener);
+            var ambientWind = new THREE.Audio(listener);
+			audioLoader.load('js/Sounds/howlingWind.ogg', function (buffer) {
+                ambientWind.setBuffer(buffer);
+                ambientWind.setLoop(true);
+                ambientWind.setVolume(.5);
+                ambientWind.play();
+            });
+
+			/*//CHASE SOUND
+            var doom1 = new THREE.PositionalAudio(listener);
             //doom1.setDirectionalCone(180, 230, 0.1);
-            //var helper = new PositionalAudioHelper(doom1);
+            //var helper = new PositionalAudioHelper(doom1, 0.1);
             //doom1.add(helper);
             audioLoader.load('js/Sounds/rip_and_tear.ogg', function (buffer) {
                 doom1.setBuffer(buffer);
                 doom1.setRefDistance(4);
                 doom1.play();
             });
-			cone.add(doom1);
-*/
+            cone.add(doom1);
+			//doomGuy.add(doom1);*/
+
 			
 			
 
