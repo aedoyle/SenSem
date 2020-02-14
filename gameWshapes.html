@@ -57,6 +57,7 @@
 				var parent;
 				var doomCollisions = {};
 				var building; 
+				var texture;
 				
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
@@ -78,6 +79,7 @@
 				setInterval(logDirection, 1000);
 				console.log(scene.getObjectByName("doomGuy", true));
 				house.scale.set(3,3,3);
+				scene.background = texture;
 				animate();
 
 			};
@@ -127,7 +129,16 @@
                     building.position.z = -200; 
 					building.name = "building";
 					building.scale.set(3, 3, 3);
-                   });				   
+                   });	
+				var backgroundLoader = new THREE.CubeTextureLoader(manager);
+				texture = backgroundLoader.load([
+						'js/Objects/right.png',
+						'js/Objects/left.png',
+						'js/Objects/top.png',
+						'js/Objects/bottom.png',
+						'js/Objects/front.png',
+						'js/Objects/back.png',
+				]);
             }
             loadObjects();
 		
