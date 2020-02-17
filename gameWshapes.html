@@ -57,7 +57,11 @@
 				var parent;
 				var doomCollisions = {};
 				var building; 
-				var texture;
+				var skyTexture = [];
+				var raycasterD = new THREE.Raycaster();
+				var directionD = new THREE.Vector3(0, -1, 0);
+				var collisionsD = {};
+				
 				
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
@@ -79,7 +83,9 @@
 				setInterval(logDirection, 1000);
 				console.log(scene.getObjectByName("doomGuy", true));
 				house.scale.set(3,3,3);
-				scene.background = texture;
+				scene.background = skyTexture;			
+
+
 				animate();
 
 			};
@@ -131,7 +137,8 @@
 					building.scale.set(3, 3, 3);
                    });	
 				var backgroundLoader = new THREE.CubeTextureLoader(manager);
-				texture = backgroundLoader.load([
+
+				skyTexture = backgroundLoader.load([
 						'js/Objects/right.png',
 						'js/Objects/left.png',
 						'js/Objects/top.png',
@@ -140,7 +147,7 @@
 						'js/Objects/back.png',
 				]);
             }
-            loadObjects();
+            loadObjects();	
 		
 		var blocker = document.getElementById( 'blocker' );
 			var instructions = document.getElementById( 'instructions' );
@@ -281,6 +288,7 @@
 				
 		
                 window.addEventListener('resize', onWindowResize, false);
+				
                
 			}
 			function onWindowResize() {
@@ -370,6 +378,7 @@
 				var position = new THREE.Vector3();		
 				camera.getWorldPosition(position);
 				raycaster.set( position, direction);
+				raycasterD.set(position, directionD);
 				directionB.x = -direction.x;					//B for Back
 				directionB.z = -direction.z;
 				directionB.y = direction.y; 
@@ -404,7 +413,7 @@
 				collisionsLP = raycasterLP.intersectObjects(scene.children, true);
 				collisionsR = raycasterR.intersectObjects(scene.children, true);
 				collisionsRP = raycasterRP.intersectObjects(scene.children, true); 
-				
+				collisionsD = raycasterD.intersectObjects(scene.children, true);
 				
 
 				for(i = 0; i < collisions.length; i++){
@@ -483,10 +492,10 @@
 					cone.rotateZ(.01);
 					cone.rotateX(.02);
 					cone.rotateY(.03);
-					coneChase();
+			//		coneChase();
                 }
 				if(seeDoomGuy == false) {
-					doomGuyChase();
+				//	doomGuyChase();
 					doomGuy.rotateY(.05);
 
 				}
@@ -507,9 +516,11 @@
 					if(moveRight){
 						controls.getObject().translateX(delta);
 					}
-					if ( controls.getObject().position.y != 0  ) {
-						controls.getObject().position.y = 0;
-						
+				//	if ( controls.getObject().position.y != 0  ) {
+				//		controls.getObject().position.y = 0;	
+				//	}
+					if(collisionsD[0]){
+						controls.getObject().position.y = collisionsD[0].point.y + 2.5; 
 					}
 				}
 				renderer.render( scene, camera );
@@ -564,11 +575,10 @@
 				}
 			};
             function logDirection() {
-				console.log(doomCollisions);
-			  //  console.log(scene.getObjectByName("doomGuy", true));
+				console.log(collisionsD);
+				console.log(controls.getObject().position.y);
 				//console.log(directionR);
 			}
-			//setInterval(logDirection, 1000);
 		
 			
 		</script>
