@@ -60,6 +60,10 @@
 				var raycasterD = new THREE.Raycaster();
 				var directionD = new THREE.Vector3(0, -1, 0);
 				var collisionsD = {};
+				var skull;
+				var skull2;
+				var skullBBox;
+				var skullPickUp = false; 
 				
 				
 			renderer.setSize( window.innerWidth, window.innerHeight );
@@ -79,11 +83,11 @@
 			manager.onLoad = function ( ) {
 
 				console.log( 'Loading complete!');
-				setInterval(logDirection, 1000);
 				console.log(scene.getObjectByName("doomGuy", true));
 				house.scale.set(3,3,3);
 				scene.background = skyTexture;			
-
+				setSkullBBox();
+				setInterval(logDirection, 1000);
 
 				animate();
 
@@ -135,6 +139,14 @@
 					building.name = "building";
 					building.scale.set(3, 3, 3);
                    });	
+                loader.load('js/Objects/skull/scene.gltf', function (gltf) {
+					skull = gltf.scene;
+					skull2 = gltf.scene.clone();
+					scene.add(skull);
+					skull.position.set(110, 1, 101);
+					skull2.position.z = -10;
+					scene.add(skull2);
+                   });				   
 				var backgroundLoader = new THREE.CubeTextureLoader(manager);
 
 				skyTexture = backgroundLoader.load([
@@ -225,8 +237,6 @@
 				//Controls
 				controls = new THREE.PointerLockControls( camera );
                 scene.add(controls.getObject());
-				var playerBBox = new THREE.Box3().setFromObject(controls.getObject());
-				scene.add(playerBBox);
 				var onKeyDown = function ( event ) {
 					switch ( event.keyCode ) {
 						case 38: // up
@@ -452,9 +462,34 @@
 			}
 			
 			
+			function setSkullBBox(){
+				skullBBox = new THREE.Box3();
+				skullBBox.setFromObject(skull);
+				skullBBox.min.x -= 5;
+				skullBBox.min.y -= 5;
+				skullBBox.min.z -= 5;
+				skullBBox.max.x += 5;
+				skullBBox.max.y += 5;
+				skullBBox.max.z += 5;
+				
+	
+			}
 
-
+			function checkSkulls(){
+				if(skullBBox.containsPoint(camera.position)){
+					skull.visible = false;
+				}
+			}
+			
+			
 			var animate = function () {
+				skull.rotateY(.1);
+				skull2.rotateY(.1);
+				checkSkulls();
+				
+				
+				
+				
 				var doomGuyInArray = false;
 				requestAnimationFrame( animate );
 				updateRaycasters();
@@ -528,8 +563,10 @@
 				}
 			};
             function logDirection() {
-				console.log(collisionsD);
-				console.log(controls.getObject().position.y);
+				console.log(skull);
+				
+				console.log(skullBBox.containsPoint(camera.position));
+				//console.log(controls.getObject().position);
 				//console.log(directionR);
 			}
 		
