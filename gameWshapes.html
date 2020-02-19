@@ -92,12 +92,12 @@
             
             function loadObjects() {
                 var loader = new THREE.GLTFLoader(manager);
-                loader.load('js/Objects/house1.3.gltf',
+                loader.load('js/Objects/houseShell2.glb',
                     // called when the resource is loaded
-                    function (gltf) {
-                        house = gltf.scene.children[0];
+                    function (glb) {
+                        house = glb.scene;
 						scene.add(house);
-                        house.rotation.y = - Math.PI / 2;
+                        
                         house.position.set(55, -1.5, 30);
 						console.log(house);
 				
