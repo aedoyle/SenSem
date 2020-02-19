@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\js"
+    "\\js",
+    "\\js\\Objects"
   ],
-  "SelectedNode": "\\gameWshapes.html",
+  "SelectedNode": "\\js\\Objects\\scene.bin",
   "PreviewInSolutionExplorer": false
 }
