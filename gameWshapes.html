@@ -62,8 +62,11 @@
 				var collisionsD = {};
 				var skull;
 				var skull2;
+				var skull3;
 				var skullBBox;
-				var skullPickUp = false; 
+				var skullBBox2;
+				var skullBBox3;
+				var skullCount = 0;
 				
 				
 			renderer.setSize( window.innerWidth, window.innerHeight );
@@ -86,8 +89,9 @@
 				console.log(scene.getObjectByName("doomGuy", true));
 				house.scale.set(3,3,3);
 				scene.background = skyTexture;			
-				setSkullBBox();
+				setSkullBBoxs();
 				setInterval(logDirection, 1000);
+				building.visible = false;
 
 				animate();
 
@@ -142,10 +146,13 @@
                 loader.load('js/Objects/skull/scene.gltf', function (gltf) {
 					skull = gltf.scene;
 					skull2 = gltf.scene.clone();
+					skull3 = gltf.scene.clone();
 					scene.add(skull);
 					skull.position.set(110, 1, 101);
-					skull2.position.z = -10;
 					scene.add(skull2);
+					skull2.position.set(125.9, 9.6, 62.69);
+					scene.add(skull3);
+					skull3.position.set(128.03, 2.06, 48.55);
                    });				   
 				var backgroundLoader = new THREE.CubeTextureLoader(manager);
 
@@ -462,7 +469,7 @@
 			}
 			
 			
-			function setSkullBBox(){
+			function setSkullBBoxs(){
 				skullBBox = new THREE.Box3();
 				skullBBox.setFromObject(skull);
 				skullBBox.min.x -= 5;
@@ -471,31 +478,72 @@
 				skullBBox.max.x += 5;
 				skullBBox.max.y += 5;
 				skullBBox.max.z += 5;
-				
-	
+				skullBBox2 = new THREE.Box3();
+				skullBBox2.setFromObject(skull2);
+				skullBBox2.min.x -= 5;
+				skullBBox2.min.y -= 5;
+				skullBBox2.min.z -= 5;
+				skullBBox2.max.x += 5;
+				skullBBox2.max.y += 5;
+				skullBBox2.max.z += 5;
+				skullBBox3 = new THREE.Box3();
+				skullBBox3.setFromObject(skull3);
+				skullBBox3.min.x -= 5;
+				skullBBox3.min.y -= 5;
+				skullBBox3.min.z -= 5;
+				skullBBox3.max.x += 5;
+				skullBBox3.max.y += 5;
+				skullBBox3.max.z += 5;	
 			}
 
+			function rotateSkulls(){
+				skull.rotateY(.1);
+				skull2.rotateY(.1);
+				skull3.rotateY(.1);
+			}
+			
 			function checkSkulls(){
+				if(skullBBox.containsPoint(camera.position) && skull.visible){
+					skullCount++;
+				}				
+				
 				if(skullBBox.containsPoint(camera.position)){
 					skull.visible = false;
+				}
+				if(skullBBox2.containsPoint(camera.position) && skull2.visible){
+					skullCount++;
+				}				
+				
+				if(skullBBox2.containsPoint(camera.position)){
+					skull2.visible = false;
+				}	
+				if(skullBBox3.containsPoint(camera.position) && skull3.visible){
+					skullCount++;
+				}				
+				
+				if(skullBBox3.containsPoint(camera.position)){
+					skull3.visible = false;
+				}					
+			}
+			
+			function checkLevelProgression(){
+				if(skullCount == 3 && building.visible == false){
+					building.visible = true; 
+					house.visible = false; 
 				}
 			}
 			
 			
 			var animate = function () {
-				skull.rotateY(.1);
-				skull2.rotateY(.1);
+				rotateSkulls();
 				checkSkulls();
-				
-				
-				
-				
+				checkLevelProgression();
 				var doomGuyInArray = false;
 				requestAnimationFrame( animate );
 				updateRaycasters();
 
 				if(seeDoomGuy == false) {
-				//	doomGuyChase();
+					doomGuyChase();
 					doomGuy.rotateY(.05);
 
 				}
@@ -563,10 +611,10 @@
 				}
 			};
             function logDirection() {
-				console.log(skull);
-				
-				console.log(skullBBox.containsPoint(camera.position));
-				//console.log(controls.getObject().position);
+			//	console.log(skull);
+				console.log(skullCount);
+			//	console.log(skullBBox.containsPoint(camera.position));
+				console.log(controls.getObject().position);
 				//console.log(directionR);
 			}
 		
