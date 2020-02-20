@@ -67,6 +67,7 @@
 				var skullBBox2;
 				var skullBBox3;
 				var skullCount = 0;
+
 				
 				
 			renderer.setSize( window.innerWidth, window.innerHeight );
@@ -89,7 +90,9 @@
 				console.log(scene.getObjectByName("doomGuy", true));
 				house.scale.set(3,3,3);
 				scene.background = skyTexture;			
-				setSkullBBoxs();
+                setSkullBBoxs();
+                chaseSound();
+                ambientNoise();
 				setInterval(logDirection, 1000);
 				building.visible = false;
 
@@ -335,34 +338,38 @@
             var audioLoader = new THREE.AudioLoader();
 
 			//AMBIENT SOUND
-            var ambientFloor = new THREE.Audio(listener);
-            audioLoader.load('js/Sounds/floorCracking.ogg', function (buffer) {
-                ambientFloor.setBuffer(buffer);
-                ambientFloor.setLoop(true);
-                ambientFloor.setVolume(.7);
-                ambientFloor.play();
-            });
+            function ambientNoise() {
+                var ambientFloor = new THREE.Audio(listener);
+                audioLoader.load('js/Sounds/floorCracking.ogg', function (buffer) {
+                    ambientFloor.setBuffer(buffer);
+                    ambientFloor.setLoop(true);
+                    ambientFloor.setVolume(.7);
+                    ambientFloor.play();
+                });
 
-            var ambientWind = new THREE.Audio(listener);
-			audioLoader.load('js/Sounds/howlingWind.ogg', function (buffer) {
-                ambientWind.setBuffer(buffer);
-                ambientWind.setLoop(true);
-                ambientWind.setVolume(.5);
-                ambientWind.play();
-            });
+                var ambientWind = new THREE.Audio(listener);
+                audioLoader.load('js/Sounds/howlingWind.ogg', function (buffer) {
+                    ambientWind.setBuffer(buffer);
+                    ambientWind.setLoop(true);
+                    ambientWind.setVolume(.5);
+                    ambientWind.play();
+                });
+            }
 
-			/*//CHASE SOUND
-            var doom1 = new THREE.PositionalAudio(listener);
-            //doom1.setDirectionalCone(180, 230, 0.1);
-            //var helper = new PositionalAudioHelper(doom1, 0.1);
-            //doom1.add(helper);
-            audioLoader.load('js/Sounds/rip_and_tear.ogg', function (buffer) {
-                doom1.setBuffer(buffer);
-                doom1.setRefDistance(4);
-                doom1.play();
-            });
-            cone.add(doom1);
-			//doomGuy.add(doom1);*/
+			//CHASE SOUND
+            function chaseSound() {
+                var doom1 = new THREE.PositionalAudio(listener);
+                //doom1.setDirectionalCone(180, 230, 0.1);
+                //var helper = new PositionalAudioHelper(doom1, 0.1);
+                //doom1.add(helper);
+                audioLoader.load('js/Sounds/rip_and_tear.ogg', function (buffer) {
+                    doom1.setBuffer(buffer);
+                    doom1.setRefDistance(4);
+                    doom1.play();
+                });
+                doomGuy.add(doom1);
+            }
+            
 
 			
 			
@@ -469,7 +476,7 @@
 			}
 			
 			
-			function setSkullBBoxs(){
+            function setSkullBBoxs() {
 				skullBBox = new THREE.Box3();
 				skullBBox.setFromObject(skull);
 				skullBBox.min.x -= 5;
@@ -502,29 +509,50 @@
 				skull3.rotateY(.1);
 			}
 			
-			function checkSkulls(){
+            function checkSkulls() {
+
+                //Count amount of skulls collected & setting visibility
 				if(skullBBox.containsPoint(camera.position) && skull.visible){
 					skullCount++;
-				}				
-				
-				if(skullBBox.containsPoint(camera.position)){
+                }
+
+				//checks if camera is touching skulls BBox, and if the skull is visible
+				//if so, the collect sound is played, and the skull is visibility is set to false
+                if (skullBBox.containsPoint(camera.position)&&skull.visible) {
+                    skullCollectSound();
 					skull.visible = false;
-				}
+                    }
+
 				if(skullBBox2.containsPoint(camera.position) && skull2.visible){
 					skullCount++;
 				}				
 				
-				if(skullBBox2.containsPoint(camera.position)){
+                if (skullBBox2.containsPoint(camera.position)&&skull2.visible) {
+					skullCollectSound();
 					skull2.visible = false;
-				}	
+                    }	
+
 				if(skullBBox3.containsPoint(camera.position) && skull3.visible){
 					skullCount++;
 				}				
 				
-				if(skullBBox3.containsPoint(camera.position)){
+                if (skullBBox3.containsPoint(camera.position)&&skull3.visible) {
+					skullCollectSound();
 					skull3.visible = false;
 				}					
-			}
+            }
+
+            function skullCollectSound() {
+                //Collect audio
+                    var collectSound = new THREE.Audio(listener);
+                    audioLoader.load('js/Sounds/collect_sound.ogg', function (buffer) {
+                        collectSound.setBuffer(buffer);
+                        collectSound.setLoop(false);
+                        collectSound.setVolume(.1);
+                        collectSound.play();
+                    });
+                
+            }
 			
 			function checkLevelProgression(){
 				if(skullCount == 3 && building.visible == false){
@@ -540,7 +568,7 @@
 				checkLevelProgression();
 				var doomGuyInArray = false;
 				requestAnimationFrame( animate );
-				updateRaycasters();
+                updateRaycasters();
 
 				if(seeDoomGuy == false) {
 					doomGuyChase();
