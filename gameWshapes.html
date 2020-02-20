@@ -67,7 +67,11 @@
 				var skullBBox2;
 				var skullBBox3;
 				var skullCount = 0;
-
+				var mixer;
+				var lastFrame = Date.now();
+				var walk;
+				var run;
+				var still;
 				
 				
 			renderer.setSize( window.innerWidth, window.innerHeight );
@@ -119,7 +123,7 @@
                         house = gltf.scene;
 						scene.add(house);
                         house.rotation.y = - Math.PI / 2;
-                        house.position.set(55, -1.5, 30);
+                        house.position.set(55, -2, 30);
 						console.log(house);
 				
 
@@ -133,11 +137,18 @@
                         console.log(error);
                     });
 
-                loader.load('js/Objects/doom.gltf', function (gltf) {
+                loader.load('js/Objects/doom1.77.glb', function (gltf) {
                     doomGuy = gltf.scene;
 					scene.add(doomGuy);
                     doomGuy.position.set(55, -1.5, 19.5);
-					doomGuy.name = "doomGuy";
+                    doomGuy.name = "doomGuy";
+                    doomGuy.scale.set(1.5, 1.5, 1.5);
+					mixer = new THREE.AnimationMixer(gltf.scene);
+                    walk = mixer.clipAction(gltf.animations[2]);
+                    run = mixer.clipAction(gltf.animations[1]);
+                    still = mixer.clipAction(gltf.animations[0]);
+
+
                    });
                 loader.load('js/Objects/scene.gltf', function (gltf) {
                     building = gltf.scene;
@@ -405,7 +416,10 @@
 				collisions = raycaster.intersectObjects(scene.children, true);
 				doomCollisions = raycaster.intersectObject(doomGuy, true); 
 				if(doomCollisions[0]){
-					seeDoomGuy = true; 
+                    seeDoomGuy = true; 
+					walk.stop();
+                    still.play();
+
 				}
 				
 				
@@ -560,20 +574,28 @@
 					house.visible = false; 
 				}
 			}
-			
-			
+
 			var animate = function () {
 				rotateSkulls();
 				checkSkulls();
-				checkLevelProgression();
+                checkLevelProgression();
+
+				dt = (Date.now() - lastFrame) / 1000
+
+				if(mixer){
+					mixer.update(dt)        
+				}
+
+				lastFrame=Date.now()				
+
 				var doomGuyInArray = false;
 				requestAnimationFrame( animate );
                 updateRaycasters();
 
 				if(seeDoomGuy == false) {
 					doomGuyChase();
-					doomGuy.rotateY(.05);
-
+				//	doomGuy.rotateY(.05);
+					 walk.play();
 				}
 
 				if ( controlsEnabled ) {
