@@ -24,54 +24,60 @@
 
 
 			var scene = new THREE.Scene();
+			var scene1 = new THREE.Scene();
+			var scene2 = new THREE.Scene(); 
+			scene = scene1; 
 			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 			var renderer = new THREE.WebGLRenderer();
-				var controlsEnabled = false;
-				var moveForward = false;
-				var moveBackward = false;
-				var moveLeft = false;
-				var moveRight = false;
-				var canJump = false;		
-				var raycaster = new THREE.Raycaster(); 
-				var raycasterB = new THREE.Raycaster();   //B for Back
-				var raycasterL = new THREE.Raycaster();   // L for Left, as in Slightly to the left.
-				var raycasterR = new THREE.Raycaster();   // R for Right, as in Slightly to the right
-				var raycasterLP = new THREE.Raycaster();  // LP for Left Perpendicular, as in Hard Left
-				var raycasterRP = new THREE.Raycaster();
-				var direction = new THREE.Vector3();     
-				var directionB = new THREE.Vector3();
-				var directionL = new THREE.Vector3();
-				var directionR = new THREE.Vector3();
-				var directionLP = new THREE.Vector3(); 
-				var directionRP = new THREE.Vector3();
-				var collisions = {};
-				var collisionsB = {}; 
-				var collisionsL = {};
-				var collisionsLP = {}; 
-				var collisionsR = {};
-				var collisionsRP = {};
-				var house;
-				var doomGuy;
-				var seeDoomGuy = false;
-				var parent;
-				var doomCollisions = {};
-				var building; 
-				var skyTexture = [];
-				var raycasterD = new THREE.Raycaster();
-				var directionD = new THREE.Vector3(0, -1, 0);
-				var collisionsD = {};
-				var skull;
-				var skull2;
-				var skull3;
-				var skullBBox;
-				var skullBBox2;
-				var skullBBox3;
-				var skullCount = 0;
-				var mixer;
-				var lastFrame = Date.now();
-				var walk;
-				var run;
-				var still;
+			var controlsEnabled = false;
+			var moveForward = false;
+			var moveBackward = false;
+			var moveLeft = false;
+			var moveRight = false;
+			var canJump = false;		
+			var raycaster = new THREE.Raycaster(); 
+			var raycasterB = new THREE.Raycaster();   //B for Back
+			var raycasterL = new THREE.Raycaster();   // L for Left, as in Slightly to the left.
+			var raycasterR = new THREE.Raycaster();   // R for Right, as in Slightly to the right
+			var raycasterLP = new THREE.Raycaster();  // LP for Left Perpendicular, as in Hard Left
+			var raycasterRP = new THREE.Raycaster();
+			var direction = new THREE.Vector3();     
+			var directionB = new THREE.Vector3();
+			var directionL = new THREE.Vector3();
+			var directionR = new THREE.Vector3();
+			var directionLP = new THREE.Vector3(); 
+			var directionRP = new THREE.Vector3();
+			var collisions = {};
+			var collisionsB = {}; 
+			var collisionsL = {};
+			var collisionsLP = {}; 
+			var collisionsR = {};
+			var collisionsRP = {};
+			var house;
+			var doomGuy;
+			var seeDoomGuy = false;
+			var parent;
+			var doomCollisions = {};
+			var building; 
+			var skyTexture = [];
+			var raycasterD = new THREE.Raycaster();
+			var directionD = new THREE.Vector3(0, -1, 0);
+			var collisionsD = {};
+			var skull;
+			var skull2;
+			var skull3;
+			var skullBBox;
+			var skullBBox2;
+			var skullBBox3;
+			var skullCount = 0;
+			var doomGuyBBox;
+			var mixer;
+			var lastFrame = Date.now();
+			var walk;
+			var run;
+			var still;
+			doomGuyBBox = new THREE.Box3();
+
 				
 				
 			renderer.setSize( window.innerWidth, window.innerHeight );
@@ -147,7 +153,6 @@
                     walk = mixer.clipAction(gltf.animations[2]);
                     run = mixer.clipAction(gltf.animations[1]);
                     still = mixer.clipAction(gltf.animations[0]);
-
 
                    });
                 loader.load('js/Objects/scene.gltf', function (gltf) {
@@ -488,7 +493,19 @@
 					}
 				}
 			}
+			function checkDeath(){
+				doomGuyBBox.setFromObject(doomGuy);
+				doomGuyBBox.min.x -= 3;
+				doomGuyBBox.min.y -= 3;
+				doomGuyBBox.min.z -= 3;
+				doomGuyBBox.max.x += 3;
+				doomGuyBBox.max.y += 3;
+				doomGuyBBox.max.z += 3;
+				if(doomGuyBBox.containsPoint(camera.position)){
+					scene =  scene2; 
+				}
 			
+			}
 			
             function setSkullBBoxs() {
 				skullBBox = new THREE.Box3();
@@ -576,10 +593,11 @@
 			}
 
 			var animate = function () {
+			
 				rotateSkulls();
 				checkSkulls();
                 checkLevelProgression();
-
+				checkDeath();
 				dt = (Date.now() - lastFrame) / 1000
 
 				if(mixer){
@@ -606,7 +624,6 @@
 					}
 					if(moveBackward){
 						controls.getObject().translateZ(delta);
-
 					}
 					if(moveLeft){
 						controls.getObject().translateX(-delta);
@@ -661,9 +678,11 @@
 				}
 			};
             function logDirection() {
-			//	console.log(skull);
-				console.log(skullCount);
-			//	console.log(skullBBox.containsPoint(camera.position));
+				
+				console.log(doomGuyBBox);
+				//console.log(skull);
+				//console.log(skullCount);
+				console.log(doomGuyBBox.containsPoint(camera.position));
 				console.log(controls.getObject().position);
 				//console.log(directionR);
 			}
