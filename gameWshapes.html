@@ -501,7 +501,7 @@
 				doomGuyBBox.max.x += 3;
 				doomGuyBBox.max.y += 3;
 				doomGuyBBox.max.z += 3;
-				if(doomGuyBBox.containsPoint(camera.position)){
+				if(doomGuyBBox.containsPoint(camera.position) && !seeDoomGuy){
 					scene =  scene2; 
 				}
 			
