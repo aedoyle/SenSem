@@ -96,7 +96,9 @@
 			var doomCollisions4 = {};
 			var doomCollisions5 = {};
 			var doomCollisions6 = {};
-			
+			var cubeBBox = new THREE.Box3();
+			var cube;
+
 
 
 				
@@ -126,7 +128,7 @@
                 ambientNoise();
 				setInterval(logDirection, 1000);
 				building.visible = false;
-
+				
 				animate();
 
 			};
@@ -278,11 +280,13 @@
                 flashLight.position.set(0, 0, 1);
                 flashLight.target = camera;
 				//scene.add( light );
-				var geometry = new THREE.ConeGeometry( 5, 20, 32 );
+				var geometry = new THREE.BoxGeometry( 100, 100, 100 );
 				var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-				var cone = new THREE.Mesh( geometry, material );
-				camera.add(cone);
-				cone.position.set(0, 0, -10);
+				material.transparent = true;
+				material.opacity = 0;
+				cube = new THREE.Mesh( geometry, material );
+				camera.add(cube);
+				cube.position.set(0, 0, -75);
                
 
 				//Controls
@@ -454,13 +458,20 @@
 	//			doomCollisions5 = doomCasters[4].intersectObject(doomGuy, true); 
 	//			doomCollisions6 = doomCasters[5].intersectObject(doomGuy, true); 
 				
-				if(doomCollisions[0]  ){
-                    seeDoomGuy = true; 
-					walk.stop();
-                    still.play();
+			//	if(doomCollisions[0]  ){
+            //        seeDoomGuy = true; 
+			//		walk.stop();
+            //        still.play();
 
+			//	}
+				if(cubeBBox.intersectsBox(doomGuyBBox)){
+					seeDoomGuy = true;
+					walk.stop();
+					still.play();
 				}
-				
+				else{
+					seeDoomGuy = false; 
+				}
 				
 				collisionsB = raycasterB.intersectObjects(scene.children, true);
 				collisionsL = raycasterL.intersectObjects(scene.children, true);
@@ -627,8 +638,7 @@
 			}
 
 			var animate = function () {
-				seeDoomGuy = false;
-
+				cubeBBox.setFromObject(cube);
 				rotateSkulls();
 				checkSkulls();
                 checkLevelProgression();
@@ -673,7 +683,6 @@
 					}
 				}
 				renderer.render( scene, camera );
-			
 				
 		
 				if(doomGuy.position.y != -2){
@@ -681,8 +690,7 @@
 				}
 			};
             function logDirection() {
-				console.log(doomCollisions1);
-				//console.log(seeDoomGuy);
+				console.log(cubeBBox.intersectsBox(doomGuyBBox));
 				//console.log(doomGuyBBox);
 				//console.log(skull);
 				//console.log(skullCount);
