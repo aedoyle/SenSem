@@ -70,6 +70,7 @@
 				var mixer;
 				var lastFrame = Date.now();
 				var walk;
+                var stillToWalk;
 				var run;
 				var still;
 				
@@ -118,7 +119,7 @@
             
             function loadObjects() {
                 var loader = new THREE.GLTFLoader(manager);
-                loader.load('js/Objects/houseShell5.glb',
+                loader.load('js/Objects/house/houseShell5.glb',
                     // called when the resource is loaded
                     function (gltf) {
                         house = gltf.scene;
@@ -138,19 +139,19 @@
                         console.log(error);
                     });
 
-                loader.load('js/Objects/doom1.8.glb', function (gltf) {
+                loader.load('js/Objects/doomGuy/doom1.85.glb', function (gltf) {
                     doomGuy = gltf.scene;
 					scene.add(doomGuy);
                     doomGuy.position.set(55, -1.5, 19.5);
                     doomGuy.name = "doomGuy";
                     doomGuy.scale.set(1.5, 1.5, 1.5);
 					mixer = new THREE.AnimationMixer(gltf.scene);
-                    walk = mixer.clipAction(gltf.animations[0]);
-                    run = mixer.clipAction(gltf.animations[2]);
-                    still = mixer.clipAction(gltf.animations[1]);
-                  
-
-                   });
+                    walk = mixer.clipAction(gltf.animations[1]);
+                    run = mixer.clipAction(gltf.animations[0]);
+                    still = mixer.clipAction(gltf.animations[3]);
+                    stillToWalk = mixer.clipAction(gltf.animations[2]);
+                    
+                  });
                 loader.load('js/Objects/scene.gltf', function (gltf) {
                     building = gltf.scene;
 					scene.add(building);
@@ -418,9 +419,8 @@
 				doomCollisions = raycaster.intersectObject(doomGuy, true); 
 				if(doomCollisions[0]){
                     seeDoomGuy = true; 
-					walk.stop();
+                    walk.stop();
                     still.play();
-
 				}
 				
 				
@@ -576,6 +576,7 @@
 				}
 			}
 
+			//Keeps doomGuy facing player
             function follow() {
 				doomGuy.rotation.y = Math.atan2( ( camera.position.x - doomGuy.position.x ), ( camera.position.z - doomGuy.position.z) );
             }
@@ -598,9 +599,13 @@
                 updateRaycasters();
 
 				if(seeDoomGuy == false) {
-					doomGuyChase();
-				//	doomGuy.rotateY(.05);
-                    walk.play();
+                    doomGuyChase();
+                    stillToWalk.play();
+                    if (stillToWalk.isRunning() == true) {
+                        stillToWalk.stop();
+                        walk.play();
+                    }
+                
                     follow();
 				}
 
