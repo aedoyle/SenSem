@@ -98,7 +98,8 @@
                 chaseSound();
                 ambientNoise();
 				setInterval(logDirection, 1000);
-				building.visible = false;
+                building.visible = false;
+				
 
 				animate();
 
@@ -137,17 +138,17 @@
                         console.log(error);
                     });
 
-                loader.load('js/Objects/doom1.77.glb', function (gltf) {
+                loader.load('js/Objects/doom1.8.glb', function (gltf) {
                     doomGuy = gltf.scene;
 					scene.add(doomGuy);
                     doomGuy.position.set(55, -1.5, 19.5);
                     doomGuy.name = "doomGuy";
                     doomGuy.scale.set(1.5, 1.5, 1.5);
 					mixer = new THREE.AnimationMixer(gltf.scene);
-                    walk = mixer.clipAction(gltf.animations[2]);
-                    run = mixer.clipAction(gltf.animations[1]);
-                    still = mixer.clipAction(gltf.animations[0]);
-
+                    walk = mixer.clipAction(gltf.animations[0]);
+                    run = mixer.clipAction(gltf.animations[2]);
+                    still = mixer.clipAction(gltf.animations[1]);
+                  
 
                    });
                 loader.load('js/Objects/scene.gltf', function (gltf) {
@@ -575,6 +576,10 @@
 				}
 			}
 
+            function follow() {
+				doomGuy.rotation.y = Math.atan2( ( camera.position.x - doomGuy.position.x ), ( camera.position.z - doomGuy.position.z) );
+            }
+
 			var animate = function () {
 				rotateSkulls();
 				checkSkulls();
@@ -595,7 +600,8 @@
 				if(seeDoomGuy == false) {
 					doomGuyChase();
 				//	doomGuy.rotateY(.05);
-					 walk.play();
+                    walk.play();
+                    follow();
 				}
 
 				if ( controlsEnabled ) {
