@@ -417,6 +417,8 @@
 				camera.getWorldPosition(position);
 				raycaster.set( position, direction);
 				raycasterD.set(position, directionD);
+	//			for(i = 0; i < 6; i++)
+	//				doomCasters[i].set(position, new THREE.Vector3(direction.x +(.01 * (i+1)), direction.y, direction.z));
 				directionB.x = -direction.x;					//B for Back
 				directionB.z = -direction.z;
 				directionB.y = direction.y; 
@@ -441,7 +443,14 @@
 				raycasterRP.set(position, directionRP);
 				collisions = raycaster.intersectObjects(scene.children, true);
 				doomCollisions = raycaster.intersectObject(doomGuy, true); 
-				if(doomCollisions[0]){
+	//			doomCollisions1 = doomCasters[0].intersectObject(doomGuy, true); 
+	//			doomCollisions2 = doomCasters[1].intersectObject(doomGuy, true); 
+	//			doomCollisions3 = doomCasters[2].intersectObject(doomGuy, true); 
+	//			doomCollisions4 = doomCasters[3].intersectObject(doomGuy, true); 
+	//			doomCollisions5 = doomCasters[4].intersectObject(doomGuy, true); 
+	//			doomCollisions6 = doomCasters[5].intersectObject(doomGuy, true); 
+				
+				if(doomCollisions[0]  ){
                     seeDoomGuy = true; 
 					walk.stop();
                     still.play();
@@ -614,7 +623,8 @@
 			}
 
 			var animate = function () {
-			
+				seeDoomGuy = false;
+
 				rotateSkulls();
 				checkSkulls();
                 checkLevelProgression();
@@ -627,7 +637,6 @@
 
 				lastFrame=Date.now()				
 
-				var doomGuyInArray = false;
 				requestAnimationFrame( animate );
                 updateRaycasters();
 
@@ -660,51 +669,21 @@
 					}
 				}
 				renderer.render( scene, camera );
-				for( i = 0; i < collisions.length; i++){
-
-					parent = collisions[i].object; 
-					while(parent){
-						parent = parent.parent;
-						if (parent == doomGuy){
-							doomGuyInArray = true; 
-						}
-					}					
-				}
-				for(i = 0; i < collisionsL.length; i++){
-
-					parent = collisionsL[i].object; 
-					while(parent){
-						parent = parent.parent;
-						if (parent == doomGuy){
-							doomGuyInArray = true; 
-						}
-					}					
-				}		
-				for(i = 0; i < collisionsR.length; i++){
-
-					parent = collisionsR[i].object; 
-					while(parent){
-						parent = parent.parent;
-						if (parent == doomGuy){
-							doomGuyInArray = true; 
-						}
-					}					
-				}					
+			
 				
-				if(!doomGuyInArray){
-					seeDoomGuy = false;
-				}
+		
 				if(doomGuy.position.y != -2){
 					doomGuy.position.y = -2;
 				}
 			};
             function logDirection() {
-				
+				console.log(doomCollisions1);
+				//console.log(seeDoomGuy);
 				//console.log(doomGuyBBox);
 				//console.log(skull);
 				//console.log(skullCount);
 				//console.log(doomGuyBBox.containsPoint(camera.position));
-				console.log(controls.getObject().position);
+				//console.log(controls.getObject().position);
 				//console.log(directionR);
 			}
 		
