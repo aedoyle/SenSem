@@ -77,6 +77,27 @@
 			var run;
 			var still;
 			doomGuyBBox = new THREE.Box3();
+			var doomCasters = {};
+			var doomCaster1 = new THREE.Raycaster();
+			var doomCaster2 = new THREE.Raycaster();
+			var doomCaster3 = new THREE.Raycaster();
+			var doomCaster4 = new THREE.Raycaster();
+			var doomCaster5 = new THREE.Raycaster();
+			var doomCaster6 = new THREE.Raycaster();
+			doomCasters[0] = doomCaster1;
+			doomCasters[1] = doomCaster2;
+			doomCasters[2] = doomCaster3;
+			doomCasters[3] = doomCaster4;
+			doomCasters[4] = doomCaster5;
+			doomCasters[5] = doomCaster6;
+			var doomCollisions1 = {};
+			var doomCollisions2 = {};
+			var doomCollisions3 = {};
+			var doomCollisions4 = {};
+			var doomCollisions5 = {};
+			var doomCollisions6 = {};
+			
+
 
 				
 				
@@ -171,7 +192,7 @@
 					scene.add(skull2);
 					skull2.position.set(125.9, 9.6, 62.69);
 					scene.add(skull3);
-					skull3.position.set(128.03, 2.06, 48.55);
+					skull3.position.set(103.38610284366055, 0.5195993892745685, 68.39432633190229);
                    });				   
 				var backgroundLoader = new THREE.CubeTextureLoader(manager);
 
@@ -660,7 +681,7 @@
 					}					
 				}		
 				for(i = 0; i < collisionsR.length; i++){
-	
+
 					parent = collisionsR[i].object; 
 					while(parent){
 						parent = parent.parent;
@@ -679,10 +700,10 @@
 			};
             function logDirection() {
 				
-				console.log(doomGuyBBox);
+				//console.log(doomGuyBBox);
 				//console.log(skull);
 				//console.log(skullCount);
-				console.log(doomGuyBBox.containsPoint(camera.position));
+				//console.log(doomGuyBBox.containsPoint(camera.position));
 				console.log(controls.getObject().position);
 				//console.log(directionR);
 			}
