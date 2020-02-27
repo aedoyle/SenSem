@@ -2,8 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\js",
-    "\\js\\Objects"
+    "\\js\\Objects",
+    "\\js\\Objects\\doomGuy"
   ],
-  "SelectedNode": "\\js\\Objects\\front.png",
+  "SelectedNode": "\\js\\Objects\\textures",
   "PreviewInSolutionExplorer": false
 }

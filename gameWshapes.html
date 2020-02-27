@@ -139,18 +139,18 @@
                         console.log(error);
                     });
 
-                loader.load('js/Objects/doomGuy/doom1.91.glb', function (gltf) {
+                loader.load('js/Objects/doomGuy/doom2.0.glb', function (gltf) {
                     doomGuy = gltf.scene;
 					scene.add(doomGuy);
                     doomGuy.position.set(55, -1.5, 19.5);
                     doomGuy.name = "doomGuy";
                     doomGuy.scale.set(1.5, 1.5, 1.5);
 					mixer = new THREE.AnimationMixer(gltf.scene);
-                    walk = mixer.clipAction(gltf.animations[2]);
+                    walk = mixer.clipAction(gltf.animations[3]);
                     run = mixer.clipAction(gltf.animations[0]);
                     still = mixer.clipAction(gltf.animations[1]);
-                    stillToWalk = mixer.clipAction(gltf.animations[3]);
-                    
+                    stillToWalk = mixer.clipAction(gltf.animations[2]);
+                    //
                   });
                 loader.load('js/Objects/scene.gltf', function (gltf) {
                     building = gltf.scene;
