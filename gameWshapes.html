@@ -75,7 +75,8 @@
 			var lastFrame = Date.now();
 			var walk;
 			var run;
-			var still;
+            var still;
+            var stillToWalk;
 			doomGuyBBox = new THREE.Box3();
 			var doomCasters = {};
 			var doomCaster1 = new THREE.Raycaster();
@@ -146,7 +147,7 @@
             
             function loadObjects() {
                 var loader = new THREE.GLTFLoader(manager);
-                loader.load('js/Objects/houseShell5.glb',
+                loader.load('js/Objects/House/houseShell5.glb',
                     // called when the resource is loaded
                     function (gltf) {
                         house = gltf.scene;
@@ -166,16 +167,17 @@
                         console.log(error);
                     });
 
-                loader.load('js/Objects/doom1.77.glb', function (gltf) {
+                loader.load('js/Objects/DoomGuy/doom2.0.glb', function (gltf) {
                     doomGuy = gltf.scene;
 					scene.add(doomGuy);
                     doomGuy.position.set(55, -1.5, 19.5);
                     doomGuy.name = "doomGuy";
                     doomGuy.scale.set(1.5, 1.5, 1.5);
 					mixer = new THREE.AnimationMixer(gltf.scene);
-                    walk = mixer.clipAction(gltf.animations[2]);
-                    run = mixer.clipAction(gltf.animations[1]);
-                    still = mixer.clipAction(gltf.animations[0]);
+                    walk = mixer.clipAction(gltf.animations[3]);
+                    run = mixer.clipAction(gltf.animations[0]);
+                    still = mixer.clipAction(gltf.animations[1]);
+                    stillToWalk = mixer.clipAction(gltf.animations[2])
 
                    });
                 loader.load('js/Objects/scene.gltf', function (gltf) {
@@ -637,12 +639,18 @@
 				}
 			}
 
+			function follow() {
+				doomGuy.rotation.y = Math.atan2( ( camera.position.x - doomGuy.position.x ), ( camera.position.z - doomGuy.position.z) );
+            }
+
+
 			var animate = function () {
 				cubeBBox.setFromObject(cube);
 				rotateSkulls();
 				checkSkulls();
                 checkLevelProgression();
-				checkDeath();
+                checkDeath();
+                follow();
 				dt = (Date.now() - lastFrame) / 1000
 
 				if(mixer){
@@ -655,9 +663,9 @@
                 updateRaycasters();
 
 				if(seeDoomGuy == false) {
-					doomGuyChase();
-				//	doomGuy.rotateY(.05);
-					 walk.play();
+				
+                    doomGuyChase();
+					walk.play();
 				}
 
 				if ( controlsEnabled ) {
