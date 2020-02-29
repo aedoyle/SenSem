@@ -99,7 +99,8 @@
 			var doomCollisions6 = {};
 			var cubeBBox = new THREE.Box3();
 			var cube;
-
+			var houseBBoxes = {};
+			var buildingBBox = new THREE.Box3();
 
 
 				
@@ -154,6 +155,17 @@
 						scene.add(house);
                         house.rotation.y = - Math.PI / 2;
                         house.position.set(55, -2, 30);
+						let i = 0; 
+						let helpers = {}; 
+						house.traverse( function ( child ) {
+						if ( child instanceof THREE.Object3D  ) {
+							houseBBoxes[i] = new THREE.Box3(); 
+							houseBBoxes[i].setFromObject(child);
+							helpers[i] = new THREE.Box3Helper(houseBBoxes[i], 0xffff00);
+				//			scene.add(helpers[i]);
+                
+          
+						}});
 						console.log(house);
 				
 
@@ -186,6 +198,9 @@
                     building.position.z = -200; 
 					building.name = "building";
 					building.scale.set(3, 3, 3);
+					buildingBBox.setFromObject(building);
+		//			scene.add(new THREE.Box3Helper(buildingBBox, 0xffff00));
+
                    });	
                 loader.load('js/Objects/skull/scene.gltf', function (gltf) {
 					skull = gltf.scene;
@@ -289,8 +304,16 @@
 				cube = new THREE.Mesh( geometry, material );
 				camera.add(cube);
 				cube.position.set(0, 0, -75);
-               
-
+                geometry = new THREE.PlaneGeometry( 3000, 3000,  );
+				material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+				material.transparent = true;
+				material.opacity = 0;
+				var plane = new THREE.Mesh( geometry, material );
+				scene.add(plane);
+				plane.rotateX( - Math.PI / 2);
+				console.log(plane.position);
+				plane.position.y = -3;
+		
 				//Controls
 				controls = new THREE.PointerLockControls( camera );
                 scene.add(controls.getObject());
@@ -483,21 +506,21 @@
 				collisionsD = raycasterD.intersectObjects(scene.children, true);
 				
 
-				for(i = 0; i < collisions.length; i++){
+	/*			for(i = 0; i < collisions.length; i++){
 					if(collisions[i].distance < 3.3){
 						moveForward = false;
 					}
 
 
-/*				parent = collisions[i].object;
+				parent = collisions[i].object;
 					while(parent){
 						parent = parent.parent;
 						if (parent == doomGuy){
 							seeDoomGuy = true; 
 						}
 					}
-*/				}
-/*					for(i = 0; i < collisionsL.length; i++){
+				}
+					for(i = 0; i < collisionsL.length; i++){
 					if(collisionsL[i].distance < 1.2){
 						moveForward = false;
 					}
@@ -523,7 +546,7 @@
 						}
 					}					
 				}
-*/				
+				
 				for(i = 0; i < collisionsLP.length; i++){
 					if(collisionsLP[i].distance < 3.3){
 						moveLeft = false; 
@@ -539,7 +562,7 @@
 						moveBackward = false; 
 					}
 				}
-			}
+	*/		}
 			function checkDeath(){
 				doomGuyBBox.setFromObject(doomGuy);
 				doomGuyBBox.min.x -= 3;
@@ -644,6 +667,8 @@
             }
 
 
+		
+			
 			var animate = function () {
 				cubeBBox.setFromObject(cube);
 				rotateSkulls();
@@ -664,11 +689,11 @@
 
 				if(seeDoomGuy == false) {
 				
-                    doomGuyChase();
+                   // doomGuyChase();
 					walk.play();
 				}
-
 				if ( controlsEnabled ) {
+
 					var delta = .5;
 
 					if(moveForward){
@@ -683,12 +708,15 @@
 					if(moveRight){
 						controls.getObject().translateX(delta);
 					}
-				//	if ( controls.getObject().position.y != 0  ) {
-				//		controls.getObject().position.y = 0;	
-				//	}
+
 					if(collisionsD[0]){
 						controls.getObject().position.y = collisionsD[0].point.y + 2.5; 
 					}
+//					if(moveForward)){
+	//					moveForward = false;
+	//					controls.getObject().translateZ(delta);
+						
+	//				}
 				}
 				renderer.render( scene, camera );
 				
