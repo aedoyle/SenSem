@@ -101,7 +101,7 @@
 			var cube;
 			var houseBBoxes = {};
 			var buildingBBoxes = {};
-			var houseBBoxCount = 4
+			var houseBBoxCount = 5;
 
 
 				
@@ -156,11 +156,11 @@
 						scene.add(house);
                         house.rotation.y = - Math.PI / 2;
                         house.position.set(55, -2, 30);
-						houseBBoxes[0] = new THREE.Box3(new THREE.Vector3(97.92601422391, -2 , 34.15341844895645   ), new THREE.Vector3(102.06848069827979 , 5, 78.65107712409612));  
-						houseBBoxes[1] = new THREE.Box3(new THREE.Vector3(101.9259180603165 , -2 , 34.36070653342341), new THREE.Vector3( 139.87796127698655, 5, 37.89793781433861));
-						houseBBoxes[2] = new THREE.Box3(new THREE.Vector3(136.86987439472297 , -2, 37.607029122153165), new THREE.Vector3( 139.72427104182447, 5, 113.49595653976305));
-						houseBBoxes[3] = new THREE.Box3(new THREE.Vector3(73.8225104675347, -2,  109.97977706103694), new THREE.Vector3( 137.63925878535912, 5, 113.86793023790936));
-						
+						houseBBoxes[0] = new THREE.Box3(new THREE.Vector3(97.92601422391, -2 , 34.15341844895645   ), new THREE.Vector3(102.06848069827979 , 10, 78.65107712409612));  
+						houseBBoxes[1] = new THREE.Box3(new THREE.Vector3(101.9259180603165 , -2 , 34.36070653342341), new THREE.Vector3( 139.87796127698655, 10, 37.89793781433861));
+						houseBBoxes[2] = new THREE.Box3(new THREE.Vector3(136.86987439472297 , -2, 37.607029122153165), new THREE.Vector3( 139.72427104182447, 10, 113.49595653976305));
+						houseBBoxes[3] = new THREE.Box3(new THREE.Vector3(73.8225104675347, -2,  109.97977706103694), new THREE.Vector3( 137.63925878535912, 10, 113.86793023790936));
+						houseBBoxes[4] = new THREE.Box3(new THREE.Vector3( 73.89429819609268, -2, 83.52235034462691), new THREE.Vector3( 78.29069146628301, 10,110.79158983531276 ));
 						console.log(house);
 						for(i = 0; i < houseBBoxCount; i++){
 							scene.add(new THREE.Box3Helper(houseBBoxes[i], 0xffff00)); 
