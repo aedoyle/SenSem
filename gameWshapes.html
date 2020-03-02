@@ -101,7 +101,7 @@
 			var cube;
 			var houseBBoxes = {};
 			var buildingBBoxes = {};
-			var houseBBoxCount = 8;
+			var houseBBoxCount = 11;
 
 
 				
@@ -164,6 +164,9 @@
 						houseBBoxes[5] = new THREE.Box3(new THREE.Vector3(78.29069146628301, -2, 83.83132369890478), new THREE.Vector3(102.55258961331263, 10, 86.79112362061738));
 						houseBBoxes[6] = new THREE.Box3(new THREE.Vector3(102.05598936666685, -2,83.05397473204764), new THREE.Vector3( 105.30265455528645, 10, 90.44204213247721));
 						houseBBoxes[7] = new THREE.Box3(new THREE.Vector3( 101.66524254755797, -2, 78.14923704537244), new THREE.Vector3( 105.26433731356099, 10, 80.48333655863605 ));
+						houseBBoxes[8] = new THREE.Box3(new THREE.Vector3(102.1672300653852, -2, 75.50571876961706), new THREE.Vector3(118.22570038112543 , 10, 79.60202263221525));
+						houseBBoxes[9] = new THREE.Box3(new THREE.Vector3(102.04209337774811, -2 , 59.78905469175373), new THREE.Vector3(112.08040314336925, 10, 62.51315826844717));
+						houseBBoxes[10] = new THREE.Box3(new THREE.Vector3(106.00415390790605, -2, 55.583040700425836), new THREE.Vector3(108.17541240346326, 10, 59.73116781749373));
 						console.log(house);
 						for(i = 0; i < houseBBoxCount; i++){
 							scene.add(new THREE.Box3Helper(houseBBoxes[i], 0xffff00)); 
