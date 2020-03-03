@@ -35,24 +35,6 @@
 			var moveLeft = false;
 			var moveRight = false;
 			var canJump = false;		
-			var raycaster = new THREE.Raycaster(); 
-			var raycasterB = new THREE.Raycaster();   //B for Back
-			var raycasterL = new THREE.Raycaster();   // L for Left, as in Slightly to the left.
-			var raycasterR = new THREE.Raycaster();   // R for Right, as in Slightly to the right
-			var raycasterLP = new THREE.Raycaster();  // LP for Left Perpendicular, as in Hard Left
-			var raycasterRP = new THREE.Raycaster();
-			var direction = new THREE.Vector3();     
-			var directionB = new THREE.Vector3();
-			var directionL = new THREE.Vector3();
-			var directionR = new THREE.Vector3();
-			var directionLP = new THREE.Vector3(); 
-			var directionRP = new THREE.Vector3();
-			var collisions = {};
-			var collisionsB = {}; 
-			var collisionsL = {};
-			var collisionsLP = {}; 
-			var collisionsR = {};
-			var collisionsRP = {};
 			var house;
 			var doomGuy;
 			var seeDoomGuy = false;
@@ -77,31 +59,12 @@
 			var run;
             var still;
             var stillToWalk;
-			doomGuyBBox = new THREE.Box3();
-			var doomCasters = {};
-			var doomCaster1 = new THREE.Raycaster();
-			var doomCaster2 = new THREE.Raycaster();
-			var doomCaster3 = new THREE.Raycaster();
-			var doomCaster4 = new THREE.Raycaster();
-			var doomCaster5 = new THREE.Raycaster();
-			var doomCaster6 = new THREE.Raycaster();
-			doomCasters[0] = doomCaster1;
-			doomCasters[1] = doomCaster2;
-			doomCasters[2] = doomCaster3;
-			doomCasters[3] = doomCaster4;
-			doomCasters[4] = doomCaster5;
-			doomCasters[5] = doomCaster6;
-			var doomCollisions1 = {};
-			var doomCollisions2 = {};
-			var doomCollisions3 = {};
-			var doomCollisions4 = {};
-			var doomCollisions5 = {};
-			var doomCollisions6 = {};
+			doomGuyBBox = new THREE.Box3();			
 			var cubeBBox = new THREE.Box3();
 			var cube;
 			var houseBBoxes = {};
 			var buildingBBoxes = {};
-			var houseBBoxCount = 16;
+			var houseBBoxCount = 17;
 
 
 				
@@ -176,6 +139,8 @@
 						//hallway
 						houseBBoxes[14] = new THREE.Box3(new THREE.Vector3(116.62917230840127, -2, 52.02254324538407), new THREE.Vector3(118.57990744816739, 10, 56.40227970129457));
 						houseBBoxes[15] = new THREE.Box3(new THREE.Vector3(103.47274420112089, -2, 94.33225409193427), new THREE.Vector3(119.92151493268069, 5, 96.55603211057256));
+						//staircase
+						houseBBoxes[16] = new THREE.Box3(new THREE.Vector3(120.74682371829535, -2, 59.53862901985289), new THREE.Vector3(122.58108787965476, 10, 86.55672608810808));
 						console.log(house);
 						for(i = 0; i < houseBBoxCount; i++){
 							scene.add(new THREE.Box3Helper(houseBBoxes[i], 0xffff00)); 
@@ -462,50 +427,9 @@
 			
 
 			function updateRaycasters(){
-				camera.getWorldDirection(direction);
 				var position = new THREE.Vector3();		
 				camera.getWorldPosition(position);
-				raycaster.set( position, direction);
 				raycasterD.set(position, directionD);
-	//			for(i = 0; i < 6; i++)
-	//				doomCasters[i].set(position, new THREE.Vector3(direction.x +(.01 * (i+1)), direction.y, direction.z));
-				directionB.x = -direction.x;					//B for Back
-				directionB.z = -direction.z;
-				directionB.y = direction.y; 
-				raycasterB.set(position, directionB);
-				directionL.x = direction.x - .7;  				// L for Left, as in Slightly to the left.
-				directionL.z = direction.z - .3;
-				directionL.y = direction.y;
-				directionL.normalize();
-				raycasterL.set(position, directionL);
-				directionR.x = -directionL.x;
-				directionR.z = directionL.z;
-				directionR.y = directionL.y;
-				raycasterR.set(position, directionR);
-				directionLP.x = direction.x - 100;				// LP for Left Perpendicular, as in Hard Left
-				directionLP.z = direction.z - 1;
-				directionLP.y = direction.y
-				directionLP.normalize();
-				raycasterLP.set(position, directionLP);
-				directionRP.x = -directionLP.x;
-				directionRP.y = directionLP.y;
-				directionRP.z = directionLP.z;
-				raycasterRP.set(position, directionRP);
-				collisions = raycaster.intersectObjects(scene.children, true);
-				doomCollisions = raycaster.intersectObject(doomGuy, true); 
-	//			doomCollisions1 = doomCasters[0].intersectObject(doomGuy, true); 
-	//			doomCollisions2 = doomCasters[1].intersectObject(doomGuy, true); 
-	//			doomCollisions3 = doomCasters[2].intersectObject(doomGuy, true); 
-	//			doomCollisions4 = doomCasters[3].intersectObject(doomGuy, true); 
-	//			doomCollisions5 = doomCasters[4].intersectObject(doomGuy, true); 
-	//			doomCollisions6 = doomCasters[5].intersectObject(doomGuy, true); 
-				
-			//	if(doomCollisions[0]  ){
-            //        seeDoomGuy = true; 
-			//		walk.stop();
-            //        still.play();
-
-			//	}
 				if(cubeBBox.intersectsBox(doomGuyBBox)){
 					seeDoomGuy = true;
 					walk.stop();
@@ -515,71 +439,11 @@
 					seeDoomGuy = false; 
 				}
 				
-				collisionsB = raycasterB.intersectObjects(scene.children, true);
-				collisionsL = raycasterL.intersectObjects(scene.children, true);
-				collisionsLP = raycasterLP.intersectObjects(scene.children, true);
-				collisionsR = raycasterR.intersectObjects(scene.children, true);
-				collisionsRP = raycasterRP.intersectObjects(scene.children, true); 
 				collisionsD = raycasterD.intersectObjects(scene.children, true);
 				
 
-	/*			for(i = 0; i < collisions.length; i++){
-					if(collisions[i].distance < 3.3){
-						moveForward = false;
-					}
 
-
-				parent = collisions[i].object;
-					while(parent){
-						parent = parent.parent;
-						if (parent == doomGuy){
-							seeDoomGuy = true; 
-						}
-					}
-				}
-					for(i = 0; i < collisionsL.length; i++){
-					if(collisionsL[i].distance < 1.2){
-						moveForward = false;
-					}
-
-					parent = collisionsL[i].object;
-					while(parent){
-						parent = parent.parent;
-						if (parent == doomGuy){
-							seeDoomGuy = true; 
-						}
-					}					
-				}
-				for(i = 0; i < collisionsR.length; i++){
-					if(collisionsR[i].distance < 1.2){
-						moveForward = false;
-					}
-
-					parent = collisionsR[i].object;
-					while(parent){
-						parent = parent.parent;
-						if (parent == doomGuy){
-							seeDoomGuy = true; 
-						}
-					}					
-				}
-				
-				for(i = 0; i < collisionsLP.length; i++){
-					if(collisionsLP[i].distance < 3.3){
-						moveLeft = false; 
-					}
-				}
-				for(i = 0; i < collisionsRP.length; i++){
-					if(collisionsRP[i].distance < 3.3){
-						moveRight = false; 
-					}
-				}				
-				for(i = 0; i < collisionsB.length; i++){
-					if(collisionsB[i].distance < 3.3){
-						moveBackward = false; 
-					}
-				}
-	*/		}
+			}
 			function checkDeath(){
 				doomGuyBBox.setFromObject(doomGuy);
 				doomGuyBBox.min.x -= 3;
