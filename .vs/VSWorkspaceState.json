@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\js"
+    "\\js",
+    "\\js\\Objects"
   ],
-  "SelectedNode": "\\gameWshapes.html",
+  "SelectedNode": "\\js\\Objects\\DoomGuy",
   "PreviewInSolutionExplorer": false
 }
