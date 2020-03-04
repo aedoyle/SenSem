@@ -64,7 +64,7 @@
 			var cube;
 			var houseBBoxes = {};
 			var buildingBBoxes = {};
-			var houseBBoxCount = 21;
+			var houseBBoxCount = 23;
 
 
 				
@@ -139,12 +139,15 @@
 						//hallway
 						houseBBoxes[14] = new THREE.Box3(new THREE.Vector3(116.62917230840127, -2, 52.02254324538407), new THREE.Vector3(118.57990744816739, 10, 56.40227970129457));
 						houseBBoxes[15] = new THREE.Box3(new THREE.Vector3(103.47274420112089, -2, 94.33225409193427), new THREE.Vector3(119.92151493268069, 5, 96.55603211057256));
-						//staircase
+						//staircase left
 						houseBBoxes[16] = new THREE.Box3(new THREE.Vector3(120.74682371829535, -2, 59.53862901985289), new THREE.Vector3(122.58108787965476, 10, 86.55672608810808));
 						houseBBoxes[17] = new THREE.Box3(new THREE.Vector3(106.06325638714221, -2, 101.99279800009121), new THREE.Vector3(108.53603036713128, 5, 109.89594887144517));
 						houseBBoxes[18] = new THREE.Box3(new THREE.Vector3(106.06325638714221, -2, 96.52807025309652), new THREE.Vector3(108.53603036713128, 5, 99.12486930594356));
 						houseBBoxes[19] = new THREE.Box3(new THREE.Vector3(102.75237914596876, -2, 93.59451357590211), new THREE.Vector3( 104.07440090579423, 5, 106.32693286271763));
 						houseBBoxes[20] = new THREE.Box3(new THREE.Vector3(104.04563588275458, -2, 102.72473068930334), new THREE.Vector3(106.35741905727425, 5, 105.70150361562314));
+						houseBBoxes[21] = new THREE.Box3(new THREE.Vector3(99.14810234678286, -2, 102.84673311258846), new THREE.Vector3(102.4701927602442, 5, 105.9941586203922));
+						houseBBoxes[22] = new THREE.Box3(new THREE.Vector3(99.01081155131915, -2, 108.76097375626866), new THREE.Vector3(100.45465324655719, 5, 110.05809480597372));
+						//
 						console.log(house);
 						for(i = 0; i < houseBBoxCount; i++){
 							scene.add(new THREE.Box3Helper(houseBBoxes[i], 0xffff00)); 
