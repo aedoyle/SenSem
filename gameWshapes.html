@@ -64,7 +64,7 @@
 			var cube;
 			var houseBBoxes = {};
 			var buildingBBoxes = {};
-			var houseBBoxCount = 31;
+			var houseBBoxCount = 37;
 
 
 				
@@ -156,6 +156,12 @@
 						houseBBoxes[28] = new THREE.Box3(new THREE.Vector3(129.2629798569308, -2, 55.03994753509372), new THREE.Vector3(131.7236452168798, 4, 60.114792437903446));
 						houseBBoxes[29] = new THREE.Box3(new THREE.Vector3(131.7236452168798, -2, 55.03994753509372), new THREE.Vector3(133.2445904539804, 4, 59.08564066184938));
 						houseBBoxes[30] = new THREE.Box3(new THREE.Vector3(135.52433486855918, -2, 55.03994753509372), new THREE.Vector3(136.92014319309822, 4, 59.08564066184938));
+						houseBBoxes[31] = new THREE.Box3(new THREE.Vector3(120.81195353525418, -2, 44.85460598627714), new THREE.Vector3(123.36836002979904, 4, 57.29577560969231));
+						houseBBoxes[32] = new THREE.Box3(new THREE.Vector3(120.41991895282634, -2, 36.31434396332208), new THREE.Vector3(123.78127666088803, 5, 42.40199278701425));
+						houseBBoxes[33] = new THREE.Box3(new THREE.Vector3(113.20785474958362, -2, 37.06839142999161), new THREE.Vector3(115.98320813363452, 5, 48.20875468450057));
+						houseBBoxes[34] = new THREE.Box3(new THREE.Vector3(115.98320813363452 , -2, 45.38157356103352), new THREE.Vector3(120.95116151756916, 5, 49.476061933511684));
+						houseBBoxes[35] = new THREE.Box3(new THREE.Vector3(101.03194123374467, -2, 55.06100190931044), new THREE.Vector3(104.04633767665882, 5, 57.77163546582174));
+						houseBBoxes[36] = new THREE.Box3(new THREE.Vector3(129.1891253183756, 4.5 , 54.31888480089888), new THREE.Vector3(137.49359585119197, 10, 60.31888480089888));
 						console.log(house);
 						for(i = 0; i < houseBBoxCount; i++){
 							scene.add(new THREE.Box3Helper(houseBBoxes[i], 0xffff00)); 
@@ -613,25 +619,20 @@
 						moveForward = false;
 						controls.getObject().translateZ(delta);
 						}	
-					}
-					for( i = 0; i < houseBBoxCount; i++){
 						if(moveBackward && houseBBoxes[i].containsPoint(camera.position)){
 						moveBackward = false;
 						controls.getObject().translateZ(-delta);
 						}	
-					}
-					for( i = 0; i < houseBBoxCount; i++){
 						if(moveLeft && houseBBoxes[i].containsPoint(camera.position)){
 						moveLeft = false;
 						controls.getObject().translateX(delta);
 						}	
-					}
-					for( i = 0; i < houseBBoxCount; i++){
 						if(moveRight && houseBBoxes[i].containsPoint(camera.position)){
 						moveRight = false;
 						controls.getObject().translateX(-delta);
 						}	
-					}					
+					}
+					
 				}
 				renderer.render( scene, camera );
 				
