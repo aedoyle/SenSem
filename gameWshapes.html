@@ -35,24 +35,6 @@
 			var moveLeft = false;
 			var moveRight = false;
 			var canJump = false;		
-			var raycaster = new THREE.Raycaster(); 
-			var raycasterB = new THREE.Raycaster();   //B for Back
-			var raycasterL = new THREE.Raycaster();   // L for Left, as in Slightly to the left.
-			var raycasterR = new THREE.Raycaster();   // R for Right, as in Slightly to the right
-			var raycasterLP = new THREE.Raycaster();  // LP for Left Perpendicular, as in Hard Left
-			var raycasterRP = new THREE.Raycaster();
-			var direction = new THREE.Vector3();     
-			var directionB = new THREE.Vector3();
-			var directionL = new THREE.Vector3();
-			var directionR = new THREE.Vector3();
-			var directionLP = new THREE.Vector3(); 
-			var directionRP = new THREE.Vector3();
-			var collisions = {};
-			var collisionsB = {}; 
-			var collisionsL = {};
-			var collisionsLP = {}; 
-			var collisionsR = {};
-			var collisionsRP = {};
 			var house;
 			var doomGuy;
 			var seeDoomGuy = false;
@@ -77,29 +59,12 @@
 			var run;
             var still;
             var stillToWalk;
-			doomGuyBBox = new THREE.Box3();
-			var doomCasters = {};
-			var doomCaster1 = new THREE.Raycaster();
-			var doomCaster2 = new THREE.Raycaster();
-			var doomCaster3 = new THREE.Raycaster();
-			var doomCaster4 = new THREE.Raycaster();
-			var doomCaster5 = new THREE.Raycaster();
-			var doomCaster6 = new THREE.Raycaster();
-			doomCasters[0] = doomCaster1;
-			doomCasters[1] = doomCaster2;
-			doomCasters[2] = doomCaster3;
-			doomCasters[3] = doomCaster4;
-			doomCasters[4] = doomCaster5;
-			doomCasters[5] = doomCaster6;
-			var doomCollisions1 = {};
-			var doomCollisions2 = {};
-			var doomCollisions3 = {};
-			var doomCollisions4 = {};
-			var doomCollisions5 = {};
-			var doomCollisions6 = {};
+			doomGuyBBox = new THREE.Box3();			
 			var cubeBBox = new THREE.Box3();
 			var cube;
-
+			var houseBBoxes = {};
+			var buildingBBoxes = {};
+			var houseBBoxCount = 40;
 
 
 				
@@ -154,9 +119,56 @@
 						scene.add(house);
                         house.rotation.y = - Math.PI / 2;
                         house.position.set(55, -2, 30);
+						houseBBoxes[0] = new THREE.Box3(new THREE.Vector3(97.92601422391, -2 , 34.15341844895645), new THREE.Vector3(102.06848069827979 , 10, 78.65107712409612));  
+						houseBBoxes[1] = new THREE.Box3(new THREE.Vector3(101.9259180603165 , -2 , 34.36070653342341), new THREE.Vector3( 139.87796127698655, 10, 37.89793781433861));
+						houseBBoxes[2] = new THREE.Box3(new THREE.Vector3(136.86987439472297 , -2, 37.607029122153165), new THREE.Vector3( 139.72427104182447, 10, 113.49595653976305));
+						houseBBoxes[3] = new THREE.Box3(new THREE.Vector3(73.8225104675347, -2,  109.97977706103694), new THREE.Vector3( 137.63925878535912, 10, 113.86793023790936));
+						houseBBoxes[4] = new THREE.Box3(new THREE.Vector3(73.89429819609268, -2, 83.52235034462691), new THREE.Vector3( 78.29069146628301, 10,110.79158983531276 ));
+						houseBBoxes[5] = new THREE.Box3(new THREE.Vector3(78.29069146628301, -2, 83.83132369890478), new THREE.Vector3(102.55258961331263, 10, 86.79112362061738));
+						houseBBoxes[6] = new THREE.Box3(new THREE.Vector3(102.05598936666685, -2,83.05397473204764), new THREE.Vector3( 105.30265455528645, 10, 90.44204213247721));
+						houseBBoxes[7] = new THREE.Box3(new THREE.Vector3( 101.66524254755797, -2, 78.14923704537244), new THREE.Vector3( 105.26433731356099, 10, 80.48333655863605 ));
+						//hallway
+						houseBBoxes[8] = new THREE.Box3(new THREE.Vector3(102.1672300653852, -2, 76.40571876961706), new THREE.Vector3(118.57570038112543 , 10, 79.60202263221525));
+						houseBBoxes[9] = new THREE.Box3(new THREE.Vector3(102.04209337774811, -2 , 59.78905469175373), new THREE.Vector3(112.08040314336925, 10, 62.51315826844717));
+						houseBBoxes[10] = new THREE.Box3(new THREE.Vector3(106.00415390790605, -2, 55.583040700425836), new THREE.Vector3(108.17541240346326, 10, 59.73116781749373));
+						//hallway
+						houseBBoxes[11] = new THREE.Box3(new THREE.Vector3(108.13788084640933, -2, 55.58146246614765), new THREE.Vector3(118.57990744816739, 10, 57.93409726729914));
+						houseBBoxes[12] = new THREE.Box3(new THREE.Vector3(113.92470699573826, -2, 57.57490617367147), new THREE.Vector3(116.02508305625377, 10, 62.01632293834936));
+						//hallway
+						houseBBoxes[13] = new THREE.Box3(new THREE.Vector3(116.03535178101785, -2, 60.038133631387936), new THREE.Vector3(118.57570038112543, 10, 72.72578275949073));
+						//hallway
+						houseBBoxes[14] = new THREE.Box3(new THREE.Vector3(116.62917230840127, -2, 52.02254324538407), new THREE.Vector3(118.57990744816739, 10, 56.40227970129457));
+						houseBBoxes[15] = new THREE.Box3(new THREE.Vector3(103.47274420112089, -2, 94.33225409193427), new THREE.Vector3(119.92151493268069, 5, 96.55603211057256));
+						houseBBoxes[16] = new THREE.Box3(new THREE.Vector3(120.74682371829535, -2, 59.53862901985289), new THREE.Vector3(122.58108787965476, 10, 78.75672608810808));
+						//staircase left
+						houseBBoxes[17] = new THREE.Box3(new THREE.Vector3(106.06325638714221, -2, 101.99279800009121), new THREE.Vector3(108.53603036713128, 5, 109.89594887144517));
+						houseBBoxes[18] = new THREE.Box3(new THREE.Vector3(106.06325638714221, -2, 96.52807025309652), new THREE.Vector3(108.53603036713128, 5, 99.12486930594356));
+						houseBBoxes[19] = new THREE.Box3(new THREE.Vector3(102.75237914596876, -2, 93.59451357590211), new THREE.Vector3( 104.07440090579423, 5, 106.32693286271763));
+						houseBBoxes[20] = new THREE.Box3(new THREE.Vector3(104.04563588275458, -2, 102.72473068930334), new THREE.Vector3(106.35741905727425, 5, 105.70150361562314));
+						houseBBoxes[21] = new THREE.Box3(new THREE.Vector3(99.14810234678286, -2, 102.84673311258846), new THREE.Vector3(102.4701927602442, 5, 105.9941586203922));
+						houseBBoxes[22] = new THREE.Box3(new THREE.Vector3(99.01081155131915, -2, 108.76097375626866), new THREE.Vector3(100.45465324655719, 5, 110.05809480597372));
+						//staircase right
+						houseBBoxes[23] = new THREE.Box3(new THREE.Vector3(128.88063619456375, -2, 59.53862901985289), new THREE.Vector3(131.38063619456375, 10, 86.55672608810808));
+						houseBBoxes[24] = new THREE.Box3(new THREE.Vector3(130.8168760920504, -2, 84.5926758185213), new THREE.Vector3(132.4579763052896, 5, 86.48373195269879));
+						houseBBoxes[25] = new THREE.Box3(new THREE.Vector3(135.67169674190916, -2, 84.5926758185213), new THREE.Vector3(137.66662293961372, 5, 86.48373195269879));
+						houseBBoxes[26] = new THREE.Box3(new THREE.Vector3(130.8496419822157, -2, 74.61870906474452), new THREE.Vector3(137.46714770727594, 4, 79.90802622820496));
+						houseBBoxes[27] = new THREE.Box3(new THREE.Vector3(122.12668844673371, -2, 59.42179484667289), new THREE.Vector3(129.706469490173, 4, 64.31335288045861));
+						houseBBoxes[28] = new THREE.Box3(new THREE.Vector3(129.2629798569308, -2, 55.03994753509372), new THREE.Vector3(131.7236452168798, 4, 60.114792437903446));
+						houseBBoxes[29] = new THREE.Box3(new THREE.Vector3(131.7236452168798, -2, 55.03994753509372), new THREE.Vector3(133.2445904539804, 4, 59.08564066184938));
+						houseBBoxes[30] = new THREE.Box3(new THREE.Vector3(135.52433486855918, -2, 55.03994753509372), new THREE.Vector3(136.92014319309822, 4, 59.08564066184938));
+						houseBBoxes[31] = new THREE.Box3(new THREE.Vector3(120.81195353525418, -2, 44.85460598627714), new THREE.Vector3(123.36836002979904, 4, 57.29577560969231));
+						houseBBoxes[32] = new THREE.Box3(new THREE.Vector3(120.41991895282634, -2, 36.31434396332208), new THREE.Vector3(123.78127666088803, 5, 42.40199278701425));
+						houseBBoxes[33] = new THREE.Box3(new THREE.Vector3(113.20785474958362, -2, 37.06839142999161), new THREE.Vector3(115.98320813363452, 5, 48.20875468450057));
+						houseBBoxes[34] = new THREE.Box3(new THREE.Vector3(115.98320813363452 , -2, 45.38157356103352), new THREE.Vector3(120.95116151756916, 5, 49.476061933511684));
+						houseBBoxes[35] = new THREE.Box3(new THREE.Vector3(101.03194123374467, -2, 55.06100190931044), new THREE.Vector3(104.04633767665882, 5, 57.77163546582174));
+						houseBBoxes[36] = new THREE.Box3(new THREE.Vector3(129.1891253183756, 4.5 , 54.31888480089888), new THREE.Vector3(137.49359585119197, 10, 60.31888480089888));
+						houseBBoxes[37] = new THREE.Box3(new THREE.Vector3(120.39636728351383, 4.5, 37.925722871428334), new THREE.Vector3(123.39636728351383, 10, 60.28532910808158));
+						houseBBoxes[38] = new THREE.Box3(new THREE.Vector3(122.92172008110063, 4.5, 60.28532910808158), new THREE.Vector3(124.92172008110063, 10, 61.78532910808158));
+						houseBBoxes[39] = new THREE.Box3(new THREE.Vector3(127.42795102807455, 4.5, 60.28532910808158), new THREE.Vector3(129.1504177923486, 10, 61.78532910808158));
 						console.log(house);
-				
-
+						for(i = 0; i < houseBBoxCount; i++){
+							scene.add(new THREE.Box3Helper(houseBBoxes[i], 0xffff00)); 
+						}
                     },
                     // called while loading is progressing
                     function (xhr) {
@@ -186,6 +198,15 @@
                     building.position.z = -200; 
 					building.name = "building";
 					building.scale.set(3, 3, 3);
+					let i = 0;  
+					building.traverse( function ( child ) {
+						if ( child instanceof THREE.Object3D  ) {
+							buildingBBoxes[i] = new THREE.Box3(); 
+							buildingBBoxes[i].setFromObject(child);
+			//				scene.add(new THREE.Box3Helper(buildingBBoxes[i], 0xffff00));
+							i++;
+						}});
+
                    });	
                 loader.load('js/Objects/skull/scene.gltf', function (gltf) {
 					skull = gltf.scene;
@@ -289,8 +310,16 @@
 				cube = new THREE.Mesh( geometry, material );
 				camera.add(cube);
 				cube.position.set(0, 0, -75);
-               
-
+                geometry = new THREE.PlaneGeometry( 3000, 3000,  );
+				material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+				material.transparent = true;
+				material.opacity = 0;
+				var plane = new THREE.Mesh( geometry, material );
+				scene.add(plane);
+				plane.rotateX( - Math.PI / 2);
+				console.log(plane.position);
+				plane.position.y = -3;
+		
 				//Controls
 				controls = new THREE.PointerLockControls( camera );
                 scene.add(controls.getObject());
@@ -315,14 +344,14 @@
 							if ( canJump === true ) controls.getObject().translateY(10);
 							canJump = false;
                             break;
-                        case 17: //ctrl
-                            if (flashLight.visible == true) {
-                                flashLight.visible = false;
-                                break;
-                            }
-                            else {
-                                flashLight.visible = true;
-                            }
+//						case 17: //ctrl
+//                            if (flashLight.visible == true) {
+//                                flashLight.visible = false;
+//                                break;
+//                            }
+//                            else {
+//                                flashLight.visible = true;
+//                            }
 						case 67:
                            // camera.fov = Math.atan(Math.tan(120 * Math.PI / 360) / camera.aspect) * 360 / Math.PI; // degrees
                           //  camera.updateProjectionMatrix();
@@ -422,50 +451,9 @@
 			
 
 			function updateRaycasters(){
-				camera.getWorldDirection(direction);
 				var position = new THREE.Vector3();		
 				camera.getWorldPosition(position);
-				raycaster.set( position, direction);
 				raycasterD.set(position, directionD);
-	//			for(i = 0; i < 6; i++)
-	//				doomCasters[i].set(position, new THREE.Vector3(direction.x +(.01 * (i+1)), direction.y, direction.z));
-				directionB.x = -direction.x;					//B for Back
-				directionB.z = -direction.z;
-				directionB.y = direction.y; 
-				raycasterB.set(position, directionB);
-				directionL.x = direction.x - .7;  				// L for Left, as in Slightly to the left.
-				directionL.z = direction.z - .3;
-				directionL.y = direction.y;
-				directionL.normalize();
-				raycasterL.set(position, directionL);
-				directionR.x = -directionL.x;
-				directionR.z = directionL.z;
-				directionR.y = directionL.y;
-				raycasterR.set(position, directionR);
-				directionLP.x = direction.x - 100;				// LP for Left Perpendicular, as in Hard Left
-				directionLP.z = direction.z - 1;
-				directionLP.y = direction.y
-				directionLP.normalize();
-				raycasterLP.set(position, directionLP);
-				directionRP.x = -directionLP.x;
-				directionRP.y = directionLP.y;
-				directionRP.z = directionLP.z;
-				raycasterRP.set(position, directionRP);
-				collisions = raycaster.intersectObjects(scene.children, true);
-				doomCollisions = raycaster.intersectObject(doomGuy, true); 
-	//			doomCollisions1 = doomCasters[0].intersectObject(doomGuy, true); 
-	//			doomCollisions2 = doomCasters[1].intersectObject(doomGuy, true); 
-	//			doomCollisions3 = doomCasters[2].intersectObject(doomGuy, true); 
-	//			doomCollisions4 = doomCasters[3].intersectObject(doomGuy, true); 
-	//			doomCollisions5 = doomCasters[4].intersectObject(doomGuy, true); 
-	//			doomCollisions6 = doomCasters[5].intersectObject(doomGuy, true); 
-				
-			//	if(doomCollisions[0]  ){
-            //        seeDoomGuy = true; 
-			//		walk.stop();
-            //        still.play();
-
-			//	}
 				if(cubeBBox.intersectsBox(doomGuyBBox)){
 					seeDoomGuy = true;
 					walk.stop();
@@ -475,70 +463,10 @@
 					seeDoomGuy = false; 
 				}
 				
-				collisionsB = raycasterB.intersectObjects(scene.children, true);
-				collisionsL = raycasterL.intersectObjects(scene.children, true);
-				collisionsLP = raycasterLP.intersectObjects(scene.children, true);
-				collisionsR = raycasterR.intersectObjects(scene.children, true);
-				collisionsRP = raycasterRP.intersectObjects(scene.children, true); 
 				collisionsD = raycasterD.intersectObjects(scene.children, true);
 				
 
-				for(i = 0; i < collisions.length; i++){
-					if(collisions[i].distance < 3.3){
-						moveForward = false;
-					}
 
-
-/*				parent = collisions[i].object;
-					while(parent){
-						parent = parent.parent;
-						if (parent == doomGuy){
-							seeDoomGuy = true; 
-						}
-					}
-*/				}
-/*					for(i = 0; i < collisionsL.length; i++){
-					if(collisionsL[i].distance < 1.2){
-						moveForward = false;
-					}
-
-					parent = collisionsL[i].object;
-					while(parent){
-						parent = parent.parent;
-						if (parent == doomGuy){
-							seeDoomGuy = true; 
-						}
-					}					
-				}
-				for(i = 0; i < collisionsR.length; i++){
-					if(collisionsR[i].distance < 1.2){
-						moveForward = false;
-					}
-
-					parent = collisionsR[i].object;
-					while(parent){
-						parent = parent.parent;
-						if (parent == doomGuy){
-							seeDoomGuy = true; 
-						}
-					}					
-				}
-*/				
-				for(i = 0; i < collisionsLP.length; i++){
-					if(collisionsLP[i].distance < 3.3){
-						moveLeft = false; 
-					}
-				}
-				for(i = 0; i < collisionsRP.length; i++){
-					if(collisionsRP[i].distance < 3.3){
-						moveRight = false; 
-					}
-				}				
-				for(i = 0; i < collisionsB.length; i++){
-					if(collisionsB[i].distance < 3.3){
-						moveBackward = false; 
-					}
-				}
 			}
 			function checkDeath(){
 				doomGuyBBox.setFromObject(doomGuy);
@@ -644,6 +572,8 @@
             }
 
 
+		
+			
 			var animate = function () {
 				cubeBBox.setFromObject(cube);
 				rotateSkulls();
@@ -664,11 +594,11 @@
 
 				if(seeDoomGuy == false) {
 				
-                    doomGuyChase();
+                   // doomGuyChase();
 					walk.play();
 				}
-
 				if ( controlsEnabled ) {
+			
 					var delta = .5;
 
 					if(moveForward){
@@ -683,11 +613,29 @@
 					if(moveRight){
 						controls.getObject().translateX(delta);
 					}
-				//	if ( controls.getObject().position.y != 0  ) {
-				//		controls.getObject().position.y = 0;	
-				//	}
+
 					if(collisionsD[0]){
 						controls.getObject().position.y = collisionsD[0].point.y + 2.5; 
+					}
+					if(house.visible){	
+						for( i = 0; i < houseBBoxCount; i++){
+							if(moveForward && houseBBoxes[i].containsPoint(camera.position)){
+							moveForward = false;
+							controls.getObject().translateZ(delta);
+							}	
+							if(moveBackward && houseBBoxes[i].containsPoint(camera.position)){
+							moveBackward = false;
+							controls.getObject().translateZ(-delta);
+							}	
+							if(moveLeft && houseBBoxes[i].containsPoint(camera.position)){
+							moveLeft = false;
+							controls.getObject().translateX(delta);
+							}	
+							if(moveRight && houseBBoxes[i].containsPoint(camera.position)){
+							moveRight = false;
+							controls.getObject().translateX(-delta);
+							}	
+						}
 					}
 				}
 				renderer.render( scene, camera );
@@ -698,7 +646,10 @@
 				}
 			};
             function logDirection() {
-				console.log(cubeBBox.intersectsBox(doomGuyBBox));
+				console.log(camera.position); 
+				
+							
+					
 				//console.log(doomGuyBBox);
 				//console.log(skull);
 				//console.log(skullCount);
