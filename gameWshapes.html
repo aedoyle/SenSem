@@ -520,6 +520,7 @@
 
                 if (menuTitle[0]) {
                     num++;
+                    meshTitle.material.color.set(0xFFFF00);
                     if (num > 60) {
                         meshTitle.position.set(100, 100, 100);
                         meshStart.visible = true;
@@ -531,9 +532,10 @@
                 }
                 else if (menuStart[0]) {
                     num++;
+					meshTitle.material.color.set(0xFFFF00);
                     if (num > 60) {
                         num = 0;
-						house.visible = true;
+                        house.visible = true;
                         camera.position.set(105, 0, 83);
                         chaseSound();
                         ambientNoise();
@@ -545,8 +547,12 @@
                         skull.visible = true;
                         skull2.visible = true;
                         skull3.visible = true;
-                     //   seeTitleScreen = false;
+                        //   seeTitleScreen = false;
                     }
+                }
+                else {
+                    meshTitle.material.color.set(0xFF0000);
+					num = 0;
                 }
 
             }
