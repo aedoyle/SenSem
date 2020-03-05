@@ -299,6 +299,9 @@
 				scene = new THREE.Scene();
                 scene.fog = new THREE.Fog(0xffffff, 0, 750);
 
+				var amLight = new THREE.AmbientLight( 0x404040 ); // soft white light
+				scene.add( amLight );
+
 				//FlashLight 
 												 //color, intensity, distance, angle, penumbra, decay 
                 var flashLight = new THREE.SpotLight(0xaabbcc, 4.2, 89.0, (Math.PI / 2), 1.0, 2.0);
@@ -418,7 +421,7 @@
                     let centerTitle = - 0.5 * ( title.boundingBox.max.x - title.boundingBox.min.x );
                     let textMatTitle = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
                     meshTitle = new THREE.Mesh(title, textMatTitle);
-                    meshTitle.position.set(centerTitle, 5, -65);
+                    meshTitle.position.set(centerTitle, 5, -55);
                  
                     scene.add(meshTitle);
 
@@ -435,7 +438,7 @@
                     let centerStart = - 0.5 * (start.boundingBox.max.x - start.boundingBox.min.x);
 					let textMatStart = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
                     meshStart = new THREE.Mesh(start, textMatStart);
-                    meshStart.position.set(centerStart, -10, -65);
+                    meshStart.position.set(centerStart, -8, -55);
                     meshStart.visible = false;
                     scene.add(meshStart);
 
@@ -452,7 +455,7 @@
                     let centerOption = - 0.5 * (option.boundingBox.max.x - option.boundingBox.min.x);
 					let textMatOption = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
                     meshOption = new THREE.Mesh(option, textMatOption);
-                    meshOption.position.set(centerOption, -20, -65);
+                    meshOption.position.set(centerOption, -18, -55);
                     meshOption.visible = false;
                     scene.add(meshOption);
 
@@ -469,7 +472,7 @@
                     let centerExit = - 0.5 * (exit.boundingBox.max.x - exit.boundingBox.min.x);
 					let textMatExit = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
                     meshExit = new THREE.Mesh(exit, textMatExit);
-                    meshExit.position.set(centerExit, -30, -65);
+                    meshExit.position.set(centerExit, -28, -55);
                     meshExit.visible = false;
                     scene.add(meshExit);
 
