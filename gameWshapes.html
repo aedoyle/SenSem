@@ -126,14 +126,14 @@
 
 				console.log( 'Loading complete!');
 				console.log(scene.getObjectByName("doomGuy", true));
-				house.scale.set(3,3,3);
+                house.scale.set(3, 3, 3);
 				scene.background = skyTexture;			
                 setSkullBBoxs();
                // chaseSound();
                // ambientNoise();
 				setInterval(logDirection, 1000);
                 building.visible = false;
-				house.visible = false;
+				//house.visible = false;
                 animate();
 				
 
@@ -159,8 +159,7 @@
 						scene.add(house);
                         house.rotation.y = - Math.PI / 2;
                         house.position.set(55, -2, 30);
-                      
-						console.log(house);
+                        console.log(house);
 				
 
                     },
@@ -411,11 +410,8 @@
                     let centerStart = - 0.5 * ( start.boundingBox.max.x - start.boundingBox.min.x );
                     meshStart = new THREE.Mesh(start, textMaterial);
                     meshStart.position.set(centerStart, -5, -65);
-                    
+                    meshStart.visible = false;
                     scene.add(meshStart);
-
-                    var box = new THREE.BoxHelper(meshStart, 0xffff00);
-                    scene.add(box);
 
 					let option = new THREE.TextBufferGeometry("Options", {
 						font: font,
@@ -430,7 +426,7 @@
                     let centerOption = - 0.5 * ( option.boundingBox.max.x - option.boundingBox.min.x );
                     meshOption = new THREE.Mesh(option, textMaterial);
                     meshOption.position.set(centerOption, -15, -65);
-                    
+                    meshOption.visible = false;
                     scene.add(meshOption);
 
 
@@ -447,7 +443,7 @@
                     let centerExit = - 0.5 * ( exit.boundingBox.max.x - exit.boundingBox.min.x );
                     meshExit = new THREE.Mesh(exit, textMaterial);
                     meshExit.position.set(centerExit, -25, -65);
-                    
+                    meshExit.visible = false;
                     scene.add(meshExit);
 
 				
@@ -511,7 +507,50 @@
             
 
             var num = 0;
-         
+            function menuSystem() {
+                camera.getWorldDirection(direction);
+                var position = new THREE.Vector3();
+                camera.getWorldPosition(position);
+                menuSelect.set(position, direction);
+
+                menuOption = menuSelect.intersectObject(meshOption, true);
+                menuTitle = menuSelect.intersectObject(meshTitle, true);
+                menuStart = menuSelect.intersectObject(meshStart, true);
+                menuExit = menuSelect.intersectObject(meshExit, true);
+
+                if (menuTitle[0]) {
+                    num++;
+                    if (num > 60) {
+                        meshTitle.position.set(100, 100, 100);
+                        meshStart.visible = true;
+                        meshOption.visible = true;
+                        meshExit.visible = true;
+                        num = 0;
+
+                    }
+                }
+                else if (menuStart[0]) {
+                    num++;
+                    if (num > 60) {
+                        num = 0;
+						house.visible = true;
+                        camera.position.set(105, 0, 83);
+                        chaseSound();
+                        ambientNoise();
+                        meshTitle.visible = false;
+                        meshStart.visible = false;
+                        meshOption.visible = false;
+                        meshExit.visible = false;
+                        doomGuy.visible = true;
+                        skull.visible = true;
+                        skull2.visible = true;
+                        skull3.visible = true;
+                     //   seeTitleScreen = false;
+                    }
+                }
+
+            }
+
 			function updateRaycasters(){
 				camera.getWorldDirection(direction);
 				var position = new THREE.Vector3();		
@@ -541,25 +580,8 @@
 				directionRP.z = directionLP.z;
 				raycasterRP.set(position, directionRP);
 				//collisions = raycaster.intersectObjects(scene.children, true);
-				//doomCollisions = raycaster.intersectObject(doomGuy, true); 
-             /*   menuSelect.set(position, direction);
-
-                menuOption = menuSelect.intersectObject(meshOption, true); 
-                menuStart = menuSelect.intersectObject(meshStart, true); 
-				
-                if (menuOption[0]) {
-                    num++;
-                    console.log('hi');
-                    if (num > 60) {
-                        camera.position.set(0, 0, 0);
-                        num = 0;
-                    }
-                }
-               // else if (menuStart[0]) {
-              //      console.log('bye')
-             //   }
-			 */
-
+				//doomCollisions = raycaster.intersectObject(doomGuy, true);             
+			 
 				if(cubeBBox.intersectsBox(doomGuyBBox)){
 					seeDoomGuy = true;
 					walk.stop();
@@ -717,12 +739,12 @@
 				}
 
 				lastFrame=Date.now()				
-
 				requestAnimationFrame( animate );
                 updateRaycasters();
+                menuSystem();
 
                 if (seeDoomGuy == false && seeTitleScreen == false) {
-                  
+					
                     doomGuyChase();
 					walk.play();
 				}
