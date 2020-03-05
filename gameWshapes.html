@@ -65,7 +65,7 @@
 			var houseBBoxes = {};
 			var buildingBBoxes = {};
 			var houseBBoxCount = 40;
-
+			var direction = new THREE.Vector3();  
             var seeTitleScreen = true;
 			var meshOption;
             var meshTitle;
@@ -487,7 +487,73 @@
 			menu()
 
 
+			var num = 0;
+            function menuSystem() {
+                camera.getWorldDirection(direction);
+                var position = new THREE.Vector3();
+                camera.getWorldPosition(position);
+                menuSelect.set(position, direction);
 
+                menuOption = menuSelect.intersectObject(meshOption, true);
+                menuTitle = menuSelect.intersectObject(meshTitle, true);
+                menuStart = menuSelect.intersectObject(meshStart, true);
+                menuExit = menuSelect.intersectObject(meshExit, true);
+
+                if (menuTitle[0]) {
+                    num++;
+                    meshTitle.material.color.set(0xFFFFFF);
+                    if (num > 70) {
+                       
+                        meshStart.visible = true;
+                        meshOption.visible = true;
+                        meshExit.visible = true;
+                        num = 0;
+
+                    }
+                }
+                else if (menuStart[0]) {
+                    num++;
+                    meshStart.material.color.set(0xFFFFFF)
+                    if (num > 70) {
+                        num = 0;
+                        house.visible = true;
+                        camera.position.set(105, 0, 83);
+                        chaseSound();
+                        ambientNoise();
+                        meshTitle.visible = false;
+                        meshStart.visible = false;
+                        meshOption.visible = false;
+                        meshExit.visible = false;
+                        doomGuy.visible = true;
+                        skull.visible = true;
+                        skull2.visible = true;
+                        skull3.visible = true;
+                        //   seeTitleScreen = false;
+                    }
+                }
+                else if (menuOption[0]) {
+                    num++;
+                    meshOption.material.color.set(0xFFFFFF);
+                    if (num > 70) {
+
+                    }
+                }
+				else if (menuExit[0]) {
+                    num++;
+                    meshExit.material.color.set(0xFFFFFF);
+                    if (num > 70) {
+
+                    }
+                }
+                else {
+                    meshTitle.material.color.set(0xFF0000);
+                    meshStart.material.color.set(0xFF0000);
+                    meshOption.material.color.set(0xFF0000);
+                    meshExit.material.color.set(0xFF0000);
+                    num = 0;
+                }
+
+            }
 
 
 			function doomGuyChase(){
@@ -681,12 +747,13 @@
 
 				lastFrame=Date.now()				
 
-				requestAnimationFrame( animate );
+                requestAnimationFrame(animate);
+                menuSystem();
                 updateRaycasters();
 
 				if (seeDoomGuy == false && seeTitleScreen == false){
 				
-                   // doomGuyChase();
+                    doomGuyChase();
 					walk.play();
 				}
 				if ( controlsEnabled ) {
