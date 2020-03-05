@@ -66,6 +66,12 @@
 			var buildingBBoxes = {};
 			var houseBBoxCount = 40;
 
+            var seeTitleScreen = true;
+			var meshOption;
+            var meshTitle;
+            var meshStart;
+			var meshExit;
+			var menuSelect = new THREE.Raycaster()
 
 				
 				
@@ -90,11 +96,11 @@
 				house.scale.set(3,3,3);
 				scene.background = skyTexture;			
                 setSkullBBoxs();
-                chaseSound();
-                ambientNoise();
+               // chaseSound();
+               // ambientNoise();
 				setInterval(logDirection, 1000);
-				building.visible = false;
-				
+                building.visible = false;
+               // house.visible = false;
 				animate();
 
 			};
@@ -217,7 +223,10 @@
 					scene.add(skull2);
 					skull2.position.set(125.9, 9.6, 62.69);
 					scene.add(skull3);
-					skull3.position.set(103.38610284366055, 0.5195993892745685, 68.39432633190229);
+                    skull3.position.set(103.38610284366055, 0.5195993892745685, 68.39432633190229);
+					skull.visible = false;
+					skull2.visible = false;
+					skull3.visible = false;
                    });				   
 				var backgroundLoader = new THREE.CubeTextureLoader(manager);
 
@@ -592,7 +601,7 @@
 				requestAnimationFrame( animate );
                 updateRaycasters();
 
-				if(seeDoomGuy == false) {
+				if (seeDoomGuy == false && seeTitleScreen == false){
 				
                    // doomGuyChase();
 					walk.play();
