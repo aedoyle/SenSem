@@ -391,8 +391,8 @@
                     });
                     title.computeBoundingBox();
                     let centerTitle = - 0.5 * ( title.boundingBox.max.x - title.boundingBox.min.x );
-                    let textMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
-                    meshTitle = new THREE.Mesh(title, textMaterial);
+                    let textMatTitle = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshTitle = new THREE.Mesh(title, textMatTitle);
                     meshTitle.position.set(centerTitle, 5, -65);
                  
                     scene.add(meshTitle);
@@ -407,9 +407,10 @@
                         bevelEnabled: true
                     });
 					start.computeBoundingBox();
-                    let centerStart = - 0.5 * ( start.boundingBox.max.x - start.boundingBox.min.x );
-                    meshStart = new THREE.Mesh(start, textMaterial);
-                    meshStart.position.set(centerStart, -5, -65);
+                    let centerStart = - 0.5 * (start.boundingBox.max.x - start.boundingBox.min.x);
+					let textMatStart = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshStart = new THREE.Mesh(start, textMatStart);
+                    meshStart.position.set(centerStart, -10, -65);
                     meshStart.visible = false;
                     scene.add(meshStart);
 
@@ -423,12 +424,12 @@
                         bevelEnabled: true
                     });
                     option.computeBoundingBox();
-                    let centerOption = - 0.5 * ( option.boundingBox.max.x - option.boundingBox.min.x );
-                    meshOption = new THREE.Mesh(option, textMaterial);
-                    meshOption.position.set(centerOption, -15, -65);
+                    let centerOption = - 0.5 * (option.boundingBox.max.x - option.boundingBox.min.x);
+					let textMatOption = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshOption = new THREE.Mesh(option, textMatOption);
+                    meshOption.position.set(centerOption, -20, -65);
                     meshOption.visible = false;
                     scene.add(meshOption);
-
 
 					let exit = new THREE.TextBufferGeometry("Exit", {
 						font: font,
@@ -440,9 +441,10 @@
                         bevelEnabled: true
                     });
                     exit.computeBoundingBox();
-                    let centerExit = - 0.5 * ( exit.boundingBox.max.x - exit.boundingBox.min.x );
-                    meshExit = new THREE.Mesh(exit, textMaterial);
-                    meshExit.position.set(centerExit, -25, -65);
+                    let centerExit = - 0.5 * (exit.boundingBox.max.x - exit.boundingBox.min.x);
+					let textMatExit = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshExit = new THREE.Mesh(exit, textMatExit);
+                    meshExit.position.set(centerExit, -30, -65);
                     meshExit.visible = false;
                     scene.add(meshExit);
 
@@ -520,6 +522,7 @@
 
                 if (menuTitle[0]) {
                     num++;
+                    meshTitle.material.color.set(0xFFFFFF);
                     if (num > 60) {
                         meshTitle.position.set(100, 100, 100);
                         meshStart.visible = true;
@@ -531,9 +534,10 @@
                 }
                 else if (menuStart[0]) {
                     num++;
+                    meshStart.material.color.set(0xFFFFFF)
                     if (num > 60) {
                         num = 0;
-						house.visible = true;
+                        house.visible = true;
                         camera.position.set(105, 0, 83);
                         chaseSound();
                         ambientNoise();
@@ -545,8 +549,29 @@
                         skull.visible = true;
                         skull2.visible = true;
                         skull3.visible = true;
-                     //   seeTitleScreen = false;
+                        //   seeTitleScreen = false;
                     }
+                }
+                else if (menuOption[0]) {
+                    num++;
+                    meshOption.material.color.set(0xFFFFFF);
+                    if (num > 60) {
+
+                    }
+                }
+				else if (menuExit[0]) {
+                    num++;
+                    meshExit.material.color.set(0xFFFFFF);
+                    if (num > 60) {
+
+                    }
+                }
+                else {
+                    meshTitle.material.color.set(0xFF0000);
+                    meshStart.material.color.set(0xFF0000);
+                    meshOption.material.color.set(0xFF0000);
+                    meshExit.material.color.set(0xFF0000);
+                    num = 0;
                 }
 
             }
