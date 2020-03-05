@@ -493,9 +493,9 @@
                 camera.getWorldPosition(position);
                 menuSelect.set(position, direction);
 
-                menuOption = menuSelect.intersectObject(meshOption, true);
                 menuTitle = menuSelect.intersectObject(meshTitle, true);
                 menuStart = menuSelect.intersectObject(meshStart, true);
+				menuOption = menuSelect.intersectObject(meshOption, true);
                 menuExit = menuSelect.intersectObject(meshExit, true);
 
                 if (menuTitle[0]) {
@@ -748,7 +748,7 @@
 				lastFrame=Date.now()				
 
                 requestAnimationFrame(animate);
-                menuSystem();
+               // menuSystem();
                 updateRaycasters();
 
 				if (seeDoomGuy == false && seeTitleScreen == false) {
