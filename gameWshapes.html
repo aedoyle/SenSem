@@ -598,7 +598,7 @@
 					walk.play();
 				}
 				if ( controlsEnabled ) {
-
+			
 					var delta = .5;
 
 					if(moveForward){
@@ -617,25 +617,26 @@
 					if(collisionsD[0]){
 						controls.getObject().position.y = collisionsD[0].point.y + 2.5; 
 					}
-					for( i = 0; i < houseBBoxCount; i++){
-						if(moveForward && houseBBoxes[i].containsPoint(camera.position)){
-						moveForward = false;
-						controls.getObject().translateZ(delta);
-						}	
-						if(moveBackward && houseBBoxes[i].containsPoint(camera.position)){
-						moveBackward = false;
-						controls.getObject().translateZ(-delta);
-						}	
-						if(moveLeft && houseBBoxes[i].containsPoint(camera.position)){
-						moveLeft = false;
-						controls.getObject().translateX(delta);
-						}	
-						if(moveRight && houseBBoxes[i].containsPoint(camera.position)){
-						moveRight = false;
-						controls.getObject().translateX(-delta);
-						}	
+					if(house.visible){	
+						for( i = 0; i < houseBBoxCount; i++){
+							if(moveForward && houseBBoxes[i].containsPoint(camera.position)){
+							moveForward = false;
+							controls.getObject().translateZ(delta);
+							}	
+							if(moveBackward && houseBBoxes[i].containsPoint(camera.position)){
+							moveBackward = false;
+							controls.getObject().translateZ(-delta);
+							}	
+							if(moveLeft && houseBBoxes[i].containsPoint(camera.position)){
+							moveLeft = false;
+							controls.getObject().translateX(delta);
+							}	
+							if(moveRight && houseBBoxes[i].containsPoint(camera.position)){
+							moveRight = false;
+							controls.getObject().translateX(-delta);
+							}	
+						}
 					}
-					
 				}
 				renderer.render( scene, camera );
 				
