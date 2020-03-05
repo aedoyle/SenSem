@@ -133,7 +133,7 @@
                // ambientNoise();
 				setInterval(logDirection, 1000);
                 building.visible = false;
-				//house.visible = false;
+				house.visible = false;
                 animate();
 				
 
@@ -523,8 +523,8 @@
                 if (menuTitle[0]) {
                     num++;
                     meshTitle.material.color.set(0xFFFFFF);
-                    if (num > 60) {
-                        meshTitle.position.set(100, 100, 100);
+                    if (num > 70) {
+                       
                         meshStart.visible = true;
                         meshOption.visible = true;
                         meshExit.visible = true;
@@ -535,7 +535,7 @@
                 else if (menuStart[0]) {
                     num++;
                     meshStart.material.color.set(0xFFFFFF)
-                    if (num > 60) {
+                    if (num > 70) {
                         num = 0;
                         house.visible = true;
                         camera.position.set(105, 0, 83);
@@ -555,14 +555,14 @@
                 else if (menuOption[0]) {
                     num++;
                     meshOption.material.color.set(0xFFFFFF);
-                    if (num > 60) {
+                    if (num > 70) {
 
                     }
                 }
 				else if (menuExit[0]) {
                     num++;
                     meshExit.material.color.set(0xFFFFFF);
-                    if (num > 60) {
+                    if (num > 70) {
 
                     }
                 }
