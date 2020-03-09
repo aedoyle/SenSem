@@ -7,25 +7,31 @@
 		</style>
 	</head>
 	<body>
-		<script src="js/three.js"></script>
+		<script type="text/javascript" src="/js/Three.js"></script>
 		<script src="js/PointerLockControls.js"></script>
 		<script src="js/GLTFLoader.js"></script>
-				<div id="blocker">
+	    <script type="text/javascript" src="/js/physi.js"></script>
+	    <script type="text/javascript" src="/js/ammo.js"></script>
+
+
+		<div id="blocker">
 
 			<div id="instructions">
 				<span style="font-size:40px">Click to play</span>
 				<br />
 				(W, A, S, D = Move, MOUSE = Look around)
 			</div>
-
+	
 		</div>
 		<script>
+	
+			Physijs.scripts.worker = '/js/physijs_worker.js';
+			Physijs.scripts.ammo = 'ammo.js';
 
 
-
-			var scene = new THREE.Scene();
-			var scene1 = new THREE.Scene();
-			var scene2 = new THREE.Scene(); 
+			var scene = new Physijs.Scene();
+			var scene1 = new Physijs.Scene();
+			var scene2 = new Physijs.Scene();
 			scene = scene1; 
 			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 			var renderer = new THREE.WebGLRenderer();
@@ -72,9 +78,10 @@
             var meshStart;
 			var meshExit;
 			var menuSelect = new THREE.Raycaster()
-
-				
-				
+			
+			camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+		    controls = new THREE.PointerLockControls( camera );
+		   scene.add(controls.getObject());
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
 			// PointerLock Control source code taken from https://codepen.io/tembling/pen/reZjEw
@@ -101,8 +108,14 @@
 				setInterval(logDirection, 1000);
                 building.visible = false;
                // house.visible = false;
-				animate();
 
+				animate();
+				
+			house.traverse( function ( child ) {
+					
+						console.log(child);
+		//				scene.add(new THREE.Box3Helper(buildingBBoxes[i], 0xffff00));
+					});
 			};
 
 
@@ -116,7 +129,11 @@
 				console.log( 'There was an error loading ' + url );
 			};
             
-            function loadObjects() {
+            
+
+			
+			
+			function loadObjects() {
                 var loader = new THREE.GLTFLoader(manager);
                 loader.load('js/Objects/House/houseShell5.glb',
                     // called when the resource is loaded
@@ -172,7 +189,7 @@
 						houseBBoxes[38] = new THREE.Box3(new THREE.Vector3(122.92172008110063, 4.5, 60.28532910808158), new THREE.Vector3(124.92172008110063, 10, 61.78532910808158));
 						houseBBoxes[39] = new THREE.Box3(new THREE.Vector3(127.42795102807455, 4.5, 60.28532910808158), new THREE.Vector3(129.1504177923486, 10, 61.78532910808158));
 						console.log(house);
-						for(i = 0; i < houseBBoxCount; i++){
+						for( let i = 0; i < houseBBoxCount; i++){
 							scene.add(new THREE.Box3Helper(houseBBoxes[i], 0xffff00)); 
 						}
                     },
@@ -297,11 +314,15 @@
 			init();
 		
 			function init() {
-				
-				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
-				scene = new THREE.Scene();
                 scene.fog = new THREE.Fog(0xffffff, 0, 750);
 
+				box = new Physijs.BoxMesh(
+				new THREE.CubeGeometry( 5, 5, 5 ),
+				new THREE.MeshBasicMaterial({ color: 0x888888 })
+				);
+				scene.add( box );
+				box.position.set(0, 30, -10);
+				box.__dirtyPosition = true; 
 				//FlashLight 
 												 //color, intensity, distance, angle, penumbra, decay 
                 var flashLight = new THREE.SpotLight(0xaabbcc, 4.2, 89.0, (Math.PI / 2), 1.0, 2.0);
@@ -330,8 +351,7 @@
 				plane.position.y = -3;
 		
 				//Controls
-				controls = new THREE.PointerLockControls( camera );
-                scene.add(controls.getObject());
+				
 				var onKeyDown = function ( event ) {
 					switch ( event.keyCode ) {
 						case 38: // up
@@ -494,10 +514,10 @@
                 camera.getWorldPosition(position);
                 menuSelect.set(position, direction);
 
-                menuOption = menuSelect.intersectObject(meshOption, true);
-                menuTitle = menuSelect.intersectObject(meshTitle, true);
-                menuStart = menuSelect.intersectObject(meshStart, true);
-                menuExit = menuSelect.intersectObject(meshExit, true);
+              var menuOption = menuSelect.intersectObject(meshOption, true);
+              var menuTitle = menuSelect.intersectObject(meshTitle, true);
+              var menuStart = menuSelect.intersectObject(meshStart, true);
+              var menuExit = menuSelect.intersectObject(meshExit, true);
 
                 if (menuTitle[0]) {
                     num++;
@@ -557,9 +577,9 @@
 
 
 			function doomGuyChase(){
-			var player = new THREE.Vector3();				//These two lines create an empty vector and copy the current position of the player into it,
-			camera.getWorldPosition(player);            	//so we can make something chase the player.   
-			doomGuy.translateOnAxis(doomGuy.worldToLocal(player), .01);		
+				var player = new THREE.Vector3();				//These two lines create an empty vector and copy the current position of the player into it,
+				camera.getWorldPosition(player);            	//so we can make something chase the player.   
+				doomGuy.translateOnAxis(doomGuy.worldToLocal(player), .01);		
 			
 			}
 			
@@ -733,6 +753,7 @@
 		
 			
 			var animate = function () {
+				scene.simulate();
 				cubeBBox.setFromObject(cube);
 				rotateSkulls();
 				checkSkulls();
@@ -777,22 +798,22 @@
 						controls.getObject().position.y = collisionsD[0].point.y + 2.5; 
 					}
 					if(house.visible){	
-						for( i = 0; i < houseBBoxCount; i++){
+						for(let i = 0; i < houseBBoxCount; i++){
 							if(moveForward && houseBBoxes[i].containsPoint(camera.position)){
-							moveForward = false;
-							controls.getObject().translateZ(delta);
+								moveForward = false;
+								controls.getObject().translateZ(delta);
 							}	
 							if(moveBackward && houseBBoxes[i].containsPoint(camera.position)){
-							moveBackward = false;
-							controls.getObject().translateZ(-delta);
+								moveBackward = false;
+								controls.getObject().translateZ(-delta);
 							}	
 							if(moveLeft && houseBBoxes[i].containsPoint(camera.position)){
-							moveLeft = false;
-							controls.getObject().translateX(delta);
+								moveLeft = false;
+								controls.getObject().translateX(delta);
 							}	
 							if(moveRight && houseBBoxes[i].containsPoint(camera.position)){
-							moveRight = false;
-							controls.getObject().translateX(-delta);
+								moveRight = false;
+								controls.getObject().translateX(-delta);
 							}	
 						}
 					}
@@ -805,7 +826,7 @@
 				}
 			};
             function logDirection() {
-				console.log(camera.position); 
+				//console.log(camera.position); 
 				
 							
 					
