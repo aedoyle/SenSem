@@ -67,9 +67,10 @@
 			var houseBBoxCount = 40;
 			var direction = new THREE.Vector3();  
             var seeTitleScreen = true;
-			var meshOption;
-            var meshTitle;
-            var meshStart;
+			var meshTitle;
+			var meshStart;
+            var meshOption;
+            var meshControl;
 			var meshExit;
 			var menuSelect = new THREE.Raycaster()
 
@@ -477,7 +478,22 @@
                     meshExit.visible = false;
                     scene.add(meshExit);
 
-				
+					let controls = new THREE.TextBufferGeometry("Controls", {
+							font: font,
+							size: 5,
+							height: 1,
+							curveSegments: 12,
+							bevelThickness: 1,
+							bevelSize: .5,
+							bevelEnabled: true
+					});
+					start.computeBoundingBox();
+					let centerControl = - 0.5 * (controls.boundingBox.max.x - controls.boundingBox.min.x);
+				    let textMatControl = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshControl = new THREE.Mesh(start, textMatControl);
+                    meshControl.position.set(centerControl, -10, -65);
+                    meshControl.visible = true;
+                    scene.add(meshControl);
 
 				});
 
@@ -494,9 +510,10 @@
                 camera.getWorldPosition(position);
                 menuSelect.set(position, direction);
 
-                menuOption = menuSelect.intersectObject(meshOption, true);
+            
                 menuTitle = menuSelect.intersectObject(meshTitle, true);
                 menuStart = menuSelect.intersectObject(meshStart, true);
+				menuOption = menuSelect.intersectObject(meshOption, true);
                 menuExit = menuSelect.intersectObject(meshExit, true);
 
                 if (menuTitle[0]) {
@@ -535,6 +552,11 @@
                     num++;
                     meshOption.material.color.set(0xFFFFFF);
                     if (num > 70) {
+						 meshTitle.visible = false;
+                        meshStart.visible = false;
+                        meshOption.visible = false;
+                        meshExit.visible = false;
+                        meshControl.visible = true;
 
                     }
                 }
