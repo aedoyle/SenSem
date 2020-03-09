@@ -29,12 +29,12 @@
 			Physijs.scripts.ammo = 'ammo.js';
 
 			var box;
-			var newbox;
+			var playerCapsule;
 			var scene = new Physijs.Scene();
 			var scene1 = new Physijs.Scene();
 			var scene2 = new Physijs.Scene();
 			scene = scene1; 
-			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+			var camera;	
 			var renderer = new THREE.WebGLRenderer();
 			var controlsEnabled = false;
 			var moveForward = false;
@@ -80,9 +80,7 @@
 			var meshExit;
 			var menuSelect = new THREE.Raycaster()
 			
-			camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
-		    controls = new THREE.PointerLockControls( camera );
-		   scene.add(controls.getObject());
+	
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
 			// PointerLock Control source code taken from https://codepen.io/tembling/pen/reZjEw
@@ -315,7 +313,19 @@
 			init();
 		
 			function init() {
-                scene.fog = new THREE.Fog(0xffffff, 0, 750);
+  				 playerCapsule = new Physijs.CapsuleMesh(
+					new THREE.CylinderGeometry( .8, .8, 2),
+					new Physijs.createMaterial(
+					new THREE.MeshBasicMaterial({ color: 0x888888 }),
+					1,
+					.8
+				), 1);
+				scene.add(playerCapsule);  
+				playerCapsule.position.z = 10;
+				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+				controls = new THREE.PointerLockControls( camera );
+			    playerCapsule.add(camera);
+				scene.fog = new THREE.Fog(0xffffff, 0, 750);
 
 				box = new Physijs.BoxMesh(
 				new THREE.CubeGeometry( 5, 5, 5 ),
@@ -359,15 +369,8 @@
 				plane.__dirtyRotation = true; 
 				plane.position.y = -3;
 				plane.__dirtyPosition = true;
-				 newbox = new Physijs.BoxMesh(
-					new THREE.CubeGeometry( 5, 5, 5 ),
-					new Physijs.createMaterial(
-					new THREE.MeshBasicMaterial({ color: 0x888888 }),
-					0,
-					.8
-				), 0);
-				scene.add(newbox);
-				newbox.__dirtyPosition = true;
+				 
+				playerCapsule.__dirtyPosition = true;
 				//Controls
 				
 				var onKeyDown = function ( event ) {
@@ -566,7 +569,7 @@
                         skull.visible = true;
                         skull2.visible = true;
                         skull3.visible = true;
-                        //   seeTitleScreen = false;
+                           seeTitleScreen = false;
                     }
                 }
                 else if (menuOption[0]) {
@@ -771,6 +774,7 @@
 		
 			
 			var animate = function () {
+				playerCapsule.setAngularFactor({ x: 0, y: 0, z: 0 });
 				scene.simulate();
 				cubeBBox.setFromObject(cube);
 				rotateSkulls();
@@ -792,25 +796,28 @@
 
 				if (seeDoomGuy == false && seeTitleScreen == false){
 				
-                    doomGuyChase();
+               //     doomGuyChase();
 					walk.play();
 				}
 				if ( controlsEnabled ) {
-			
+				
 					var delta = .5;
-
+					camera.getWorldDirection(direction);
+					direction.y = 0;
+					direction.x *= 10;
+					direction.z *= 10;
 					if(moveForward){
-						controls.getObject().translateZ(-delta);
-						newbox.translateZ(-delta);
+					//	controls.getObject().translateZ(-delta);
+						playerCapsule.setLinearVelocity(direction);
 					}
 					if(moveBackward){
-						controls.getObject().translateZ(delta);
+					//	controls.getObject().translateZ(delta);
 					}
 					if(moveLeft){
-						controls.getObject().translateX(-delta);
+					//	controls.getObject().translateX(-delta);
 					}
 					if(moveRight){
-						controls.getObject().translateX(delta);
+					//	controls.getObject().translateX(delta);
 					}
 
 					if(collisionsD[0]){
@@ -846,15 +853,15 @@
 			};
             function logDirection() {
 				//console.log(camera.position); 
-				console.log(newbox.position);
-							
+				console.log(playerCapsule.getLinearVelocity());
+			//	console.log(seeDoomGuy);			
 					
 				//console.log(doomGuyBBox);
 				//console.log(skull);
 				//console.log(skullCount);
 				//console.log(doomGuyBBox.containsPoint(camera.position));
 				//console.log(controls.getObject().position);
-				//console.log(directionR);
+				console.log(direction);
 			}
 		
 			
