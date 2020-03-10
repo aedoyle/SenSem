@@ -116,12 +116,11 @@
 			building.traverse( function ( child ) {
 						if(child instanceof THREE.Mesh){
 							console.log(child);
-						//	let houseMesh = new Physijs.ConcaveMesh(child.geometry, meshMaterial, 0);
-							//scene.add(houseMesh);
+					//		let houseMesh = new Physijs.ConvexMesh(child.material, meshMaterial, 0);
+					//		scene.add(houseMesh);
 
 							
 						}
-		//				scene.add(new THREE.Box3Helper(buildingBBoxes[i], 0xffff00));
 					});
 			};
 
@@ -321,7 +320,7 @@
 			init();
 		
 			function init() {
-  				 playerCapsule = new Physijs.CapsuleMesh(
+  				playerCapsule = new Physijs.CapsuleMesh(
 					new THREE.CylinderGeometry( 2, 2, 2),
 					new Physijs.createMaterial(
 					new THREE.MeshBasicMaterial({ color: 0x888888 }),
@@ -431,6 +430,7 @@
 						case 38: // up
 						case 87: // w
 							moveForward = false;
+							stopPlayer();
 							break;
 						case 37: // left
 						case 65: // a
@@ -461,7 +461,10 @@
 			}
 		
 		
-		
+			function stopPlayer(){
+				playerCapsule.setLinearVelocity(new THREE.Vector3(0, 0 , 0));
+
+			}
 			          
             function menu() {
 				//
@@ -831,8 +834,8 @@
 					var delta = .5;
 					camera.getWorldDirection(direction);
 					direction.y = 0;
-					direction.x *= 10;
-					direction.z *= 10;
+					direction.x *= 30;
+					direction.z *= 30;
 					if(moveForward){
 					//	controls.getObject().translateZ(-delta);
 						playerCapsule.setLinearVelocity(direction);
@@ -883,7 +886,7 @@
 				}
 			};
             function logDirection() {
-				console.log(playerBBox); 
+				//console.log(playerBBox); 
 				//console.log(playerCapsule.getLinearVelocity());
 			//	console.log(seeDoomGuy);			
 					
