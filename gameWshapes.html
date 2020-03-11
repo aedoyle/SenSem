@@ -67,13 +67,28 @@
 			var houseBBoxCount = 40;
 			var direction = new THREE.Vector3();  
             var seeTitleScreen = true;
-			var meshTitle;
+            var doomSound;
+            var meshTitle;
 			var meshStart;
             var meshOption;
             var meshControl;
-			var meshExit;
+            var meshUp;
+            var meshDown;
+            var meshLeft;
+            var meshRight;
+            var meshFlash;
+            var meshVolume;
+            var meshBack1;
+            var meshBack2;
+            var meshExit;
+            var meshLook;
+            var meshVolume1;
+            var meshVolume2;
+            var meshVolume3;
+            var meshVolume4;
+            var meshVolume5;
 			var menuSelect = new THREE.Raycaster()
-
+            
 				
 				
 			renderer.setSize( window.innerWidth, window.innerHeight );
@@ -97,7 +112,7 @@
 				house.scale.set(3,3,3);
 				scene.background = skyTexture;			
                 setSkullBBoxs();
-               // chaseSound();
+                chaseSound();
                // ambientNoise();
 				setInterval(logDirection, 1000);
                 building.visible = false;
@@ -189,7 +204,7 @@
                 loader.load('js/Objects/DoomGuy/doom2.0.glb', function (gltf) {
                     doomGuy = gltf.scene;
 					scene.add(doomGuy);
-                    doomGuy.position.set(55, -1.5, 19.5);
+                    doomGuy.position.set(5, -1.5, 5);
                     doomGuy.name = "doomGuy";
                     doomGuy.scale.set(1.5, 1.5, 1.5);
 					mixer = new THREE.AnimationMixer(gltf.scene);
@@ -406,13 +421,13 @@
 		
 			          
             function menu() {
-				//
+                //
                 var loader = new THREE.FontLoader();
 
-                loader.load("js/Fonts/Insomnia_Regular.json", function (font) {
-                    let title = new THREE.TextBufferGeometry("Mood", {
+                loader.load("js/Fonts/Mech_Tech_Regular.json", function (font) {
+                    let title = new THREE.TextBufferGeometry("[Mood]", {
                         font: font,
-                        size: 10,
+                        size: 12,
                         height: 1,
                         curveSegments: 12,
                         bevelThickness: 1,
@@ -420,33 +435,32 @@
                         bevelEnabled: true
                     });
                     title.computeBoundingBox();
-                    let centerTitle = - 0.5 * ( title.boundingBox.max.x - title.boundingBox.min.x );
+                    let centerTitle = - 0.5 * (title.boundingBox.max.x - title.boundingBox.min.x);
                     let textMatTitle = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
                     meshTitle = new THREE.Mesh(title, textMatTitle);
                     meshTitle.position.set(centerTitle, 5, -65);
-                 
                     scene.add(meshTitle);
 
-                    let start = new THREE.TextBufferGeometry("Start", {
-						font: font,
-                        size: 5,
+                    let start = new THREE.TextBufferGeometry("<Start>", {
+                        font: font,
+                        size: 8,
                         height: 1,
                         curveSegments: 12,
                         bevelThickness: 1,
                         bevelSize: .5,
                         bevelEnabled: true
                     });
-					start.computeBoundingBox();
+                    start.computeBoundingBox();
                     let centerStart = - 0.5 * (start.boundingBox.max.x - start.boundingBox.min.x);
-					let textMatStart = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    let textMatStart = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
                     meshStart = new THREE.Mesh(start, textMatStart);
                     meshStart.position.set(centerStart, -10, -65);
                     meshStart.visible = false;
                     scene.add(meshStart);
 
-					let option = new THREE.TextBufferGeometry("Options", {
-						font: font,
-                        size: 5,
+                    let option = new THREE.TextBufferGeometry("<Options>", {
+                        font: font,
+                        size: 8,
                         height: 1,
                         curveSegments: 12,
                         bevelThickness: 1,
@@ -455,15 +469,15 @@
                     });
                     option.computeBoundingBox();
                     let centerOption = - 0.5 * (option.boundingBox.max.x - option.boundingBox.min.x);
-					let textMatOption = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    let textMatOption = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
                     meshOption = new THREE.Mesh(option, textMatOption);
                     meshOption.position.set(centerOption, -20, -65);
                     meshOption.visible = false;
                     scene.add(meshOption);
 
-					let exit = new THREE.TextBufferGeometry("Exit", {
-						font: font,
-                        size: 5,
+                    let exit = new THREE.TextBufferGeometry("Exit", {
+                        font: font,
+                        size: 8,
                         height: 1,
                         curveSegments: 12,
                         bevelThickness: 1,
@@ -472,55 +486,305 @@
                     });
                     exit.computeBoundingBox();
                     let centerExit = - 0.5 * (exit.boundingBox.max.x - exit.boundingBox.min.x);
-					let textMatExit = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    let textMatExit = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
                     meshExit = new THREE.Mesh(exit, textMatExit);
                     meshExit.position.set(centerExit, -30, -65);
                     meshExit.visible = false;
                     scene.add(meshExit);
 
-					let controls = new THREE.TextBufferGeometry("Controls", {
-							font: font,
-							size: 5,
-							height: 1,
-							curveSegments: 12,
-							bevelThickness: 1,
-							bevelSize: .5,
-							bevelEnabled: true
-					});
-					start.computeBoundingBox();
-					let centerControl = - 0.5 * (controls.boundingBox.max.x - controls.boundingBox.min.x);
-				    let textMatControl = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
-                    meshControl = new THREE.Mesh(start, textMatControl);
-                    meshControl.position.set(centerControl, -10, -65);
+                    let controls = new THREE.TextBufferGeometry("Controls", {
+                        font: font,
+                        size: 8,
+                        height: 1,
+                        curveSegments: 12,
+                        bevelThickness: 1,
+                        bevelSize: .5,
+                        bevelEnabled: true
+                    });
+                    controls.computeBoundingBox();
+                    let centerControl = - 0.5 * (controls.boundingBox.max.z - controls.boundingBox.min.z);
+                    let textMatControl = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshControl = new THREE.Mesh(controls, textMatControl);
+                    meshControl.position.set(-40, 0, (centerControl + 20));
+                    meshControl.rotation.y = Math.PI / 2;
                     meshControl.visible = false;
                     scene.add(meshControl);
 
-				});
 
-                
-            }
+
+                    let volume = new THREE.TextBufferGeometry("Volume", {
+                        font: font,
+                        size: 8,
+                        height: 1,
+                        curveSegments: 12,
+                        bevelThickness: 1,
+                        bevelSize: .5,
+                        bevelEnabled: true
+                    });
+                    volume.computeBoundingBox();
+                    let centerVolume = - 0.5 * (volume.boundingBox.max.z - volume.boundingBox.min.z);
+                    let textMatVolume = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshVolume = new THREE.Mesh(volume, textMatVolume);
+                    meshVolume.position.set(-40, -10, (centerVolume + 20));
+                    meshVolume.rotation.y = Math.PI / 2;
+                    meshVolume.visible = false;
+                    scene.add(meshVolume);
+
+                    let back1 = new THREE.TextBufferGeometry("Back", {
+                        font: font,
+                        size: 8,
+                        height: 1,
+                        curveSegments: 12,
+                        bevelThickness: 1,
+                        bevelSize: .5,
+                        bevelEnabled: true
+                    });
+                    back1.computeBoundingBox();
+                    let centerBack1 = - 0.5 * (back1.boundingBox.max.z - back1.boundingBox.min.z);
+                    let textMatBack1 = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshBack1 = new THREE.Mesh(back1, textMatBack1);
+                    meshBack1.position.set(-40, -20, (centerBack1 + 20));
+                    meshBack1.rotation.y = Math.PI / 2;
+                    meshBack1.visible = false;
+                    scene.add(meshBack1);
+
+					let conUp = new THREE.TextBufferGeometry("UP = W", {
+                        font: font,
+                        size: 8,
+                        height: 1,
+                        curveSegments: 12,
+                        bevelThickness: 1,
+                        bevelSize: .5,
+                        bevelEnabled: true
+                    });
+                    conUp.computeBoundingBox();
+                    let centerConUp = - 0.5 * (conUp.boundingBox.max.x - conUp.boundingBox.min.x);
+                    let textMatConUp = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshUp = new THREE.Mesh(conUp, textMatConUp);
+                    meshUp.position.set(centerConUp, 25, -55);
+                    meshUp.visible = false;
+                    scene.add(meshUp);
+
+					let conDown = new THREE.TextBufferGeometry("Down = S", {
+                        font: font,
+                        size: 8,
+                        height: 1,
+                        curveSegments: 12,
+                        bevelThickness: 1,
+                        bevelSize: .5,
+                        bevelEnabled: true
+                    });
+                    conDown.computeBoundingBox();
+                    let centerConDown = - 0.5 * (conDown.boundingBox.max.x - conDown.boundingBox.min.x);
+                    let textMatConDown = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshDown = new THREE.Mesh(conDown, textMatConDown);
+                    meshDown.position.set(centerConDown, 15, -55);
+                    meshDown.visible = false;
+                    scene.add(meshDown);
+
+					let conLeft = new THREE.TextBufferGeometry("Left = A", {
+                        font: font,
+                        size: 8,
+                        height: 1,
+                        curveSegments: 12,
+                        bevelThickness: 1,
+                        bevelSize: .5,
+                        bevelEnabled: true
+                    });
+                    conLeft.computeBoundingBox();
+                    let centerConLeft = - 0.5 * (conLeft.boundingBox.max.x - conLeft.boundingBox.min.x);
+                    let textMatConLeft = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshLeft = new THREE.Mesh(conLeft, textMatConLeft);
+                    meshLeft.position.set(centerConLeft, 5, -55);
+                    meshLeft.visible = false;
+                    scene.add(meshLeft);
+
+					let conRight = new THREE.TextBufferGeometry("Right = D", {
+                        font: font,
+                        size: 8,
+                        height: 1,
+                        curveSegments: 12,
+                        bevelThickness: 1,
+                        bevelSize: .5,
+                        bevelEnabled: true
+                    });
+                    conRight.computeBoundingBox();
+                    let centerConRight = - 0.5 * (conRight.boundingBox.max.x - conRight.boundingBox.min.x);
+                    let textMatConRight = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshRight = new THREE.Mesh(conRight, textMatConRight);
+                    meshRight.position.set(centerConRight, -5, -55);
+                    meshRight.visible = false;
+                    scene.add(meshRight);
+
+					let conFlash = new THREE.TextBufferGeometry("Flashlight = CTRL", {
+                        font: font,
+                        size: 8,
+                        height: 1,
+                        curveSegments: 12,
+                        bevelThickness: 1,
+                        bevelSize: .5,
+                        bevelEnabled: true
+                    });
+                    conFlash.computeBoundingBox();
+                    let centerConFlash = - 0.5 * (conFlash.boundingBox.max.x - conFlash.boundingBox.min.x);
+                    let textMatConFlash = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshFlash = new THREE.Mesh(conFlash, textMatConFlash);
+                    meshFlash.position.set(centerConFlash, -15, -55);
+                    meshFlash.visible = false;
+                    scene.add(meshFlash);
+
+					let look = new THREE.TextBufferGeometry("<<", {
+                        font: font,
+                        size: 12,
+                        height: 1,
+                        curveSegments: 12,
+                        bevelThickness: 1,
+                        bevelSize: .5,
+                        bevelEnabled: true
+                    });
+                    look.computeBoundingBox();
+                    let centerLook = - 0.5 * (look.boundingBox.max.x - look.boundingBox.min.x);
+                    let textMatLook= new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshLook = new THREE.Mesh(look, textMatLook);
+                    meshLook.position.set(centerLook, -10, -55);
+                    meshLook.visible = false;
+                    scene.add(meshLook);
+
+					let back2 = new THREE.TextBufferGeometry("Back", {
+                        font: font,
+                        size: 8,
+                        height: 1,
+                        curveSegments: 12,
+                        bevelThickness: 1,
+                        bevelSize: .5,
+                        bevelEnabled: true
+                    });
+                    back2.computeBoundingBox();
+                    
+                    let textMatBack2 = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshBack2 = new THREE.Mesh(back2, textMatBack2);
+                    meshBack2.position.set(-10, -25, -55);
+                    meshBack2.visible = false;
+                    scene.add(meshBack2);
+
+					let volume1 = new THREE.TextBufferGeometry("1", {
+                        font: font,
+                        size: 8,
+                        height: 1,
+                        curveSegments: 12,
+                        bevelThickness: 1,
+                        bevelSize: .5,
+                        bevelEnabled: true
+                    });
+                    volume1.computeBoundingBox();
+                    
+                    let textMatVolume1 = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshVolume1 = new THREE.Mesh(volume1, textMatVolume1);
+                    meshVolume1.position.set(-30, 0, -55);
+                    meshVolume1.visible = false;
+                    scene.add(meshVolume1);
+
+                    let volume2 = new THREE.TextBufferGeometry("2", {
+                        font: font,
+                        size: 8,
+                        height: 1,
+                        curveSegments: 12,
+                        bevelThickness: 1,
+                        bevelSize: .5,
+                        bevelEnabled: true
+                    });
+                    volume2.computeBoundingBox();
+                    
+                    let textMatVolume2 = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshVolume2 = new THREE.Mesh(volume2, textMatVolume2);
+                    meshVolume2.position.set(-15, 0, -55);
+                    meshVolume2.visible = false;
+                    scene.add(meshVolume2);
+
+                    let volume3 = new THREE.TextBufferGeometry("3", {
+                        font: font,
+                        size: 8,
+                        height: 1,
+                        curveSegments: 12,
+                        bevelThickness: 1,
+                        bevelSize: .5,
+                        bevelEnabled: true
+                    });
+                    volume3.computeBoundingBox();
+                    
+                    let textMatVolume3 = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshVolume3 = new THREE.Mesh(volume3, textMatVolume3);
+                    meshVolume3.position.set(0, 0, -55);
+                    meshVolume3.visible = false;
+                    scene.add(meshVolume3);
+
+                    let volume4 = new THREE.TextBufferGeometry("4", {
+                        font: font,
+                        size: 8,
+                        height: 1,
+                        curveSegments: 12,
+                        bevelThickness: 1,
+                        bevelSize: .5,
+                        bevelEnabled: true
+                    });
+                    volume4.computeBoundingBox();
+                    
+                    let textMatVolume4 = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshVolume4 = new THREE.Mesh(volume4, textMatVolume4);
+                    meshVolume4.position.set(15, 0, -55);
+                    meshVolume4.visible = false;
+                    scene.add(meshVolume4);
+
+                    let volume5 = new THREE.TextBufferGeometry("5", {
+                        font: font,
+                        size: 8,
+                        height: 1,
+                        curveSegments: 12,
+                        bevelThickness: 1,
+                        bevelSize: .5,
+                        bevelEnabled: true
+                    });
+                    volume5.computeBoundingBox();
+                    
+                    let textMatVolume5 = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+                    meshVolume5 = new THREE.Mesh(volume5, textMatVolume5);
+                    meshVolume5.position.set(30, 0, -55);
+                    meshVolume5.visible = false;
+                    scene.add(meshVolume5);
+
+                });
+			}
 
 			menu()
 
 
-			var num = 0;
+            var num = 0;
             function menuSystem() {
                 camera.getWorldDirection(direction);
                 var position = new THREE.Vector3();
                 camera.getWorldPosition(position);
                 menuSelect.set(position, direction);
 
-            
+				
                 menuTitle = menuSelect.intersectObject(meshTitle, true);
                 menuStart = menuSelect.intersectObject(meshStart, true);
-				menuOption = menuSelect.intersectObject(meshOption, true);
+                menuOption = menuSelect.intersectObject(meshOption, true);
+                menuControl = menuSelect.intersectObject(meshControl, true);
+                menuVolume = menuSelect.intersectObject(meshVolume, true);
+                menuBack1 = menuSelect.intersectObject(meshBack1, true);
+				menuBack2 = menuSelect.intersectObject(meshBack2, true);
                 menuExit = menuSelect.intersectObject(meshExit, true);
+                menuVolume1 = menuSelect.intersectObject(meshVolume1, true);
+                menuVolume2 = menuSelect.intersectObject(meshVolume2, true);
+                menuVolume3 = menuSelect.intersectObject(meshVolume3, true);
+                menuVolume4 = menuSelect.intersectObject(meshVolume4, true);
+                menuVolume5 = menuSelect.intersectObject(meshVolume5, true);
 
                 if (menuTitle[0]) {
                     num++;
                     meshTitle.material.color.set(0xFFFFFF);
                     if (num > 70) {
-                       
+
                         meshStart.visible = true;
                         meshOption.visible = true;
                         meshExit.visible = true;
@@ -535,7 +799,8 @@
                         num = 0;
                         house.visible = true;
                         camera.position.set(105, 0, 83);
-                        chaseSound();
+                        doomGuy.position.set(95, -1.5, 75);
+                        doomSound.play();
                         ambientNoise();
                         meshTitle.visible = false;
                         meshStart.visible = false;
@@ -545,38 +810,168 @@
                         skull.visible = true;
                         skull2.visible = true;
                         skull3.visible = true;
-                        //   seeTitleScreen = false;
+                        meshLook.visible = false;
+                        //seeTitleScreen = false;
                     }
                 }
                 else if (menuOption[0]) {
                     num++;
                     meshOption.material.color.set(0xFFFFFF);
                     if (num > 70) {
-						 meshTitle.visible = false;
+                        meshTitle.visible = false;
                         meshStart.visible = false;
                         meshOption.visible = false;
                         meshExit.visible = false;
                         meshControl.visible = true;
-
+                        meshVolume.visible = true;
+                        meshBack1.visible = true;
+                        meshLook.visible = true;
+						meshLook.position.set(-10, -10, -65);
+                        meshLook.rotation.y = 0;
+                        meshLook.rotation.z = 0;
+                    }
+                }
+                else if (menuControl[0]) {
+                    num++;
+                    meshControl.material.color.set(0xFFFFFF);
+                    if (num > 70) {
+                        meshUp.visible = true;
+                        meshDown.visible = true;
+                        meshLeft.visible = true;
+                        meshRight.visible = true;
+                        meshFlash.visible = true;
+						meshControl.visible = false;
+                        meshVolume.visible = false;
+                        meshBack1.visible = false;
+                        meshBack2.visible = true;
+                        meshLook.position.set(-40, 0 , -5);
+                        meshLook.rotation.y = Math.PI / 2;
+                        meshLook.rotation.z = 90*(Math.PI / 2);
+					
+                    }
+                }
+                else if (menuVolume[0]) {
+                    num++;
+                    meshVolume.material.color.set(0xFFFFFF);
+                    if (num > 70) {
+						meshControl.visible = false;
+                        meshVolume.visible = false;
+                        meshBack1.visible = false;
+                        meshBack2.visible = true;
+                        meshLook.position.set(-40, 0 , -5);
+                        meshLook.rotation.y = Math.PI / 2;
+                        meshLook.rotation.z = 90*(Math.PI / 2);
+                        meshVolume1.visible = true;
+                        meshVolume2.visible = true;
+                        meshVolume3.visible = true;
+                        meshVolume4.visible = true;
+                        meshVolume5.visible = true;
+                        doomSound.play();
+                    }
+                }
+                else if (menuVolume1[0]) {
+                    num++;
+                    meshVolume1.material.color.set(0xFFFFFF);
+                    if (num > 70) {
+                        doomSound.setVolume(.2);
+                    }
+                }
+                else if (menuVolume2[0]) {
+                    num++;
+                    meshVolume2.material.color.set(0xFFFFFF);
+                    if (num > 70) {
+                        doomSound.setVolume(.4);
+                    }
+                }
+                else if (menuVolume3[0]) {
+                    num++;
+                    meshVolume3.material.color.set(0xFFFFFF);
+                    if (num > 70) {
+                        doomSound.setVolume(.6);
+                    }
+                }
+                else if (menuVolume4[0]) {
+                    num++;
+                    meshVolume4.material.color.set(0xFFFFFF);
+                    if (num > 70) {
+                        doomSound.setVolume(.8);
+                    }
+                }
+                else if (menuVolume5[0]) {
+                    num++;
+                    meshVolume5.material.color.set(0xFFFFFF);
+                    if (num > 70) {
+                        doomSound.setVolume(1.0);
+                    }
+                }
+                else if (menuBack1[0]) {
+                    num++;
+                    meshBack1.material.color.set(0xFFFFFF);
+                    if (num > 70) {
+                        meshTitle.visible = true;
+                        meshStart.visible = true;
+                        meshOption.visible = true;;
+                        meshExit.visible = true;
+                        meshControl.visible = false;
+                        meshVolume.visible = false;
+                        meshBack1.visible = false;
+                        meshLook.visible = true;
+						meshLook.position.set(-40, 0 , -5);
+                        meshLook.rotation.y = Math.PI / 2;
+                        meshLook.rotation.z = 90*(Math.PI / 2);
+                    }
+                }
+                else if (menuBack2[0]) {
+					num++;
+                    meshBack2.material.color.set(0xFFFFFF);
+                    if (num > 70) {
+						meshControl.visible = true;
+                        meshVolume.visible = true;
+                        meshBack1.visible = true;
+                        meshUp.visible = false;
+                        meshDown.visible = false;
+                        meshLeft.visible = false;
+                        meshRight.visible = false;
+                        meshFlash.visible = false;
+                        meshBack2.visible = false;
+                        meshLook.visible = false;
+                        meshLook.visible = true;
+                        meshVolume1.visible = false;
+                        meshVolume2.visible = false;
+                        meshVolume3.visible = false;
+                        meshVolume4.visible = false;
+                        meshVolume5.visible = false;
+                        meshLook.position.set(-10, -10, -65);
+                        meshLook.rotation.y = 0;
+                        meshLook.rotation.z = 0;
+                        doomSound.stop();
                     }
                 }
 				else if (menuExit[0]) {
-                    num++;
+					num++;
                     meshExit.material.color.set(0xFFFFFF);
                     if (num > 70) {
 
                     }
                 }
-                else {
+               	else {
                     meshTitle.material.color.set(0xFF0000);
                     meshStart.material.color.set(0xFF0000);
                     meshOption.material.color.set(0xFF0000);
                     meshExit.material.color.set(0xFF0000);
+                    meshControl.material.color.set(0xFF0000);
+                    meshVolume.material.color.set(0xFF0000);
+                    meshBack1.material.color.set(0xFF0000);
+                    meshBack2.material.color.set(0XFF0000);
+                    meshVolume1.material.color.set(0xFF0000);
+                    meshVolume2.material.color.set(0xFF0000);
+                    meshVolume3.material.color.set(0xFF0000);
+                    meshVolume4.material.color.set(0xFF0000);
+                    meshVolume5.material.color.set(0xFF0000);
                     num = 0;
-                }
-
-            }
-
+                }   
+			}
+			
 
 			function doomGuyChase(){
 			var player = new THREE.Vector3();				//These two lines create an empty vector and copy the current position of the player into it,
@@ -599,7 +994,7 @@
                 audioLoader.load('js/Sounds/floorCracking.ogg', function (buffer) {
                     ambientFloor.setBuffer(buffer);
                     ambientFloor.setLoop(true);
-                    ambientFloor.setVolume(.7);
+                    ambientFloor.setVolume(.5);
                     ambientFloor.play();
                 });
 
@@ -607,23 +1002,25 @@
                 audioLoader.load('js/Sounds/howlingWind.ogg', function (buffer) {
                     ambientWind.setBuffer(buffer);
                     ambientWind.setLoop(true);
-                    ambientWind.setVolume(.5);
+                    ambientWind.setVolume(.3);
                     ambientWind.play();
                 });
             }
 
+           
 			//CHASE SOUND
             function chaseSound() {
-                var doom1 = new THREE.PositionalAudio(listener);
+                doomSound = new THREE.PositionalAudio(listener);
                 //doom1.setDirectionalCone(180, 230, 0.1);
                 //var helper = new PositionalAudioHelper(doom1, 0.1);
                 //doom1.add(helper);
                 audioLoader.load('js/Sounds/rip_and_tear.ogg', function (buffer) {
-                    doom1.setBuffer(buffer);
-                    doom1.setRefDistance(4);
-                    doom1.play();
+                    doomSound.setBuffer(buffer);
+                    doomSound.setRefDistance(1);
+                    doomSound.hasPlayBackControl = true;
+                    //doomSound.play();
                 });
-                doomGuy.add(doom1);
+                doomGuy.add(doomSound);
             }
             
 
