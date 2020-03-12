@@ -9,7 +9,7 @@
 	<body>
 		<script type="text/javascript" src="/js/Three.js"></script>
 		<script src="js/PointerLockControls.js"></script>
-		<script src="js/GLTFLoader.js"></script>
+		<script src="js/GLTFLoader.js"></script>		
 	    <script type="text/javascript" src="/js/physi.js"></script>
 	    <script type="text/javascript" src="/js/ammo.js"></script>
 
@@ -107,17 +107,25 @@
                // chaseSound();
                // ambientNoise();
 				setInterval(logDirection, 1000);
-                building.visible = false;
+              //  building.visible = false;
                // house.visible = false;
 
 				animate();
 			var meshMaterial = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+			console.log(building.children[0].children[0].children[0].children[0].children[0]);
+			meshMaterial.transparent = true; 
+			meshMaterial.opacity = .5;
 
 			building.traverse( function ( child ) {
 						if(child instanceof THREE.Mesh){
 							console.log(child);
-					//		let houseMesh = new Physijs.ConvexMesh(child.material, meshMaterial, 0);
-					//		scene.add(houseMesh);
+							let hull = new THREE.ConvexHull();
+							hull.setFromObject(child);
+						//	console.log(hull);
+							let geom = new THREE.ConvexGeometry(hull);
+			//				console.log(geom);
+							let buildingMesh = new Physijs.ConvexMesh(geom, meshMaterial, 0);
+							scene.add(buildingMesh);
 
 							
 						}
@@ -227,14 +235,7 @@
                     building.position.z = -200; 
 					building.name = "building";
 					building.scale.set(3, 3, 3);
-					let i = 0;  
-					building.traverse( function ( child ) {
-						if ( child instanceof THREE.Object3D  ) {
-							buildingBBoxes[i] = new THREE.Box3(); 
-							buildingBBoxes[i].setFromObject(child);
-			//				scene.add(new THREE.Box3Helper(buildingBBoxes[i], 0xffff00));
-							i++;
-						}});
+	
 
                    });	
                 loader.load('js/Objects/skull/scene.gltf', function (gltf) {
@@ -486,7 +487,7 @@
                     meshTitle = new THREE.Mesh(title, textMatTitle);
                     meshTitle.position.set(centerTitle, 5, -65);
                  
-                    scene.add(meshTitle);
+       //             scene.add(meshTitle);
 
                     let start = new THREE.TextBufferGeometry("Start", {
 						font: font,
@@ -897,7 +898,7 @@
 				//console.log(controls.getObject().position);
 			//	console.log(direction);
 			}
-		
+
 			
 		</script>
 	</body>
