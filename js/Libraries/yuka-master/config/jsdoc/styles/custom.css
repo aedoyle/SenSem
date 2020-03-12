@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css?family=Jura');
+
+body {
+	font-family: 'Jura', sans-serif;
+}
+a {
+	color: #ee0808;
+}
+a:hover {
+	color: #a40606;
+	text-decoration: none;
+}
+.lnb {
+	bottom: 0;
+	background-color: #f8f9fa;
+}
+.logo {
+	display: none;
+}
+.main {
+	margin-bottom: 0;
+}
+.main section header h2 {
+	border-left: 5px solid #ee0808;
+}
+.main section article h3.subsection-title {
+	color: #ee0808;
+}
+.lnb h3 {
+	color: #000000;
+}
+.lnb .title .link {
+	font-style: normal;
+	color: #ee0808;
+}
+.lnb .lnb-api a {
+	color: #ee0808;
+}
+.lnb .lnb-api a:hover {
+	color: #a40606;
+	text-decoration: none;
+}
+.lnb .member-type {
+	color: #000000;
+}
+footer {
+	display: none;
+}
+#resizer {
+	background-color: #f4f7f8;
+}
+a:hover {
+	text-decoration: none;
+}
+code {
+	color: #ee0808;
+}
+
+.toggle-subnav {
+	display: none;
+}
+
+.lnb .lnb-api li, .lnb .lnb-examples li {
+	border-bottom: 1px solid rgba(0,0,0,.1);
+}
+
+.lnb .inner li {
+	border-bottom: 0;
+}
+
+.search-container input {
+	background-color: #ffffff;
+	border: none;
+}
+
+.search-container ul {
+	opacity: 1;
+	background-color: #ee0808;
+	border: none;
+}
+
+.search-container a {
+	color: #ffffff;
+}
+
+.search-container ul li:hover a, .search-container ul li.highlight a {
+	color: #ee0808;
+	text-decoration: none;
+}
+
+.search-container strong {
+	color: #ffffff;
+}
+
+.search-container ul li .group {
+	color: #000000;
+}
+.main section article dl h4 .type-signature {
+	color: #a40606;
+}
