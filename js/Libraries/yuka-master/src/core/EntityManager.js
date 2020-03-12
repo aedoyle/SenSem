@@ -117,10 +117,10 @@ class EntityManager {
 	* The central update method of this entity manager. Updates all
 	* game entities and delayed messages.
 	*
-	* @param {Number} delta - The time delta.
+	* @param {Number} delt - The time delt.
 	* @return {EntityManager} A reference to this entity manager.
 	*/
-	update( delta ) {
+	update( delt ) {
 
 		const entities = this.entities;
 		const triggers = this._triggers;
@@ -131,7 +131,7 @@ class EntityManager {
 
 			const entity = entities[ i ];
 
-			this.updateEntity( entity, delta );
+			this.updateEntity( entity, delt );
 
 		}
 
@@ -150,7 +150,7 @@ class EntityManager {
 
 		// handle messaging
 
-		this._messageDispatcher.dispatchDelayedMessages( delta );
+		this._messageDispatcher.dispatchDelayedMessages( delt );
 
 		return this;
 
@@ -160,10 +160,10 @@ class EntityManager {
 	* Updates a single entity.
 	*
 	* @param {GameEntity} entity - The game entity to update.
-	* @param {Number} delta - The time delta.
+	* @param {Number} delt - The time delt.
 	* @return {EntityManager} A reference to this entity manager.
 	*/
-	updateEntity( entity, delta ) {
+	updateEntity( entity, delt ) {
 
 		if ( entity.active === true ) {
 
@@ -181,7 +181,7 @@ class EntityManager {
 
 			// update entity
 
-			entity.update( delta );
+			entity.update( delt );
 			entity.updateWorldMatrix();
 
 			// update children
@@ -192,7 +192,7 @@ class EntityManager {
 
 				const child = children[ i ];
 
-				this.updateEntity( child, delta );
+				this.updateEntity( child, delt );
 
 			}
 

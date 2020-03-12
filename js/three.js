@@ -6771,7 +6771,7 @@
 
 		clampPoint: function ( point, target ) {
 
-			var deltaLengthSq = this.center.distanceToSquared( point );
+			var deltLengthSq = this.center.distanceToSquared( point );
 
 			if ( target === undefined ) {
 
@@ -6782,7 +6782,7 @@
 
 			target.copy( point );
 
-			if ( deltaLengthSq > ( this.radius * this.radius ) ) {
+			if ( deltLengthSq > ( this.radius * this.radius ) ) {
 
 				target.sub( this.center ).normalize();
 				target.multiplyScalar( this.radius ).add( this.center );
@@ -7475,7 +7475,7 @@
 
 			}
 
-			var direction = line.delta( _vector1 );
+			var direction = line.delt( _vector1 );
 
 			var denominator = this.normal.dot( direction );
 
@@ -8323,15 +8323,15 @@
 
 			} else {
 
-				var delta = max - min;
+				var delt = max - min;
 
-				saturation = lightness <= 0.5 ? delta / ( max + min ) : delta / ( 2 - max - min );
+				saturation = lightness <= 0.5 ? delt / ( max + min ) : delt / ( 2 - max - min );
 
 				switch ( max ) {
 
-					case r: hue = ( g - b ) / delta + ( g < b ? 6 : 0 ); break;
-					case g: hue = ( b - r ) / delta + 2; break;
-					case b: hue = ( r - g ) / delta + 4; break;
+					case r: hue = ( g - b ) / delt + ( g < b ? 6 : 0 ); break;
+					case g: hue = ( b - r ) / delt + 2; break;
+					case b: hue = ( r - g ) / delt + 4; break;
 
 				}
 
@@ -36562,14 +36562,14 @@
 
 		// Returns a unit vector tangent at t
 		// In case any sub curve does not implement its tangent derivation,
-		// 2 points a small delta apart will be used to find its gradient
+		// 2 points a small delt apart will be used to find its gradient
 		// which seems to give a reasonable approximation
 
 		getTangent: function ( t ) {
 
-			var delta = 0.0001;
-			var t1 = t - delta;
-			var t2 = t + delta;
+			var delt = 0.0001;
+			var t1 = t - delt;
+			var t2 = t + delt;
 
 			// Capping in case of danger
 
@@ -36780,22 +36780,22 @@
 		var point = optionalTarget || new Vector2();
 
 		var twoPi = Math.PI * 2;
-		var deltaAngle = this.aEndAngle - this.aStartAngle;
-		var samePoints = Math.abs( deltaAngle ) < Number.EPSILON;
+		var deltAngle = this.aEndAngle - this.aStartAngle;
+		var samePoints = Math.abs( deltAngle ) < Number.EPSILON;
 
-		// ensures that deltaAngle is 0 .. 2 PI
-		while ( deltaAngle < 0 ) { deltaAngle += twoPi; }
-		while ( deltaAngle > twoPi ) { deltaAngle -= twoPi; }
+		// ensures that deltAngle is 0 .. 2 PI
+		while ( deltAngle < 0 ) { deltAngle += twoPi; }
+		while ( deltAngle > twoPi ) { deltAngle -= twoPi; }
 
-		if ( deltaAngle < Number.EPSILON ) {
+		if ( deltAngle < Number.EPSILON ) {
 
 			if ( samePoints ) {
 
-				deltaAngle = 0;
+				deltAngle = 0;
 
 			} else {
 
-				deltaAngle = twoPi;
+				deltAngle = twoPi;
 
 			}
 
@@ -36803,19 +36803,19 @@
 
 		if ( this.aClockwise === true && ! samePoints ) {
 
-			if ( deltaAngle === twoPi ) {
+			if ( deltAngle === twoPi ) {
 
-				deltaAngle = - twoPi;
+				deltAngle = - twoPi;
 
 			} else {
 
-				deltaAngle = deltaAngle - twoPi;
+				deltAngle = deltAngle - twoPi;
 
 			}
 
 		}
 
-		var angle = this.aStartAngle + t * deltaAngle;
+		var angle = this.aStartAngle + t * deltAngle;
 		var x = this.aX + this.xRadius * Math.cos( angle );
 		var y = this.aY + this.yRadius * Math.sin( angle );
 
@@ -41763,12 +41763,12 @@
 
 		getElapsedTime: function () {
 
-			this.getDelta();
+			this.getdelt();
 			return this.elapsedTime;
 
 		},
 
-		getDelta: function () {
+		getdelt: function () {
 
 			var diff = 0;
 
@@ -41818,7 +41818,7 @@
 
 		this.filter = null;
 
-		this.timeDelta = 0;
+		this.timedelt = 0;
 
 		// private
 
@@ -41899,7 +41899,7 @@
 			var listener = this.context.listener;
 			var up = this.up;
 
-			this.timeDelta = this._clock.getDelta();
+			this.timedelt = this._clock.getdelt();
 
 			this.matrixWorld.decompose( _position$2, _quaternion$3, _scale$1 );
 
@@ -41909,7 +41909,7 @@
 
 				// code path for Chrome (see #14393)
 
-				var endTime = this.context.currentTime + this.timeDelta;
+				var endTime = this.context.currentTime + this.timedelt;
 
 				listener.positionX.linearRampToValueAtTime( _position$2.x, endTime );
 				listener.positionY.linearRampToValueAtTime( _position$2.y, endTime );
@@ -42424,7 +42424,7 @@
 
 				// code path for Chrome and Firefox (see #14393)
 
-				var endTime = this.context.currentTime + this.listener.timeDelta;
+				var endTime = this.context.currentTime + this.listener.timedelt;
 
 				panner.positionX.linearRampToValueAtTime( _position$3.x, endTime );
 				panner.positionY.linearRampToValueAtTime( _position$3.y, endTime );
@@ -44105,7 +44105,7 @@
 
 		// Interna
 
-		_update: function ( time, deltaTime, timeDirection, accuIndex ) {
+		_update: function ( time, deltTime, timeDirection, accuIndex ) {
 
 			// called by the mixer
 
@@ -44127,21 +44127,21 @@
 				var timeRunning = ( time - startTime ) * timeDirection;
 				if ( timeRunning < 0 || timeDirection === 0 ) {
 
-					return; // yet to come / don't decide when delta = 0
+					return; // yet to come / don't decide when delt = 0
 
 				}
 
 				// start
 
 				this._startTime = null; // unschedule
-				deltaTime = timeDirection * timeRunning;
+				deltTime = timeDirection * timeRunning;
 
 			}
 
 			// apply time scale and advance time
 
-			deltaTime *= this._updateTimeScale( time );
-			var clipTime = this._updateTime( deltaTime );
+			deltTime *= this._updateTimeScale( time );
+			var clipTime = this._updateTime( deltTime );
 
 			// note: _updateTime may disable the action resulting in
 			// an effective weight of 0
@@ -44244,16 +44244,16 @@
 
 		},
 
-		_updateTime: function ( deltaTime ) {
+		_updateTime: function ( deltTime ) {
 
-			var time = this.time + deltaTime;
+			var time = this.time + deltTime;
 			var duration = this._clip.duration;
 			var loop = this.loop;
 			var loopCount = this._loopCount;
 
 			var pingPong = ( loop === LoopPingPong );
 
-			if ( deltaTime === 0 ) {
+			if ( deltTime === 0 ) {
 
 				if ( loopCount === - 1 ) { return time; }
 
@@ -44297,7 +44297,7 @@
 
 					this._mixer.dispatchEvent( {
 						type: 'finished', action: this,
-						direction: deltaTime < 0 ? - 1 : 1
+						direction: deltTime < 0 ? - 1 : 1
 					} );
 
 				}
@@ -44308,7 +44308,7 @@
 
 					// just started
 
-					if ( deltaTime >= 0 ) {
+					if ( deltTime >= 0 ) {
 
 						loopCount = 0;
 
@@ -44330,10 +44330,10 @@
 
 					// wrap around
 
-					var loopDelta = Math.floor( time / duration ); // signed
-					time -= duration * loopDelta;
+					var loopdelt = Math.floor( time / duration ); // signed
+					time -= duration * loopdelt;
 
-					loopCount += Math.abs( loopDelta );
+					loopCount += Math.abs( loopdelt );
 
 					var pending = this.repetitions - loopCount;
 
@@ -44344,13 +44344,13 @@
 						if ( this.clampWhenFinished ) { this.paused = true; }
 						else { this.enabled = false; }
 
-						time = deltaTime > 0 ? duration : 0;
+						time = deltTime > 0 ? duration : 0;
 
 						this.time = time;
 
 						this._mixer.dispatchEvent( {
 							type: 'finished', action: this,
-							direction: deltaTime > 0 ? 1 : - 1
+							direction: deltTime > 0 ? 1 : - 1
 						} );
 
 					} else {
@@ -44361,7 +44361,7 @@
 
 							// entering the last round
 
-							var atStart = deltaTime < 0;
+							var atStart = deltTime < 0;
 							this._setEndings( atStart, ! atStart, pingPong );
 
 						} else {
@@ -44375,7 +44375,7 @@
 						this.time = time;
 
 						this._mixer.dispatchEvent( {
-							type: 'loop', action: this, loopDelta: loopDelta
+							type: 'loop', action: this, loopdelt: loopdelt
 						} );
 
 					}
@@ -45074,15 +45074,15 @@
 		},
 
 		// advance the time and update apply the animation
-		update: function ( deltaTime ) {
+		update: function ( deltTime ) {
 
-			deltaTime *= this.timeScale;
+			deltTime *= this.timeScale;
 
 			var actions = this._actions,
 				nActions = this._nActiveActions,
 
-				time = this.time += deltaTime,
-				timeDirection = Math.sign( deltaTime ),
+				time = this.time += deltTime,
+				timeDirection = Math.sign( deltTime ),
 
 				accuIndex = this._accuIndex ^= 1;
 
@@ -45092,7 +45092,7 @@
 
 				var action = actions[ i ];
 
-				action._update( time, deltaTime, timeDirection, accuIndex );
+				action._update( time, deltTime, timeDirection, accuIndex );
 
 			}
 
@@ -45845,11 +45845,11 @@
 
 		},
 
-		delta: function ( target ) {
+		delt: function ( target ) {
 
 			if ( target === undefined ) {
 
-				console.warn( 'THREE.Line3: .delta() target is now required' );
+				console.warn( 'THREE.Line3: .delt() target is now required' );
 				target = new Vector3();
 
 			}
@@ -45879,7 +45879,7 @@
 
 			}
 
-			return this.delta( target ).multiplyScalar( t ).add( this.start );
+			return this.delt( target ).multiplyScalar( t ).add( this.start );
 
 		},
 
@@ -45914,7 +45914,7 @@
 
 			}
 
-			return this.delta( target ).multiplyScalar( t ).add( this.start );
+			return this.delt( target ).multiplyScalar( t ).add( this.start );
 
 		},
 

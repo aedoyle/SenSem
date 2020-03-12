@@ -42,11 +42,11 @@ describe( 'WanderBehavior', function () {
 
 			const vehicle = new Vehicle();
 			const force = new Vector3();
-			const delta = 1;
+			const delt = 1;
 
 			const wanderBehavior = new WanderBehavior();
 
-			wanderBehavior.calculate( vehicle, force, delta );
+			wanderBehavior.calculate( vehicle, force, delt );
 
 			// not easy to test this method since a force is random
 			// just ensure that the y component is zero

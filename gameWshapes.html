@@ -10,7 +10,8 @@
 		<script src="js/three.js"></script>
 		<script src="js/PointerLockControls.js"></script>
 		<script src="js/GLTFLoader.js"></script>
-				<div id="blocker">
+		<script src="js/Libraries/yuka-master/build/yuka.js"></script>
+		<div id="blocker">
 
 			<div id="instructions">
 				<span style="font-size:40px">Click to play</span>
@@ -25,22 +26,22 @@
 
 			var scene = new THREE.Scene();
 			var scene1 = new THREE.Scene();
-			var scene2 = new THREE.Scene(); 
-			scene = scene1; 
-			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+			var scene2 = new THREE.Scene();
+			scene = scene1;
+			var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 			var renderer = new THREE.WebGLRenderer();
 			var controlsEnabled = false;
 			var moveForward = false;
 			var moveBackward = false;
 			var moveLeft = false;
 			var moveRight = false;
-			var canJump = false;		
+			var canJump = false;
 			var house;
 			var doomGuy;
 			var seeDoomGuy = false;
 			var parent;
 			var doomCollisions = {};
-			var building; 
+			var building;
 			var skyTexture = [];
 			var raycasterD = new THREE.Raycaster();
 			var directionD = new THREE.Vector3(0, -1, 0);
@@ -57,85 +58,90 @@
 			var lastFrame = Date.now();
 			var walk;
 			var run;
-            var still;
-            var stillToWalk;
-			doomGuyBBox = new THREE.Box3();			
+			var still;
+			var stillToWalk;
+			doomGuyBBox = new THREE.Box3();
 			var cubeBBox = new THREE.Box3();
 			var cube;
 			var houseBBoxes = {};
 			var buildingBBoxes = {};
 			var houseBBoxCount = 40;
-			var direction = new THREE.Vector3();  
-            var seeTitleScreen = true;
+			var direction = new THREE.Vector3();
+			var seeTitleScreen = true;
 			var meshOption;
-            var meshTitle;
-            var meshStart;
+			var meshTitle;
+			var meshStart;
 			var meshExit;
-			var menuSelect = new THREE.Raycaster()
+            var menuSelect = new THREE.Raycaster();
+            var entityManager;
+            var time;
+            var vehicle;
+            var onPathBehavior;
 
-				
-				
-			renderer.setSize( window.innerWidth, window.innerHeight );
-			document.body.appendChild( renderer.domElement );
+
+
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.body.appendChild(renderer.domElement);
 			// PointerLock Control source code taken from https://codepen.io/tembling/pen/reZjEw
-			
+
 			var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 
-		
-			var manager = new THREE.LoadingManager();
-			manager.onStart = function ( url, itemsLoaded, itemsTotal ) {
 
-				console.log( 'Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
+			var manager = new THREE.LoadingManager();
+			manager.onStart = function (url, itemsLoaded, itemsTotal) {
+
+				console.log('Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
 
 			};
 
-			manager.onLoad = function ( ) {
+			manager.onLoad = function () {
 
-				console.log( 'Loading complete!');
+				console.log('Loading complete!');
 				console.log(scene.getObjectByName("doomGuy", true));
-				house.scale.set(3,3,3);
-				scene.background = skyTexture;			
-                setSkullBBoxs();
-               // chaseSound();
-               // ambientNoise();
+				house.scale.set(3, 3, 3);
+				scene.background = skyTexture;
+				setSkullBBoxs();
+				// chaseSound();
+				// ambientNoise();
 				setInterval(logDirection, 1000);
-                building.visible = false;
-               // house.visible = false;
+				building.visible = false;
+				// house.visible = false;
+                //doomGuyPath();
 				animate();
 
 			};
 
 
-			manager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+			manager.onProgress = function (url, itemsLoaded, itemsTotal) {
 
-				console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
+				console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
 			};
 
-			manager.onError = function ( url ) {
+			manager.onError = function (url) {
 
-				console.log( 'There was an error loading ' + url );
+				console.log('There was an error loading ' + url);
 			};
-            
-            function loadObjects() {
-                var loader = new THREE.GLTFLoader(manager);
-                loader.load('js/Objects/House/houseShell5.glb',
-                    // called when the resource is loaded
-                    function (gltf) {
-                        house = gltf.scene;
+
+			function loadObjects() {
+				var loader = new THREE.GLTFLoader(manager);
+				loader.load('js/Objects/House/houseShell5.glb',
+					// called when the resource is loaded
+					function (gltf) {
+						house = gltf.scene;
 						scene.add(house);
-                        house.rotation.y = - Math.PI / 2;
-                        house.position.set(55, -2, 30);
-						houseBBoxes[0] = new THREE.Box3(new THREE.Vector3(97.92601422391, -2 , 34.15341844895645), new THREE.Vector3(102.06848069827979 , 10, 78.65107712409612));  
-						houseBBoxes[1] = new THREE.Box3(new THREE.Vector3(101.9259180603165 , -2 , 34.36070653342341), new THREE.Vector3( 139.87796127698655, 10, 37.89793781433861));
-						houseBBoxes[2] = new THREE.Box3(new THREE.Vector3(136.86987439472297 , -2, 37.607029122153165), new THREE.Vector3( 139.72427104182447, 10, 113.49595653976305));
-						houseBBoxes[3] = new THREE.Box3(new THREE.Vector3(73.8225104675347, -2,  109.97977706103694), new THREE.Vector3( 137.63925878535912, 10, 113.86793023790936));
-						houseBBoxes[4] = new THREE.Box3(new THREE.Vector3(73.89429819609268, -2, 83.52235034462691), new THREE.Vector3( 78.29069146628301, 10,110.79158983531276 ));
+						house.rotation.y = - Math.PI / 2;
+						house.position.set(55, -2, 30);
+						houseBBoxes[0] = new THREE.Box3(new THREE.Vector3(97.92601422391, -2, 34.15341844895645), new THREE.Vector3(102.06848069827979, 10, 78.65107712409612));
+						houseBBoxes[1] = new THREE.Box3(new THREE.Vector3(101.9259180603165, -2, 34.36070653342341), new THREE.Vector3(139.87796127698655, 10, 37.89793781433861));
+						houseBBoxes[2] = new THREE.Box3(new THREE.Vector3(136.86987439472297, -2, 37.607029122153165), new THREE.Vector3(139.72427104182447, 10, 113.49595653976305));
+						houseBBoxes[3] = new THREE.Box3(new THREE.Vector3(73.8225104675347, -2, 109.97977706103694), new THREE.Vector3(137.63925878535912, 10, 113.86793023790936));
+						houseBBoxes[4] = new THREE.Box3(new THREE.Vector3(73.89429819609268, -2, 83.52235034462691), new THREE.Vector3(78.29069146628301, 10, 110.79158983531276));
 						houseBBoxes[5] = new THREE.Box3(new THREE.Vector3(78.29069146628301, -2, 83.83132369890478), new THREE.Vector3(102.55258961331263, 10, 86.79112362061738));
-						houseBBoxes[6] = new THREE.Box3(new THREE.Vector3(102.05598936666685, -2,83.05397473204764), new THREE.Vector3( 105.30265455528645, 10, 90.44204213247721));
-						houseBBoxes[7] = new THREE.Box3(new THREE.Vector3( 101.66524254755797, -2, 78.14923704537244), new THREE.Vector3( 105.26433731356099, 10, 80.48333655863605 ));
+						houseBBoxes[6] = new THREE.Box3(new THREE.Vector3(102.05598936666685, -2, 83.05397473204764), new THREE.Vector3(105.30265455528645, 10, 90.44204213247721));
+						houseBBoxes[7] = new THREE.Box3(new THREE.Vector3(101.66524254755797, -2, 78.14923704537244), new THREE.Vector3(105.26433731356099, 10, 80.48333655863605));
 						//hallway
-						houseBBoxes[8] = new THREE.Box3(new THREE.Vector3(102.1672300653852, -2, 76.40571876961706), new THREE.Vector3(118.57570038112543 , 10, 79.60202263221525));
-						houseBBoxes[9] = new THREE.Box3(new THREE.Vector3(102.04209337774811, -2 , 59.78905469175373), new THREE.Vector3(112.08040314336925, 10, 62.51315826844717));
+						houseBBoxes[8] = new THREE.Box3(new THREE.Vector3(102.1672300653852, -2, 76.40571876961706), new THREE.Vector3(118.57570038112543, 10, 79.60202263221525));
+						houseBBoxes[9] = new THREE.Box3(new THREE.Vector3(102.04209337774811, -2, 59.78905469175373), new THREE.Vector3(112.08040314336925, 10, 62.51315826844717));
 						houseBBoxes[10] = new THREE.Box3(new THREE.Vector3(106.00415390790605, -2, 55.583040700425836), new THREE.Vector3(108.17541240346326, 10, 59.73116781749373));
 						//hallway
 						houseBBoxes[11] = new THREE.Box3(new THREE.Vector3(108.13788084640933, -2, 55.58146246614765), new THREE.Vector3(118.57990744816739, 10, 57.93409726729914));
@@ -149,7 +155,7 @@
 						//staircase left
 						houseBBoxes[17] = new THREE.Box3(new THREE.Vector3(106.06325638714221, -2, 101.99279800009121), new THREE.Vector3(108.53603036713128, 5, 109.89594887144517));
 						houseBBoxes[18] = new THREE.Box3(new THREE.Vector3(106.06325638714221, -2, 96.52807025309652), new THREE.Vector3(108.53603036713128, 5, 99.12486930594356));
-						houseBBoxes[19] = new THREE.Box3(new THREE.Vector3(102.75237914596876, -2, 93.59451357590211), new THREE.Vector3( 104.07440090579423, 5, 106.32693286271763));
+						houseBBoxes[19] = new THREE.Box3(new THREE.Vector3(102.75237914596876, -2, 93.59451357590211), new THREE.Vector3(104.07440090579423, 5, 106.32693286271763));
 						houseBBoxes[20] = new THREE.Box3(new THREE.Vector3(104.04563588275458, -2, 102.72473068930334), new THREE.Vector3(106.35741905727425, 5, 105.70150361562314));
 						houseBBoxes[21] = new THREE.Box3(new THREE.Vector3(99.14810234678286, -2, 102.84673311258846), new THREE.Vector3(102.4701927602442, 5, 105.9941586203922));
 						houseBBoxes[22] = new THREE.Box3(new THREE.Vector3(99.01081155131915, -2, 108.76097375626866), new THREE.Vector3(100.45465324655719, 5, 110.05809480597372));
@@ -165,56 +171,57 @@
 						houseBBoxes[31] = new THREE.Box3(new THREE.Vector3(120.81195353525418, -2, 44.85460598627714), new THREE.Vector3(123.36836002979904, 4, 57.29577560969231));
 						houseBBoxes[32] = new THREE.Box3(new THREE.Vector3(120.41991895282634, -2, 36.31434396332208), new THREE.Vector3(123.78127666088803, 5, 42.40199278701425));
 						houseBBoxes[33] = new THREE.Box3(new THREE.Vector3(113.20785474958362, -2, 37.06839142999161), new THREE.Vector3(115.98320813363452, 5, 48.20875468450057));
-						houseBBoxes[34] = new THREE.Box3(new THREE.Vector3(115.98320813363452 , -2, 45.38157356103352), new THREE.Vector3(120.95116151756916, 5, 49.476061933511684));
+						houseBBoxes[34] = new THREE.Box3(new THREE.Vector3(115.98320813363452, -2, 45.38157356103352), new THREE.Vector3(120.95116151756916, 5, 49.476061933511684));
 						houseBBoxes[35] = new THREE.Box3(new THREE.Vector3(101.03194123374467, -2, 55.06100190931044), new THREE.Vector3(104.04633767665882, 5, 57.77163546582174));
-						houseBBoxes[36] = new THREE.Box3(new THREE.Vector3(129.1891253183756, 4.5 , 54.31888480089888), new THREE.Vector3(137.49359585119197, 10, 60.31888480089888));
+						houseBBoxes[36] = new THREE.Box3(new THREE.Vector3(129.1891253183756, 4.5, 54.31888480089888), new THREE.Vector3(137.49359585119197, 10, 60.31888480089888));
 						houseBBoxes[37] = new THREE.Box3(new THREE.Vector3(120.39636728351383, 4.5, 37.925722871428334), new THREE.Vector3(123.39636728351383, 10, 60.28532910808158));
 						houseBBoxes[38] = new THREE.Box3(new THREE.Vector3(122.92172008110063, 4.5, 60.28532910808158), new THREE.Vector3(124.92172008110063, 10, 61.78532910808158));
 						houseBBoxes[39] = new THREE.Box3(new THREE.Vector3(127.42795102807455, 4.5, 60.28532910808158), new THREE.Vector3(129.1504177923486, 10, 61.78532910808158));
 						console.log(house);
-						for(i = 0; i < houseBBoxCount; i++){
-							scene.add(new THREE.Box3Helper(houseBBoxes[i], 0xffff00)); 
+						for (i = 0; i < houseBBoxCount; i++) {
+							scene.add(new THREE.Box3Helper(houseBBoxes[i], 0xffff00));
 						}
-                    },
-                    // called while loading is progressing
-                    function (xhr) {
-                        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-                    },
-                    // called when loading has errors
-                    function (error) {
-                        console.log(error);
-                    });
+					},
+					// called while loading is progressing
+					function (xhr) {
+						console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+					},
+					// called when loading has errors
+					function (error) {
+						console.log(error);
+					});
 
-                loader.load('js/Objects/DoomGuy/doom2.0.glb', function (gltf) {
-                    doomGuy = gltf.scene;
+				loader.load('js/Objects/DoomGuy/doom2.0.glb', function (gltf) {
+					doomGuy = gltf.scene;
 					scene.add(doomGuy);
-                    doomGuy.position.set(55, -1.5, 19.5);
-                    doomGuy.name = "doomGuy";
-                    doomGuy.scale.set(1.5, 1.5, 1.5);
+					doomGuy.position.set(55, -1.5, 19.5);
+					doomGuy.name = "doomGuy";
+					doomGuy.scale.set(1.5, 1.5, 1.5);
 					mixer = new THREE.AnimationMixer(gltf.scene);
-                    walk = mixer.clipAction(gltf.animations[3]);
-                    run = mixer.clipAction(gltf.animations[0]);
-                    still = mixer.clipAction(gltf.animations[1]);
-                    stillToWalk = mixer.clipAction(gltf.animations[2])
+					walk = mixer.clipAction(gltf.animations[3]);
+					run = mixer.clipAction(gltf.animations[0]);
+					still = mixer.clipAction(gltf.animations[1]);
+					stillToWalk = mixer.clipAction(gltf.animations[2])
 
-                   });
-                loader.load('js/Objects/scene.gltf', function (gltf) {
-                    building = gltf.scene;
+				});
+				loader.load('js/Objects/scene.gltf', function (gltf) {
+					building = gltf.scene;
 					scene.add(building);
-                    building.position.z = -200; 
+					building.position.z = -200;
 					building.name = "building";
 					building.scale.set(3, 3, 3);
-					let i = 0;  
-					building.traverse( function ( child ) {
-						if ( child instanceof THREE.Object3D  ) {
-							buildingBBoxes[i] = new THREE.Box3(); 
+					let i = 0;
+					building.traverse(function (child) {
+						if (child instanceof THREE.Object3D) {
+							buildingBBoxes[i] = new THREE.Box3();
 							buildingBBoxes[i].setFromObject(child);
-			//				scene.add(new THREE.Box3Helper(buildingBBoxes[i], 0xffff00));
+							//				scene.add(new THREE.Box3Helper(buildingBBoxes[i], 0xffff00));
 							i++;
-						}});
+						}
+					});
 
-                   });	
-                loader.load('js/Objects/skull/scene.gltf', function (gltf) {
+				});
+				loader.load('js/Objects/skull/scene.gltf', function (gltf) {
 					skull = gltf.scene;
 					skull2 = gltf.scene.clone();
 					skull3 = gltf.scene.clone();
@@ -223,32 +230,32 @@
 					scene.add(skull2);
 					skull2.position.set(125.9, 9.6, 62.69);
 					scene.add(skull3);
-                    skull3.position.set(103.38610284366055, 0.5195993892745685, 68.39432633190229);
+					skull3.position.set(103.38610284366055, 0.5195993892745685, 68.39432633190229);
 					skull.visible = false;
 					skull2.visible = false;
 					skull3.visible = false;
-                   });				   
+				});
 				var backgroundLoader = new THREE.CubeTextureLoader(manager);
 
 				skyTexture = backgroundLoader.load([
-						'js/Objects/right.png',
-						'js/Objects/left.png',
-						'js/Objects/top.png',
-						'js/Objects/bottom.png',
-						'js/Objects/front.png',
-						'js/Objects/back.png',
+					'js/Objects/right.png',
+					'js/Objects/left.png',
+					'js/Objects/top.png',
+					'js/Objects/bottom.png',
+					'js/Objects/front.png',
+					'js/Objects/back.png',
 				]);
-            }
-            loadObjects();	
-		
-		var blocker = document.getElementById( 'blocker' );
-			var instructions = document.getElementById( 'instructions' );
+			}
+			loadObjects();
+
+			var blocker = document.getElementById('blocker');
+			var instructions = document.getElementById('instructions');
 			// https://www.html5rocks.com/en/tutorials/pointerlock/intro/
 			var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
-			if ( havePointerLock ) {
+			if (havePointerLock) {
 				var element = document.body;
-				var pointerlockchange = function ( event ) {
-					if ( document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element ) {
+				var pointerlockchange = function (event) {
+					if (document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
 						controlsEnabled = true;
 						controls.enabled = true;
 						blocker.style.display = 'none';
@@ -260,80 +267,80 @@
 						instructions.style.display = '';
 					}
 				};
-				var pointerlockerror = function ( event ) {
+				var pointerlockerror = function (event) {
 					instructions.style.display = '';
 				};
 				// Hook pointer lock state change events
-				document.addEventListener( 'pointerlockchange', pointerlockchange, false );
-				document.addEventListener( 'mozpointerlockchange', pointerlockchange, false );
-				document.addEventListener( 'webkitpointerlockchange', pointerlockchange, false );
-				document.addEventListener( 'pointerlockerror', pointerlockerror, false );
-				document.addEventListener( 'mozpointerlockerror', pointerlockerror, false );
-				document.addEventListener( 'webkitpointerlockerror', pointerlockerror, false );
-				instructions.addEventListener( 'click', function ( event ) {
+				document.addEventListener('pointerlockchange', pointerlockchange, false);
+				document.addEventListener('mozpointerlockchange', pointerlockchange, false);
+				document.addEventListener('webkitpointerlockchange', pointerlockchange, false);
+				document.addEventListener('pointerlockerror', pointerlockerror, false);
+				document.addEventListener('mozpointerlockerror', pointerlockerror, false);
+				document.addEventListener('webkitpointerlockerror', pointerlockerror, false);
+				instructions.addEventListener('click', function (event) {
 					instructions.style.display = 'none';
 					// Ask the browser to lock the pointer
 					element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
-					if ( /Firefox/i.test( navigator.userAgent ) ) {
-						var fullscreenchange = function ( event ) {
-							if ( document.fullscreenElement === element || document.mozFullscreenElement === element || document.mozFullScreenElement === element ) {
-								document.removeEventListener( 'fullscreenchange', fullscreenchange );
-								document.removeEventListener( 'mozfullscreenchange', fullscreenchange );
+					if (/Firefox/i.test(navigator.userAgent)) {
+						var fullscreenchange = function (event) {
+							if (document.fullscreenElement === element || document.mozFullscreenElement === element || document.mozFullScreenElement === element) {
+								document.removeEventListener('fullscreenchange', fullscreenchange);
+								document.removeEventListener('mozfullscreenchange', fullscreenchange);
 								element.requestPointerLock();
 							}
 						};
-						document.addEventListener( 'fullscreenchange', fullscreenchange, false );
-						document.addEventListener( 'mozfullscreenchange', fullscreenchange, false );
+						document.addEventListener('fullscreenchange', fullscreenchange, false);
+						document.addEventListener('mozfullscreenchange', fullscreenchange, false);
 						element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
 						element.requestFullscreen();
 					} else {
 						element.requestPointerLock();
 					}
-				}, false );
+				}, false);
 			} else {
 				instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
 			}
-		
-			init();
-		
-			function init() {
-				
-				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
-				scene = new THREE.Scene();
-                scene.fog = new THREE.Fog(0xffffff, 0, 750);
 
-				//FlashLight 
-												 //color, intensity, distance, angle, penumbra, decay 
-                var flashLight = new THREE.SpotLight(0xaabbcc, 4.2, 89.0, (Math.PI / 2), 1.0, 2.0);
+			init();
+
+			function init() {
+
+				camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+				scene = new THREE.Scene();
+				scene.fog = new THREE.Fog(0xffffff, 0, 750);
+
+				//FlashLight
+				//color, intensity, distance, angle, penumbra, decay
+				var flashLight = new THREE.SpotLight(0xaabbcc, 4.2, 89.0, (Math.PI / 2), 1.0, 2.0);
 				flashLight.angle = 0.5
-                //flashLight.position.set(0.5, 1, 0.75);
+				//flashLight.position.set(0.5, 1, 0.75);
 				//This sets the light to child of camera object
-                camera.add(flashLight);
-                flashLight.position.set(0, 0, 1);
-                flashLight.target = camera;
+				camera.add(flashLight);
+				flashLight.position.set(0, 0, 1);
+				flashLight.target = camera;
 				//scene.add( light );
-				var geometry = new THREE.BoxGeometry( 100, 100, 100 );
-				var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+				var geometry = new THREE.BoxGeometry(100, 100, 100);
+				var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
 				material.transparent = true;
 				material.opacity = 0;
-				cube = new THREE.Mesh( geometry, material );
+				cube = new THREE.Mesh(geometry, material);
 				camera.add(cube);
 				cube.position.set(0, 0, -75);
-                geometry = new THREE.PlaneGeometry( 3000, 3000,  );
-				material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+				geometry = new THREE.PlaneGeometry(3000, 3000);
+				material = new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide });
 				material.transparent = true;
 				material.opacity = 0;
-				var plane = new THREE.Mesh( geometry, material );
+				var plane = new THREE.Mesh(geometry, material);
 				scene.add(plane);
-				plane.rotateX( - Math.PI / 2);
+				plane.rotateX(- Math.PI / 2);
 				console.log(plane.position);
 				plane.position.y = -3;
-		
+
 				//Controls
-				controls = new THREE.PointerLockControls( camera );
-                scene.add(controls.getObject());
-				var onKeyDown = function ( event ) {
-					switch ( event.keyCode ) {
+				controls = new THREE.PointerLockControls(camera);
+				scene.add(controls.getObject());
+				var onKeyDown = function (event) {
+					switch (event.keyCode) {
 						case 38: // up
 						case 87: // w
 							moveForward = true;
@@ -350,25 +357,25 @@
 							moveRight = true;
 							break;
 						case 32: // space
-							if ( canJump === true ) controls.getObject().translateY(10);
+							if (canJump === true) controls.getObject().translateY(10);
 							canJump = false;
-                            break;
-//						case 17: //ctrl
-//                            if (flashLight.visible == true) {
-//                                flashLight.visible = false;
-//                                break;
-//                            }
-//                            else {
-//                                flashLight.visible = true;
-//                            }
+							break;
+						//						case 17: //ctrl
+						//                            if (flashLight.visible == true) {
+						//                                flashLight.visible = false;
+						//                                break;
+						//                            }
+						//                            else {
+						//                                flashLight.visible = true;
+						//                            }
 						case 67:
-                           // camera.fov = Math.atan(Math.tan(120 * Math.PI / 360) / camera.aspect) * 360 / Math.PI; // degrees
-                          //  camera.updateProjectionMatrix();
-                            break;
+							// camera.fov = Math.atan(Math.tan(120 * Math.PI / 360) / camera.aspect) * 360 / Math.PI; // degrees
+							//  camera.updateProjectionMatrix();
+							break;
 					}
 				};
-				var onKeyUp = function ( event ) {
-					switch( event.keyCode ) {
+				var onKeyUp = function (event) {
+					switch (event.keyCode) {
 						case 38: // up
 						case 87: // w
 							moveForward = false;
@@ -387,246 +394,273 @@
 							break;
 					}
 				};
-				document.addEventListener( 'keydown', onKeyDown, false );
-				document.addEventListener( 'keyup', onKeyUp, false );
-				
-		
-                window.addEventListener('resize', onWindowResize, false);
-				
-               
+				document.addEventListener('keydown', onKeyDown, false);
+				document.addEventListener('keyup', onKeyUp, false);
+
+
+				window.addEventListener('resize', onWindowResize, false);
+
+
 			}
 			function onWindowResize() {
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
-				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setSize(window.innerWidth, window.innerHeight);
 			}
-		
-		
-		
-			          
-            function menu() {
+
+
+
+
+			function menu() {
 				//
-                var loader = new THREE.FontLoader();
+				var loader = new THREE.FontLoader();
 
-                loader.load("js/Fonts/Insomnia_Regular.json", function (font) {
-                    let title = new THREE.TextBufferGeometry("Mood", {
-                        font: font,
-                        size: 10,
-                        height: 1,
-                        curveSegments: 12,
-                        bevelThickness: 1,
-                        bevelSize: .5,
-                        bevelEnabled: true
-                    });
-                    title.computeBoundingBox();
-                    let centerTitle = - 0.5 * ( title.boundingBox.max.x - title.boundingBox.min.x );
-                    let textMatTitle = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
-                    meshTitle = new THREE.Mesh(title, textMatTitle);
-                    meshTitle.position.set(centerTitle, 5, -65);
-                 
-                    scene.add(meshTitle);
-
-                    let start = new THREE.TextBufferGeometry("Start", {
+				loader.load("js/Fonts/Insomnia_Regular.json", function (font) {
+					let title = new THREE.TextBufferGeometry("Mood", {
 						font: font,
-                        size: 5,
-                        height: 1,
-                        curveSegments: 12,
-                        bevelThickness: 1,
-                        bevelSize: .5,
-                        bevelEnabled: true
-                    });
+						size: 10,
+						height: 1,
+						curveSegments: 12,
+						bevelThickness: 1,
+						bevelSize: .5,
+						bevelEnabled: true
+					});
+					title.computeBoundingBox();
+					let centerTitle = - 0.5 * (title.boundingBox.max.x - title.boundingBox.min.x);
+					let textMatTitle = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+					meshTitle = new THREE.Mesh(title, textMatTitle);
+					meshTitle.position.set(centerTitle, 5, -65);
+
+					scene.add(meshTitle);
+
+					let start = new THREE.TextBufferGeometry("Start", {
+						font: font,
+						size: 5,
+						height: 1,
+						curveSegments: 12,
+						bevelThickness: 1,
+						bevelSize: .5,
+						bevelEnabled: true
+					});
 					start.computeBoundingBox();
-                    let centerStart = - 0.5 * (start.boundingBox.max.x - start.boundingBox.min.x);
+					let centerStart = - 0.5 * (start.boundingBox.max.x - start.boundingBox.min.x);
 					let textMatStart = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
-                    meshStart = new THREE.Mesh(start, textMatStart);
-                    meshStart.position.set(centerStart, -10, -65);
-                    meshStart.visible = false;
-                    scene.add(meshStart);
+					meshStart = new THREE.Mesh(start, textMatStart);
+					meshStart.position.set(centerStart, -10, -65);
+					meshStart.visible = false;
+					scene.add(meshStart);
 
 					let option = new THREE.TextBufferGeometry("Options", {
 						font: font,
-                        size: 5,
-                        height: 1,
-                        curveSegments: 12,
-                        bevelThickness: 1,
-                        bevelSize: .5,
-                        bevelEnabled: true
-                    });
-                    option.computeBoundingBox();
-                    let centerOption = - 0.5 * (option.boundingBox.max.x - option.boundingBox.min.x);
+						size: 5,
+						height: 1,
+						curveSegments: 12,
+						bevelThickness: 1,
+						bevelSize: .5,
+						bevelEnabled: true
+					});
+					option.computeBoundingBox();
+					let centerOption = - 0.5 * (option.boundingBox.max.x - option.boundingBox.min.x);
 					let textMatOption = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
-                    meshOption = new THREE.Mesh(option, textMatOption);
-                    meshOption.position.set(centerOption, -20, -65);
-                    meshOption.visible = false;
-                    scene.add(meshOption);
+					meshOption = new THREE.Mesh(option, textMatOption);
+					meshOption.position.set(centerOption, -20, -65);
+					meshOption.visible = false;
+					scene.add(meshOption);
 
 					let exit = new THREE.TextBufferGeometry("Exit", {
 						font: font,
-                        size: 5,
-                        height: 1,
-                        curveSegments: 12,
-                        bevelThickness: 1,
-                        bevelSize: .5,
-                        bevelEnabled: true
-                    });
-                    exit.computeBoundingBox();
-                    let centerExit = - 0.5 * (exit.boundingBox.max.x - exit.boundingBox.min.x);
+						size: 5,
+						height: 1,
+						curveSegments: 12,
+						bevelThickness: 1,
+						bevelSize: .5,
+						bevelEnabled: true
+					});
+					exit.computeBoundingBox();
+					let centerExit = - 0.5 * (exit.boundingBox.max.x - exit.boundingBox.min.x);
 					let textMatExit = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
-                    meshExit = new THREE.Mesh(exit, textMatExit);
-                    meshExit.position.set(centerExit, -30, -65);
-                    meshExit.visible = false;
-                    scene.add(meshExit);
+					meshExit = new THREE.Mesh(exit, textMatExit);
+					meshExit.position.set(centerExit, -30, -65);
+					meshExit.visible = false;
+					scene.add(meshExit);
 
-				
+
 
 				});
 
-                
-            }
+
+			}
 
 			menu()
 
 
 			var num = 0;
-            function menuSystem() {
-                camera.getWorldDirection(direction);
-                var position = new THREE.Vector3();
-                camera.getWorldPosition(position);
-                menuSelect.set(position, direction);
+			function menuSystem() {
+				camera.getWorldDirection(direction);
+				var position = new THREE.Vector3();
+				camera.getWorldPosition(position);
+				menuSelect.set(position, direction);
 
-                menuOption = menuSelect.intersectObject(meshOption, true);
-                menuTitle = menuSelect.intersectObject(meshTitle, true);
-                menuStart = menuSelect.intersectObject(meshStart, true);
-                menuExit = menuSelect.intersectObject(meshExit, true);
+				menuOption = menuSelect.intersectObject(meshOption, true);
+				menuTitle = menuSelect.intersectObject(meshTitle, true);
+				menuStart = menuSelect.intersectObject(meshStart, true);
+				menuExit = menuSelect.intersectObject(meshExit, true);
 
-                if (menuTitle[0]) {
-                    num++;
-                    meshTitle.material.color.set(0xFFFFFF);
-                    if (num > 70) {
-                       
-                        meshStart.visible = true;
-                        meshOption.visible = true;
-                        meshExit.visible = true;
-                        num = 0;
+				if (menuTitle[0]) {
+					num++;
+					meshTitle.material.color.set(0xFFFFFF);
+					if (num > 70) {
 
-                    }
-                }
-                else if (menuStart[0]) {
-                    num++;
-                    meshStart.material.color.set(0xFFFFFF)
-                    if (num > 70) {
-                        num = 0;
-                        house.visible = true;
-                        camera.position.set(105, 0, 83);
-                        chaseSound();
+						meshStart.visible = true;
+						meshOption.visible = true;
+						meshExit.visible = true;
+						num = 0;
+
+					}
+				}
+				else if (menuStart[0]) {
+					num++;
+					meshStart.material.color.set(0xFFFFFF)
+					if (num > 70) {
+						num = 0;
+						house.visible = true;
+						camera.position.set(105, 0, 83);
+						chaseSound();
                         ambientNoise();
-                        meshTitle.visible = false;
-                        meshStart.visible = false;
-                        meshOption.visible = false;
-                        meshExit.visible = false;
-                        doomGuy.visible = true;
-                        skull.visible = true;
-                        skull2.visible = true;
-                        skull3.visible = true;
-                        //   seeTitleScreen = false;
-                    }
-                }
-                else if (menuOption[0]) {
-                    num++;
-                    meshOption.material.color.set(0xFFFFFF);
-                    if (num > 70) {
+                        //doomGuyPath();
+						meshTitle.visible = false;
+						meshStart.visible = false;
+						meshOption.visible = false;
+						meshExit.visible = false;
+						doomGuy.visible = true;
+						skull.visible = true;
+						skull2.visible = true;
+						skull3.visible = true;
+						//   seeTitleScreen = false;
+					}
+				}
+				else if (menuOption[0]) {
+					num++;
+					meshOption.material.color.set(0xFFFFFF);
+					if (num > 70) {
 
-                    }
-                }
+					}
+				}
 				else if (menuExit[0]) {
-                    num++;
-                    meshExit.material.color.set(0xFFFFFF);
-                    if (num > 70) {
+					num++;
+					meshExit.material.color.set(0xFFFFFF);
+					if (num > 70) {
 
-                    }
-                }
-                else {
-                    meshTitle.material.color.set(0xFF0000);
-                    meshStart.material.color.set(0xFF0000);
-                    meshOption.material.color.set(0xFF0000);
-                    meshExit.material.color.set(0xFF0000);
-                    num = 0;
-                }
+					}
+				}
+				else {
+					meshTitle.material.color.set(0xFF0000);
+					meshStart.material.color.set(0xFF0000);
+					meshOption.material.color.set(0xFF0000);
+					meshExit.material.color.set(0xFF0000);
+					num = 0;
+				}
+
+			}
+
+
+            function doomGuyPath() {
+                entityManager = new YUKA.EntityManager();
+                //time = new YUKA.Time();
+                vehicle = new YUKA.Vehicle();
+
+                vehicle.setRenderCompnent(doomGuy, sync);
+
+                const path = new YUKA.Path();
+
+                path.loop = true;
+                path.add(new YUKA.Vector3(50.20959058991704, -0.5000000000000049, 22.776673254478155));
+                path.add(new YUKA.Vector3(90.96924973930662, -0.5000000000000169, 76.48312839711204));
+
+                vehicle.position.copy(path.current());
+
+                const followPathBehavior = new YUKA.followPathBehavior(path, 0.5);
+                vehicle.steering.add(followPathBehavior);
+
+                entityManager.add(vehicle);
+
+            }
+
+            function sync(entity, renderComponent) {
+                renderComponent.matrix.copy(entity.worldMatrix);
+            }
+
+			function doomGuyChase() {
+				var player = new THREE.Vector3();				//These two lines create an empty vector and copy the current position of the player into it,
+				camera.getWorldPosition(player);            	//so we can make something chase the player.
+				doomGuy.translateOnAxis(doomGuy.worldToLocal(player), .01);
 
             }
 
 
-			function doomGuyChase(){
-			var player = new THREE.Vector3();				//These two lines create an empty vector and copy the current position of the player into it,
-			camera.getWorldPosition(player);            	//so we can make something chase the player.   
-			doomGuy.translateOnAxis(doomGuy.worldToLocal(player), .01);		
-			
-			}
-			
-			
 
 
 			//WORKING ON SOUND HERE
-            var listener = new THREE.AudioListener();
-            camera.add(listener);
-            var audioLoader = new THREE.AudioLoader();
+			var listener = new THREE.AudioListener();
+			camera.add(listener);
+			var audioLoader = new THREE.AudioLoader();
 
 			//AMBIENT SOUND
-            function ambientNoise() {
-                var ambientFloor = new THREE.Audio(listener);
-                audioLoader.load('js/Sounds/floorCracking.ogg', function (buffer) {
-                    ambientFloor.setBuffer(buffer);
-                    ambientFloor.setLoop(true);
-                    ambientFloor.setVolume(.7);
-                    ambientFloor.play();
-                });
+			function ambientNoise() {
+				var ambientFloor = new THREE.Audio(listener);
+				audioLoader.load('js/Sounds/floorCracking.ogg', function (buffer) {
+					ambientFloor.setBuffer(buffer);
+					ambientFloor.setLoop(true);
+					ambientFloor.setVolume(.7);
+					ambientFloor.play();
+				});
 
-                var ambientWind = new THREE.Audio(listener);
-                audioLoader.load('js/Sounds/howlingWind.ogg', function (buffer) {
-                    ambientWind.setBuffer(buffer);
-                    ambientWind.setLoop(true);
-                    ambientWind.setVolume(.5);
-                    ambientWind.play();
-                });
-            }
+				var ambientWind = new THREE.Audio(listener);
+				audioLoader.load('js/Sounds/howlingWind.ogg', function (buffer) {
+					ambientWind.setBuffer(buffer);
+					ambientWind.setLoop(true);
+					ambientWind.setVolume(.5);
+					ambientWind.play();
+				});
+			}
 
 			//CHASE SOUND
-            function chaseSound() {
-                var doom1 = new THREE.PositionalAudio(listener);
-                //doom1.setDirectionalCone(180, 230, 0.1);
-                //var helper = new PositionalAudioHelper(doom1, 0.1);
-                //doom1.add(helper);
-                audioLoader.load('js/Sounds/rip_and_tear.ogg', function (buffer) {
-                    doom1.setBuffer(buffer);
-                    doom1.setRefDistance(4);
-                    doom1.play();
-                });
-                doomGuy.add(doom1);
-            }
-            
+			function chaseSound() {
+				var doom1 = new THREE.PositionalAudio(listener);
+				//doom1.setDirectionalCone(180, 230, 0.1);
+				//var helper = new PositionalAudioHelper(doom1, 0.1);
+				//doom1.add(helper);
+				audioLoader.load('js/Sounds/rip_and_tear.ogg', function (buffer) {
+					doom1.setBuffer(buffer);
+					doom1.setRefDistance(4);
+					doom1.play();
+				});
+				doomGuy.add(doom1);
+			}
 
-			
-			
 
-			function updateRaycasters(){
-				var position = new THREE.Vector3();		
+
+
+
+			function updateRaycasters() {
+				var position = new THREE.Vector3();
 				camera.getWorldPosition(position);
 				raycasterD.set(position, directionD);
-				if(cubeBBox.intersectsBox(doomGuyBBox)){
+				if (cubeBBox.intersectsBox(doomGuyBBox)) {
 					seeDoomGuy = true;
 					walk.stop();
 					still.play();
 				}
-				else{
-					seeDoomGuy = false; 
+				else {
+					seeDoomGuy = false;
 				}
-				
+
 				collisionsD = raycasterD.intersectObjects(scene.children, true);
-				
+
 
 
 			}
-			function checkDeath(){
+			function checkDeath() {
 				doomGuyBBox.setFromObject(doomGuy);
 				doomGuyBBox.min.x -= 3;
 				doomGuyBBox.min.y -= 3;
@@ -634,13 +668,13 @@
 				doomGuyBBox.max.x += 3;
 				doomGuyBBox.max.y += 3;
 				doomGuyBBox.max.z += 3;
-				if(doomGuyBBox.containsPoint(camera.position) && !seeDoomGuy){
-					scene =  scene2; 
+				if (doomGuyBBox.containsPoint(camera.position) && !seeDoomGuy) {
+					scene = scene2;
 				}
-			
+
 			}
-			
-            function setSkullBBoxs() {
+
+			function setSkullBBoxs() {
 				skullBBox = new THREE.Box3();
 				skullBBox.setFromObject(skull);
 				skullBBox.min.x -= 5;
@@ -664,151 +698,154 @@
 				skullBBox3.min.z -= 5;
 				skullBBox3.max.x += 5;
 				skullBBox3.max.y += 5;
-				skullBBox3.max.z += 5;	
+				skullBBox3.max.z += 5;
 			}
 
-			function rotateSkulls(){
+			function rotateSkulls() {
 				skull.rotateY(.1);
 				skull2.rotateY(.1);
 				skull3.rotateY(.1);
 			}
-			
-            function checkSkulls() {
 
-                //Count amount of skulls collected & setting visibility
-				if(skullBBox.containsPoint(camera.position) && skull.visible){
+			function checkSkulls() {
+
+				//Count amount of skulls collected & setting visibility
+				if (skullBBox.containsPoint(camera.position) && skull.visible) {
 					skullCount++;
-                }
+				}
 
 				//checks if camera is touching skulls BBox, and if the skull is visible
 				//if so, the collect sound is played, and the skull is visibility is set to false
-                if (skullBBox.containsPoint(camera.position)&&skull.visible) {
-                    skullCollectSound();
+				if (skullBBox.containsPoint(camera.position) && skull.visible) {
+					skullCollectSound();
 					skull.visible = false;
-                    }
+				}
 
-				if(skullBBox2.containsPoint(camera.position) && skull2.visible){
+				if (skullBBox2.containsPoint(camera.position) && skull2.visible) {
 					skullCount++;
-				}				
-				
-                if (skullBBox2.containsPoint(camera.position)&&skull2.visible) {
+				}
+
+				if (skullBBox2.containsPoint(camera.position) && skull2.visible) {
 					skullCollectSound();
 					skull2.visible = false;
-                    }	
+				}
 
-				if(skullBBox3.containsPoint(camera.position) && skull3.visible){
+				if (skullBBox3.containsPoint(camera.position) && skull3.visible) {
 					skullCount++;
-				}				
-				
-                if (skullBBox3.containsPoint(camera.position)&&skull3.visible) {
+				}
+
+				if (skullBBox3.containsPoint(camera.position) && skull3.visible) {
 					skullCollectSound();
 					skull3.visible = false;
-				}					
-            }
+				}
+			}
 
-            function skullCollectSound() {
-                //Collect audio
-                    var collectSound = new THREE.Audio(listener);
-                    audioLoader.load('js/Sounds/collect_sound.ogg', function (buffer) {
-                        collectSound.setBuffer(buffer);
-                        collectSound.setLoop(false);
-                        collectSound.setVolume(.1);
-                        collectSound.play();
-                    });
-                
-            }
-			
-			function checkLevelProgression(){
-				if(skullCount == 3 && building.visible == false){
-					building.visible = true; 
-					house.visible = false; 
+			function skullCollectSound() {
+				//Collect audio
+				var collectSound = new THREE.Audio(listener);
+				audioLoader.load('js/Sounds/collect_sound.ogg', function (buffer) {
+					collectSound.setBuffer(buffer);
+					collectSound.setLoop(false);
+					collectSound.setVolume(.1);
+					collectSound.play();
+				});
+
+			}
+
+			function checkLevelProgression() {
+				if (skullCount == 3 && building.visible == false) {
+					building.visible = true;
+					house.visible = false;
 				}
 			}
 
 			function follow() {
-				doomGuy.rotation.y = Math.atan2( ( camera.position.x - doomGuy.position.x ), ( camera.position.z - doomGuy.position.z) );
-            }
+				doomGuy.rotation.y = Math.atan2((camera.position.x - doomGuy.position.x), (camera.position.z - doomGuy.position.z));
+			}
 
 
-		
-			
+
+
 			var animate = function () {
 				cubeBBox.setFromObject(cube);
 				rotateSkulls();
 				checkSkulls();
-                checkLevelProgression();
-                checkDeath();
-                follow();
+				checkLevelProgression();
+				checkDeath();
+				follow();
 				dt = (Date.now() - lastFrame) / 1000
 
-				if(mixer){
-					mixer.update(dt)        
+				if (mixer) {
+					mixer.update(dt)
 				}
 
-				lastFrame=Date.now()				
+				lastFrame = Date.now()
 
-                requestAnimationFrame(animate);
-                menuSystem();
+				requestAnimationFrame(animate);
+				menuSystem();
                 updateRaycasters();
 
-				if (seeDoomGuy == false && seeTitleScreen == false){
-				
-                    doomGuyChase();
+                const delt = .5;
+                entityManager.update(delt);
+
+				if (seeDoomGuy == false && seeTitleScreen == false) {
+
+					doomGuyChase();
 					walk.play();
 				}
-				if ( controlsEnabled ) {
-			
+				if (controlsEnabled) {
+
 					var delta = .5;
 
-					if(moveForward){
+					if (moveForward) {
 						controls.getObject().translateZ(-delta);
 					}
-					if(moveBackward){
+					if (moveBackward) {
 						controls.getObject().translateZ(delta);
 					}
-					if(moveLeft){
+					if (moveLeft) {
 						controls.getObject().translateX(-delta);
 					}
-					if(moveRight){
+					if (moveRight) {
 						controls.getObject().translateX(delta);
 					}
 
-					if(collisionsD[0]){
-						controls.getObject().position.y = collisionsD[0].point.y + 2.5; 
+					if (collisionsD[0]) {
+						controls.getObject().position.y = collisionsD[0].point.y + 2.5;
 					}
-					if(house.visible){	
-						for( i = 0; i < houseBBoxCount; i++){
-							if(moveForward && houseBBoxes[i].containsPoint(camera.position)){
-							moveForward = false;
-							controls.getObject().translateZ(delta);
-							}	
-							if(moveBackward && houseBBoxes[i].containsPoint(camera.position)){
-							moveBackward = false;
-							controls.getObject().translateZ(-delta);
-							}	
-							if(moveLeft && houseBBoxes[i].containsPoint(camera.position)){
-							moveLeft = false;
-							controls.getObject().translateX(delta);
-							}	
-							if(moveRight && houseBBoxes[i].containsPoint(camera.position)){
-							moveRight = false;
-							controls.getObject().translateX(-delta);
-							}	
+					if (house.visible) {
+						for (i = 0; i < houseBBoxCount; i++) {
+							if (moveForward && houseBBoxes[i].containsPoint(camera.position)) {
+								moveForward = false;
+								controls.getObject().translateZ(delta);
+							}
+							if (moveBackward && houseBBoxes[i].containsPoint(camera.position)) {
+								moveBackward = false;
+								controls.getObject().translateZ(-delta);
+							}
+							if (moveLeft && houseBBoxes[i].containsPoint(camera.position)) {
+								moveLeft = false;
+								controls.getObject().translateX(delta);
+							}
+							if (moveRight && houseBBoxes[i].containsPoint(camera.position)) {
+								moveRight = false;
+								controls.getObject().translateX(-delta);
+							}
 						}
 					}
 				}
-				renderer.render( scene, camera );
-				
-		
-				if(doomGuy.position.y != -2){
+				renderer.render(scene, camera);
+
+
+				if (doomGuy.position.y != -2) {
 					doomGuy.position.y = -2;
 				}
 			};
-            function logDirection() {
-				console.log(camera.position); 
-				
-							
-					
+			function logDirection() {
+				console.log(camera.position);
+
+
+
 				//console.log(doomGuyBBox);
 				//console.log(skull);
 				//console.log(skullCount);
@@ -816,8 +853,8 @@
 				//console.log(controls.getObject().position);
 				//console.log(directionR);
 			}
-		
-			
+
+
 		</script>
 	</body>
 </html>

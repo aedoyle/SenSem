@@ -76,10 +76,10 @@ class MessageDispatcher {
 	/**
 	* Used to process delayed messages.
 	*
-	* @param {Number} delta - The time delta.
+	* @param {Number} delt - The time delt.
 	* @return {MessageDispatcher} A reference to this message dispatcher.
 	*/
-	dispatchDelayedMessages( delta ) {
+	dispatchDelayedMessages( delt ) {
 
 		let i = this.delayedTelegrams.length;
 
@@ -87,7 +87,7 @@ class MessageDispatcher {
 
 			const telegram = this.delayedTelegrams[ i ];
 
-			telegram.delay -= delta;
+			telegram.delay -= delt;
 
 			if ( telegram.delay <= 0 ) {
 

@@ -58,15 +58,15 @@ class WanderBehavior extends SteeringBehavior {
 	*
 	* @param {Vehicle} vehicle - The game entity the force is produced for.
 	* @param {Vector3} force - The force/result vector.
-	* @param {Number} delta - The time delta.
+	* @param {Number} delt - The time delt.
 	* @return {Vector3} The force/result vector.
 	*/
-	calculate( vehicle, force, delta ) {
+	calculate( vehicle, force, delt ) {
 
 		// this behavior is dependent on the update rate, so this line must be
 		// included when using time independent frame rate
 
-		const jitterThisTimeSlice = this.jitter * delta;
+		const jitterThisTimeSlice = this.jitter * delt;
 
 		// prepare random vector
 

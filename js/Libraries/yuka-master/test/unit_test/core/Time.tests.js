@@ -18,11 +18,11 @@ describe( 'Time', function () {
 
 			expect( time ).to.have.a.property( '_previousTime' ).that.is.equal( 0 );
 			expect( time ).to.have.a.property( '_currentTime' ).that.is.equal( 0 );
-			expect( time ).to.have.a.property( '_delta' ).that.is.equal( 0 );
+			expect( time ).to.have.a.property( '_delt' ).that.is.equal( 0 );
 			expect( time ).to.have.a.property( '_elapsed' ).that.is.equal( 0 );
 			expect( time ).to.have.a.property( '_timescale' ).that.is.equal( 1 );
-			expect( time ).to.have.a.property( '_useFixedDelta' ).that.be.false;
-			expect( time ).to.have.a.property( '_fixedDelta' ).that.is.equal( 16.67 );
+			expect( time ).to.have.a.property( '_useFixeddelt' ).that.be.false;
+			expect( time ).to.have.a.property( '_fixeddelt' ).that.is.equal( 16.67 );
 
 		} );
 
@@ -66,19 +66,19 @@ describe( 'Time', function () {
 
 	} );
 
-	describe( '#enableFixedDelta()/#disableFixedDelta()', function () {
+	describe( '#enableFixeddelt()/#disableFixeddelt()', function () {
 
-		it( 'should enable/disable the usage of a fixed delta value.', function () {
+		it( 'should enable/disable the usage of a fixed delt value.', function () {
 
 			const time = new Time();
 
-			time.enableFixedDelta();
+			time.enableFixeddelt();
 
-			expect( time._useFixedDelta ).to.be.true;
+			expect( time._useFixeddelt ).to.be.true;
 
-			time.disableFixedDelta();
+			time.disableFixeddelt();
 
-			expect( time._useFixedDelta ).to.be.false;
+			expect( time._useFixeddelt ).to.be.false;
 
 		} );
 
@@ -113,14 +113,14 @@ describe( 'Time', function () {
 
 	} );
 
-	describe( '#getDelta()', function () {
+	describe( '#getdelt()', function () {
 
-		it( 'should return the delta time in seconds', function () {
+		it( 'should return the delt time in seconds', function () {
 
 			const time = new Time();
-			time._delta = 1000; // ms
+			time._delt = 1000; // ms
 
-			expect( time.getDelta() ).to.equal( 1 );
+			expect( time.getdelt() ).to.equal( 1 );
 
 		} );
 
@@ -139,14 +139,14 @@ describe( 'Time', function () {
 
 	} );
 
-	describe( '#setFixedDelta()/#getFixedDelta()', function () {
+	describe( '#setFixeddelt()/#getFixeddelt()', function () {
 
-		it( 'should set and return fixed time delta value', function () {
+		it( 'should set and return fixed time delt value', function () {
 
 			const time = new Time();
-			time.setFixedDelta( 1 );
+			time.setFixeddelt( 1 );
 
-			expect( time.getFixedDelta() ).to.equal( 1 );
+			expect( time.getFixeddelt() ).to.equal( 1 );
 
 		} );
 
@@ -180,24 +180,24 @@ describe( 'Time', function () {
 
 	describe( '#update()', function () {
 
-		it( 'should update the delta and elapsed time', function () {
+		it( 'should update the delt and elapsed time', function () {
 
 			const time = new Time();
 			time.update();
 
-			expect( time.getDelta() ).to.be.above( 0 );
+			expect( time.getdelt() ).to.be.above( 0 );
 			expect( time.getElapsed() ).to.be.above( 0 );
 
 		} );
 
-		it( 'should update the delta and elapsed time with a fixed time delta if configured', function () {
+		it( 'should update the delt and elapsed time with a fixed time delt if configured', function () {
 
 			const time = new Time();
-			time.setFixedDelta( 1 );
-			time.enableFixedDelta();
+			time.setFixeddelt( 1 );
+			time.enableFixeddelt();
 			time.update();
 
-			expect( time.getDelta() ).to.equal( 1 );
+			expect( time.getdelt() ).to.equal( 1 );
 			expect( time.getElapsed() ).to.equal( 1 );
 
 		} );
@@ -205,19 +205,19 @@ describe( 'Time', function () {
 		it( 'should respect the timescale when updating', function () {
 
 			const time = new Time();
-			time.setFixedDelta( 1 );
-			time.enableFixedDelta();
+			time.setFixeddelt( 1 );
+			time.enableFixeddelt();
 
 			time.setTimescale( 2 );
 			time.update();
 
-			expect( time.getDelta() ).to.equal( 2 );
+			expect( time.getdelt() ).to.equal( 2 );
 			expect( time.getElapsed() ).to.equal( 2 );
 
 			time.setTimescale( 0.5 );
 			time.update();
 
-			expect( time.getDelta() ).to.equal( 0.5 );
+			expect( time.getdelt() ).to.equal( 0.5 );
 			expect( time.getElapsed() ).to.equal( 2.5 );
 
 		} );

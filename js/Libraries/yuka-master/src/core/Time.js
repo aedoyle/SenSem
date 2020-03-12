@@ -13,15 +13,15 @@ class Time {
 		this._previousTime = 0;
 		this._currentTime = 0;
 
-		this._delta = 0;
+		this._delt = 0;
 		this._elapsed = 0;
 
 		this._timescale = 1;
 
-		this._useFixedDelta = false;
-		this._fixedDelta = 16.67; // ms, corresponds to approx. 60 FPS
+		this._useFixeddelt = false;
+		this._fixeddelt = 16.67; // ms, corresponds to approx. 60 FPS
 
-		// use Page Visibility API to avoid large time delta values
+		// use Page Visibility API to avoid large time delt values
 
 		this._usePageVisibilityAPI = ( typeof document !== 'undefined' && document.hidden !== undefined );
 
@@ -36,13 +36,13 @@ class Time {
 	}
 
 	/**
-	* Disables the usage of a fixed delta value.
+	* Disables the usage of a fixed delt value.
 	*
 	* @return {Time} A reference to this time object.
 	*/
-	disableFixedDelta() {
+	disableFixeddelt() {
 
-		this._useFixedDelta = false;
+		this._useFixeddelt = false;
 
 		return this;
 
@@ -66,33 +66,33 @@ class Time {
 	}
 
 	/**
-	* Enables the usage of a fixed delta value. Can be useful for debugging and testing.
+	* Enables the usage of a fixed delt value. Can be useful for debugging and testing.
 	*
 	* @return {Time} A reference to this time object.
 	*/
-	enableFixedDelta() {
+	enableFixeddelt() {
 
-		this._useFixedDelta = true;
+		this._useFixeddelt = true;
 
 		return this;
 
 	}
 
 	/**
-	* Returns the delta time in seconds. Represents the completion time in seconds since
+	* Returns the delt time in seconds. Represents the completion time in seconds since
 	* the last simulation step.
 	*
-	* @return {Number} The delta time in seconds.
+	* @return {Number} The delt time in seconds.
 	*/
-	getDelta() {
+	getdelt() {
 
-		return this._delta / 1000;
+		return this._delt / 1000;
 
 	}
 
 	/**
 	* Returns the elapsed time in seconds. It's the accumulated
-	* value of all previous time deltas.
+	* value of all previous time delts.
 	*
 	* @return {Number} The elapsed time in seconds.
 	*/
@@ -103,13 +103,13 @@ class Time {
 	}
 
 	/**
-	* Returns the fixed delta time in seconds.
+	* Returns the fixed delt time in seconds.
 	*
-	* @return {Number} The fixed delta time in seconds.
+	* @return {Number} The fixed delt time in seconds.
 	*/
-	getFixedDelta() {
+	getFixeddelt() {
 
-		return this._fixedDelta / 1000;
+		return this._fixeddelt / 1000;
 
 	}
 
@@ -138,14 +138,14 @@ class Time {
 	}
 
 	/**
-	* Sets a fixed time delta value.
+	* Sets a fixed time delt value.
 	*
-	* @param {Number} fixedDelta - Fixed time delta in seconds.
+	* @param {Number} fixeddelt - Fixed time delt in seconds.
 	* @return {Time} A reference to this time object.
 	*/
-	setFixedDelta( fixedDelta ) {
+	setFixeddelt( fixeddelt ) {
 
-		this._fixedDelta = fixedDelta * 1000;
+		this._fixeddelt = fixeddelt * 1000;
 
 		return this;
 
@@ -173,22 +173,22 @@ class Time {
 	*/
 	update() {
 
-		if ( this._useFixedDelta === true ) {
+		if ( this._useFixeddelt === true ) {
 
-			this._delta = this._fixedDelta;
+			this._delt = this._fixeddelt;
 
 		} else {
 
 			this._previousTime = this._currentTime;
 			this._currentTime = this._now();
 
-			this._delta = this._currentTime - this._previousTime;
+			this._delt = this._currentTime - this._previousTime;
 
 		}
 
-		this._delta *= this._timescale;
+		this._delt *= this._timescale;
 
-		this._elapsed += this._delta; // _elapsed is the accumulation of all previous deltas
+		this._elapsed += this._delt; // _elapsed is the accumulation of all previous delts
 
 		return this;
 

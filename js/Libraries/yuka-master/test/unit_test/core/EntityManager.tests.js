@@ -140,12 +140,12 @@ describe( 'EntityManager', function () {
 		it( 'should call the update method of game entities', function () {
 
 			const manager = new EntityManager();
-			const delta = 1;
+			const delt = 1;
 
 			const entity = new CustomEntity();
 			manager.add( entity );
 
-			manager.update( delta );
+			manager.update( delt );
 
 			expect( entity.updated ).to.be.true;
 
@@ -190,13 +190,13 @@ describe( 'EntityManager', function () {
 		it( 'should process a trigger (update region and test with other entities)', function () {
 
 			const manager = new EntityManager();
-			const delta = 1;
+			const delt = 1;
 
 			const trigger = new CustomTrigger();
 
 			manager.add( trigger );
 
-			manager.update( delta );
+			manager.update( delt );
 
 			expect( trigger.regionUpdated ).to.be.true;
 
@@ -271,7 +271,7 @@ describe( 'EntityManager', function () {
 			const cellsX = 5, cellsY = 5, cellsZ = 5;
 
 			const manager = new EntityManager();
-			const delta = 1;
+			const delt = 1;
 			manager.spatialIndex = new CellSpacePartitioning( height, width, depth, cellsX, cellsY, cellsZ );
 
 			const entity1 = new GameEntity();
@@ -287,9 +287,9 @@ describe( 'EntityManager', function () {
 
 			// the entities needs to be updated once in order to have a valid assignment to a partition
 
-			manager.updateEntity( entity1, delta );
-			manager.updateEntity( entity2, delta );
-			manager.updateEntity( entity3, delta );
+			manager.updateEntity( entity1, delt );
+			manager.updateEntity( entity2, delt );
+			manager.updateEntity( entity3, delt );
 			manager.updateNeighborhood( entity1 );
 
 			expect( entity1.neighbors ).to.include( entity2 );
@@ -304,11 +304,11 @@ describe( 'EntityManager', function () {
 		it( 'should update a single game entity', function () {
 
 			const manager = new EntityManager();
-			const delta = 1;
+			const delt = 1;
 
 			const entity = new CustomEntity();
 
-			manager.updateEntity( entity, delta );
+			manager.updateEntity( entity, delt );
 			expect( entity.updated ).to.be.true;
 
 		} );
@@ -316,12 +316,12 @@ describe( 'EntityManager', function () {
 		it( 'should only update the game entity if it is active', function () {
 
 			const manager = new EntityManager();
-			const delta = 1;
+			const delt = 1;
 
 			const entity = new CustomEntity();
 			entity.active = false;
 
-			manager.updateEntity( entity, delta );
+			manager.updateEntity( entity, delt );
 			expect( entity.updated ).to.be.false;
 
 		} );
@@ -329,7 +329,7 @@ describe( 'EntityManager', function () {
 		it( 'should update the neighborhood of a game entity if necessary', function () {
 
 			const manager = new EntityManager();
-			const delta = 1;
+			const delt = 1;
 
 			const entity1 = new GameEntity();
 			entity1.updateNeighborhood = true;
@@ -338,7 +338,7 @@ describe( 'EntityManager', function () {
 			manager.add( entity1 );
 			manager.add( entity2 );
 
-			manager.updateEntity( entity1, delta );
+			manager.updateEntity( entity1, delt );
 
 			expect( entity1.neighbors ).to.include( entity2 );
 			expect( entity2.neighbors ).to.be.empty;
@@ -348,14 +348,14 @@ describe( 'EntityManager', function () {
 		it( 'should update a single game entity and its children', function () {
 
 			const manager = new EntityManager();
-			const delta = 1;
+			const delt = 1;
 
 			const entity1 = new CustomEntity();
 			const entity2 = new CustomEntity();
 
 			entity1.add( entity2 );
 
-			manager.updateEntity( entity1, delta );
+			manager.updateEntity( entity1, delt );
 			expect( entity1.updated ).to.be.true;
 			expect( entity2.updated ).to.be.true;
 
@@ -368,12 +368,12 @@ describe( 'EntityManager', function () {
 
 			const manager = new EntityManager();
 			manager.spatialIndex = new CellSpacePartitioning( height, width, depth, cellsX, cellsY, cellsZ );
-			const delta = 1;
+			const delt = 1;
 
 			const entity = new CustomEntity();
 			entity.position.set( - 5, - 5, - 5 );
 
-			manager.updateEntity( entity, delta );
+			manager.updateEntity( entity, delt );
 
 			expect( manager._indexMap.get( entity ) ).to.equal( 0 );
 
@@ -382,7 +382,7 @@ describe( 'EntityManager', function () {
 		it( 'should call the callback function for a render component if set', function () {
 
 			const manager = new EntityManager();
-			const delta = 1;
+			const delt = 1;
 
 			const gameEntity = new GameEntity();
 			const mesh = {};
@@ -396,18 +396,18 @@ describe( 'EntityManager', function () {
 
 			gameEntity.setRenderComponent( mesh, callback );
 
-			manager.updateEntity( gameEntity, delta );
+			manager.updateEntity( gameEntity, delt );
 
 		} );
 
 		it( 'should add a trigger to the internal trigger array', function () {
 
 			const manager = new EntityManager();
-			const delta = 1;
+			const delt = 1;
 
 			const trigger = new Trigger();
 
-			manager.updateEntity( trigger, delta );
+			manager.updateEntity( trigger, delt );
 
 			expect( manager._triggers ).to.include( trigger );
 

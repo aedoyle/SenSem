@@ -64,7 +64,7 @@ describe( 'Vehicle', function () {
 
 		} );
 
-		it( 'should respect the given delta value when calculating the new position', function () {
+		it( 'should respect the given delt value when calculating the new position', function () {
 
 			const vehicle = new Vehicle();
 			vehicle.steering = new SteeringManagerStubCommon( vehicle );
@@ -189,7 +189,7 @@ describe( 'Vehicle', function () {
 
 class SteeringManagerStubCommon {
 
-	calculate( delta, force ) {
+	calculate( delt, force ) {
 
 		force.set( 0, 0, - 0.5 );
 
@@ -199,7 +199,7 @@ class SteeringManagerStubCommon {
 
 class SteeringManagerStubMinForce {
 
-	calculate( delta, force ) {
+	calculate( delt, force ) {
 
 		force.set( 0, 0, - Number.EPSILON );
 
@@ -215,7 +215,7 @@ class SteeringManagerStubSmooth {
 
 	}
 
-	calculate( delta, force ) {
+	calculate( delt, force ) {
 
 		force.set( 0, this.count, - 0.5 );
 

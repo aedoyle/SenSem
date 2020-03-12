@@ -49,7 +49,7 @@ describe( 'MovingEntity', function () {
 
 		} );
 
-		it( 'should respect the given delta value when calculating the new position', function () {
+		it( 'should respect the given delt value when calculating the new position', function () {
 
 			const movingEntity = new MovingEntity();
 			movingEntity.velocity.set( 0, 0, 1 );

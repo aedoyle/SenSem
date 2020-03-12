@@ -57,10 +57,10 @@ class ObstacleAvoidanceBehavior extends SteeringBehavior {
 	*
 	* @param {Vehicle} vehicle - The game entity the force is produced for.
 	* @param {Vector3} force - The force/result vector.
-	* @param {Number} delta - The time delta.
+	* @param {Number} delt - The time delt.
 	* @return {Vector3} The force/result vector.
 	*/
-	calculate( vehicle, force /*, delta */ ) {
+	calculate( vehicle, force /*, delt */ ) {
 
 		const obstacles = this.obstacles;
 

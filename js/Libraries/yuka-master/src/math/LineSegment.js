@@ -82,7 +82,7 @@ class LineSegment {
 	* @param {Vector3} result - The result vector.
 	* @return {Vector3} The result vector.
 	*/
-	delta( result ) {
+	delt( result ) {
 
 		return result.subVectors( this.to, this.from );
 
@@ -99,7 +99,7 @@ class LineSegment {
 	*/
 	at( t, result ) {
 
-		return this.delta( result ).multiplyScalar( t ).add( this.from );
+		return this.delt( result ).multiplyScalar( t ).add( this.from );
 
 	}
 

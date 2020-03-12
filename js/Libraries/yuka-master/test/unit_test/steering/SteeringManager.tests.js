@@ -110,7 +110,7 @@ describe( 'SteeringManager', function () {
 
 		} );
 
-		it( 'should use the time delta value for force calculation', function () {
+		it( 'should use the time delt value for force calculation', function () {
 
 			const vehicle = new Vehicle();
 			const steeringManager = new SteeringManager( vehicle );
@@ -438,10 +438,10 @@ class CustomSteeringBehavior1 extends SteeringBehavior {
 
 	}
 
-	calculate( vehicle, force, delta ) {
+	calculate( vehicle, force, delt ) {
 
 		this.order = count ++;
-		force.set( 0, 0, 10 ).multiplyScalar( delta );
+		force.set( 0, 0, 10 ).multiplyScalar( delt );
 
 	}
 
@@ -474,10 +474,10 @@ class CustomSteeringBehavior2 extends SteeringBehavior {
 
 	}
 
-	calculate( vehicle, force, delta ) {
+	calculate( vehicle, force, delt ) {
 
 		this.order = count ++;
-		force.set( 0, 0, 50 ).multiplyScalar( delta );
+		force.set( 0, 0, 50 ).multiplyScalar( delt );
 
 	}
 

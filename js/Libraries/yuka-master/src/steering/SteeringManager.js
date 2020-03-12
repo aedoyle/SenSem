@@ -98,13 +98,13 @@ class SteeringManager {
 	* combines it into a single result force. This method is called in
 	* {@link Vehicle#update}.
 	*
-	* @param {Number} delta - The time delta.
+	* @param {Number} delt - The time delt.
 	* @param {Vector3} result - The force/result vector.
 	* @return {Vector3} The force/result vector.
 	*/
-	calculate( delta, result ) {
+	calculate( delt, result ) {
 
-		this._calculateByOrder( delta );
+		this._calculateByOrder( delt );
 
 		return result.copy( this._steeringForce );
 
@@ -147,7 +147,7 @@ class SteeringManager {
 
 	}
 
-	_calculateByOrder( delta ) {
+	_calculateByOrder( delt ) {
 
 		const behaviors = this.behaviors;
 
@@ -165,7 +165,7 @@ class SteeringManager {
 
 				force.set( 0, 0, 0 );
 
-				behavior.calculate( this.vehicle, force, delta );
+				behavior.calculate( this.vehicle, force, delt );
 
 				force.multiplyScalar( behavior.weight );
 

@@ -196,10 +196,10 @@ class GameEntity {
 	* Updates the internal state of this game entity. Normally called by {@link EntityManager#update}
 	* in each simulation step.
 	*
-	* @param {Number} delta - The time delta.
+	* @param {Number} delt - The time delt.
 	* @return {GameEntity} A reference to this game entity.
 	*/
-	update( /* delta */ ) {}
+	update( /* delt */ ) {}
 
 
 	/**
@@ -274,17 +274,17 @@ class GameEntity {
 	* greater than {@link GameEntity#maxTurnRate} until it directly faces the target.
 	*
 	* @param {Vector3} target - The target position.
-	* @param {Number} delta - The time delta.
+	* @param {Number} delt - The time delt.
 	* @param {Number} tolerance - A tolerance value in radians to tweak the result
 	* when a game entity is considered to face a target.
 	* @return {Boolean} Whether the entity is faced to the target or not.
 	*/
-	rotateTo( target, delta, tolerance = 0.0001 ) {
+	rotateTo( target, delt, tolerance = 0.0001 ) {
 
 		targetDirection.subVectors( target, this.position ).normalize();
 		targetRotation.lookAt( this.forward, targetDirection, this.up );
 
-		return this.rotation.rotateTo( targetRotation, this.maxTurnRate * delta, tolerance );
+		return this.rotation.rotateTo( targetRotation, this.maxTurnRate * delt, tolerance );
 
 	}
 

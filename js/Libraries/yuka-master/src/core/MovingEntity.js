@@ -43,10 +43,10 @@ class MovingEntity extends GameEntity {
 	/**
 	* Updates the internal state of this game entity.
 	*
-	* @param {Number} delta - The time delta.
+	* @param {Number} delt - The time delt.
 	* @return {MovingEntity} A reference to this moving entity.
 	*/
-	update( delta ) {
+	update( delt ) {
 
 		// make sure vehicle does not exceed maximum speed
 
@@ -59,7 +59,7 @@ class MovingEntity extends GameEntity {
 
 		// calculate displacement
 
-		displacement.copy( this.velocity ).multiplyScalar( delta );
+		displacement.copy( this.velocity ).multiplyScalar( delt );
 
 		// calculate target position
 

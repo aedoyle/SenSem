@@ -60,14 +60,14 @@ class Vehicle extends MovingEntity {
 	* This method is responsible for updating the position based on the force produced
 	* by the internal steering manager.
 	*
-	* @param {Number} delta - The time delta.
+	* @param {Number} delt - The time delt.
 	* @return {Vehicle} A reference to this vehicle.
 	*/
-	update( delta ) {
+	update( delt ) {
 
 		// calculate steering force
 
-		this.steering.calculate( delta, steeringForce );
+		this.steering.calculate( delt, steeringForce );
 
 		// acceleration = force / mass
 
@@ -75,7 +75,7 @@ class Vehicle extends MovingEntity {
 
 		// update velocity
 
-		this.velocity.add( acceleration.multiplyScalar( delta ) );
+		this.velocity.add( acceleration.multiplyScalar( delt ) );
 
 		// make sure vehicle does not exceed maximum speed
 
@@ -88,7 +88,7 @@ class Vehicle extends MovingEntity {
 
 		// calculate displacement
 
-		displacement.copy( this.velocity ).multiplyScalar( delta );
+		displacement.copy( this.velocity ).multiplyScalar( delt );
 
 		// calculate target position
 
@@ -113,7 +113,7 @@ class Vehicle extends MovingEntity {
 
 			this.smoother.calculate( this.velocity, velocitySmooth );
 
-			displacement.copy( velocitySmooth ).multiplyScalar( delta );
+			displacement.copy( velocitySmooth ).multiplyScalar( delt );
 			target.copy( this.position ).add( displacement );
 
 			this.lookAt( target );

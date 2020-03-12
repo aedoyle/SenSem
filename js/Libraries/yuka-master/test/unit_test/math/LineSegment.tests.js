@@ -100,7 +100,7 @@ describe( 'LineSegment', function () {
 
 	} );
 
-	describe( '#delta()', function () {
+	describe( '#delt()', function () {
 
 		it( 'should calculate the difference vector between from and to and write the result to the given vector', function () {
 
@@ -109,7 +109,7 @@ describe( 'LineSegment', function () {
 			const result = new Vector3();
 
 			const lineSegment = new LineSegment( from, to );
-			lineSegment.delta( result );
+			lineSegment.delt( result );
 
 			expect( result ).to.deep.equal( { x: 0, y: 0, z: 1 } );
 
