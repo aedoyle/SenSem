@@ -68,8 +68,8 @@
         doomGuyBBox = new THREE.Box3();
         var cubeBBox = new THREE.Box3();
         var cube;
-        var houseBBoxes = {};
-        var buildingBBoxes = {};
+        var houseBBoxes = [];
+        var buildingBBoxes = [];
         var houseBBoxCount = 40;
         var direction = new THREE.Vector3();
         var seeTitleScreen = true;
@@ -121,7 +121,7 @@
             chaseSound();
             // ambientNoise();
             setInterval(logDirection, 1000);
-            building.visible = false;
+            //building.visible = false;
             // house.visible = false;
             animate();
 
@@ -140,7 +140,7 @@
 
         function loadObjects() {
             var loader = new THREE.GLTFLoader(manager);
-            loader.load('js/Objects/House/houseShell5.glb',
+            loader.load('js/Objects/House/house_3.glb',
                 // called when the resource is loaded
                 function (gltf) {
                     house = gltf.scene;
@@ -226,15 +226,7 @@
                 building.position.z = -200;
                 building.name = "building";
                 building.scale.set(3, 3, 3);
-                let i = 0;
-                building.traverse(function (child) {
-                    if (child instanceof THREE.Object3D) {
-                        buildingBBoxes[i] = new THREE.Box3();
-                        buildingBBoxes[i].setFromObject(child);
-                        //				scene.add(new THREE.Box3Helper(buildingBBoxes[i], 0xffff00));
-                        i++;
-                    }
-                });
+		
 
             });
             loader.load('js/Objects/skull/scene.gltf', function (gltf) {
@@ -762,7 +754,7 @@
             });
         }
 
-        menu()
+    //    menu()
 
 
         var num = 0;
@@ -1174,7 +1166,7 @@
             lastFrame = Date.now()
 
             requestAnimationFrame(animate);
-            menuSystem();
+        //    menuSystem();
             updateRaycasters();
 
             if (seeDoomGuy == false && seeTitleScreen == false) {
@@ -1232,7 +1224,7 @@
         };
         function logDirection() {
             console.log(camera.position);
-
+			console.log(buildingBBoxes.length);
 
 
             //console.log(doomGuyBBox);
