@@ -230,6 +230,7 @@
 				buildingBBoxes[1] = new THREE.Box3(new THREE.Vector3(-100, -2, -330), new THREE.Vector3(-90, 5, -9.388453451478657));
 				buildingBBoxes[2] = new THREE.Box3(new THREE.Vector3(-90, -2, -330), new THREE.Vector3(65.04980172069583, 5, -325));
 				buildingBBoxes[3] = new THREE.Box3(new THREE.Vector3(60, -2, -330), new THREE.Vector3(70, 5, -9.388453451478657));
+				buildingBBoxes[4] = new THREE.Box3(new THREE.Vector3(-15.0920613152199, -2, -14), new THREE.Vector3( 60, 5,  -9.388453451478657));
                     for (i = 0; i <  buildingBBoxes.length; i++) {
                         scene.add(new THREE.Box3Helper(buildingBBoxes[i], 0xffff00));
                     }		
@@ -1200,7 +1201,26 @@
                 if (collisionsD[0]) {
                     controls.getObject().position.y = collisionsD[0].point.y + 2.5;
                 }
-                if (house.visible) {
+                for (i = 0; i < buildingBBoxes.length; i++) {
+                        if (moveForward && buildingBBoxes[i].containsPoint(camera.position)) {
+                            moveForward = false;
+                            controls.getObject().translateZ(delta);
+                        }
+                        if (moveBackward && buildingBBoxes[i].containsPoint(camera.position)) {
+                            moveBackward = false;
+                            controls.getObject().translateZ(-delta);
+                        }
+                        if (moveLeft && buildingBBoxes[i].containsPoint(camera.position)) {
+                            moveLeft = false;
+                            controls.getObject().translateX(delta);
+                        }
+                        if (moveRight && buildingBBoxes[i].containsPoint(camera.position)) {
+                            moveRight = false;
+                            controls.getObject().translateX(-delta);
+                        }
+                 }
+				
+				if (house.visible) {
                     for (i = 0; i < houseBBoxCount; i++) {
                         if (moveForward && houseBBoxes[i].containsPoint(camera.position)) {
                             moveForward = false;
