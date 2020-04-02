@@ -120,7 +120,7 @@
             setSkullBBoxs();
             chaseSound();
             //ambientNoise();
-            doomGuy.visible = false;
+           // doomGuy.visible = false;
             setInterval(logDirection, 1000);
             building.visible = false;
             house.visible = false;
@@ -141,7 +141,7 @@
 
         function loadObjects() {
             var loader = new THREE.GLTFLoader(manager);
-            loader.load('js/Objects/House/houseShell5.glb',
+            loader.load('js/Objects/House/house_3.glb',
                 // called when the resource is loaded
                 function (gltf) {
                     house = gltf.scene;
@@ -208,7 +208,7 @@
             loader.load('js/Objects/DoomGuy/doom2.0.glb', function (gltf) {
                 doomGuy = gltf.scene;
                 scene.add(doomGuy);
-                doomGuy.position.set(5, -1.5, 5);
+                doomGuy.position.set(5, -1.5, 6);
                 doomGuy.name = "doomGuy";
                 doomGuy.scale.set(1.5, 1.5, 1.5);
                 mixer = new THREE.AnimationMixer(gltf.scene);
@@ -328,7 +328,7 @@
             //FlashLight
             //color, intensity, distance, angle, penumbra, decay
             var flashLight = new THREE.SpotLight(0xaabbcc, 4.2, 89.0, (Math.PI / 2), 1.0, 2.0);
-            flashLight.angle = 0.5
+            flashLight.angle = 1;
             //flashLight.position.set(0.5, 1, 0.75);
             //This sets the light to child of camera object
             camera.add(flashLight);
@@ -376,14 +376,14 @@
                         if (canJump === true) controls.getObject().translateY(10);
                         canJump = false;
                         break;
-                    //						case 17: //ctrl
-                    //                            if (flashLight.visible == true) {
-                    //                                flashLight.visible = false;
-                    //                                break;
-                    //                            }
-                    //                            else {
-                    //                                flashLight.visible = true;
-                    //                            }
+                    case 17: //ctrl
+                        if (flashLight.visible == true) {
+                            flashLight.visible = false;
+                            break;
+                        }
+                        else {
+                        flashLight.visible = true;
+                        }
                     case 67:
                         // camera.fov = Math.atan(Math.tan(120 * Math.PI / 360) / camera.aspect) * 360 / Math.PI; // degrees
                         //  camera.updateProjectionMatrix();
@@ -1202,7 +1202,7 @@
                 }
 
                 if (collisionsD[0]) {
-                    controls.getObject().position.y = collisionsD[0].point.y + 2.5;
+                    controls.getObject().position.y = collisionsD[0].point.y + 4;
                 }
                 if (house.visible) {
                     for (i = 0; i < houseBBoxCount; i++) {
