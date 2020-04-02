@@ -226,7 +226,11 @@
                 building.position.z = -200;
                 building.name = "building";
                 building.scale.set(3, 3, 3);
-		
+				buildingBBoxes[0] = new THREE.Box3(new THREE.Vector3(-90, -2, -14), new THREE.Vector3(-23.00876408876694, 5, -9.388453451478657));
+				buildingBBoxes[1] = new THREE.Box3(new THREE.Vector3(-100, -2, -330), new THREE.Vector3(-90, 5, -9.388453451478657));
+                    for (i = 0; i <  buildingBBoxes.length; i++) {
+                        scene.add(new THREE.Box3Helper(buildingBBoxes[i], 0xffff00));
+                    }		
 
             });
             loader.load('js/Objects/skull/scene.gltf', function (gltf) {
