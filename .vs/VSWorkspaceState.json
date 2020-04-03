@@ -1,8 +1,12 @@
 {
   "ExpandedNodes": [
     "",
-    "\\js"
+    "\\js",
+    "\\js\\Libraries\\yuka-master",
+    "\\js\\Libraries\\yuka-master\\build",
+    "\\js\\Libraries\\yuka-master\\src",
+    "\\js\\Objects"
   ],
-  "SelectedNode": "\\gameWshapes.html",
+  "SelectedNode": "\\js\\Libraries",
   "PreviewInSolutionExplorer": false
 }

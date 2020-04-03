@@ -77,6 +77,14 @@
             var time;
             var vehicle;
             var onPathBehavior;
+            var yukepos;
+            yukapos = new YUKA.Vector3();
+
+
+			entityManager = new YUKA.EntityManager();
+                time = new YUKA.Time();
+            //vehicle = new YUKA.Vehicle();
+            //console.log(yukapos);
 
 
 
@@ -106,8 +114,10 @@
 				setInterval(logDirection, 1000);
 				building.visible = false;
 				// house.visible = false;
-                //doomGuyPath();
-				animate();
+                doomGuyPath();
+                animate();
+
+            vehicle = new YUKA.Vehicle();
 
 			};
 
@@ -308,7 +318,6 @@
 				camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
 				scene = new THREE.Scene();
 				scene.fog = new THREE.Fog(0xffffff, 0, 750);
-
 				//FlashLight
 				//color, intensity, distance, angle, penumbra, decay
 				var flashLight = new THREE.SpotLight(0xaabbcc, 4.2, 89.0, (Math.PI / 2), 1.0, 2.0);
@@ -527,7 +536,7 @@
 						camera.position.set(105, 0, 83);
 						chaseSound();
                         ambientNoise();
-                        //doomGuyPath();
+                      //  doomGuyPath();
 						meshTitle.visible = false;
 						meshStart.visible = false;
 						meshOption.visible = false;
@@ -569,7 +578,7 @@
                 //time = new YUKA.Time();
                 vehicle = new YUKA.Vehicle();
 
-                vehicle.setRenderCompnent(doomGuy, sync);
+                vehicle.setRenderComponent(doomGuy.children[7], sync);
 
                 const path = new YUKA.Path();
 
@@ -579,8 +588,10 @@
 
                 vehicle.position.copy(path.current());
 
-                const followPathBehavior = new YUKA.followPathBehavior(path, 0.5);
+                const followPathBehavior = new YUKA.FollowPathBehavior(path, 0.5);
+				//const onPathBehavior = new YUKA.OnPathBehavior( path );
                 vehicle.steering.add(followPathBehavior);
+                //vehicle.getWorldPosition
 
                 entityManager.add(vehicle);
 
@@ -785,8 +796,13 @@
 				menuSystem();
                 updateRaycasters();
 
-                const delt = .5;
+                //const delt = .5;
+				const delt = time.update().getDelta();
                 entityManager.update(delt);
+
+                
+				//vehicle.getWorldPosition(yukepos);
+                
 
 				if (seeDoomGuy == false && seeTitleScreen == false) {
 
@@ -842,7 +858,9 @@
 				}
 			};
 			function logDirection() {
-				console.log(camera.position);
+                //console.log(camera.position);
+                //console.log(yukapos);
+                console.log(this.worldMatrix);
 
 
 
