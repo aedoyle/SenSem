@@ -959,8 +959,11 @@
             else if (menuExit[0]) {
                 num++;
                 meshExit.material.color.set(0xFFFFFF);
-                if (num > 70) {
-
+                if (num > 90) {
+                    meshTitle.visible = false;
+                    meshStart.visible = false;
+                    meshOption.visible = false;
+                    meshExit.visible = false;
                 }
             }
             else {
