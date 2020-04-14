@@ -185,14 +185,7 @@
                     function (error) {
                         console.log(error);
                     });
-                loader.load('js/Objects/House/block.glb', function (gltf) {
-                    // called when the resource is loaded
-                    function (gltf) {
-                        square = gltf.scene;
-						scene.add(square);
-                        square.rotation.y = - Math.PI / 2;
-                        square.position.set(55, -2, 30);
-					});
+                
                 loader.load('js/Objects/DoomGuy/doom2.0.glb', function (gltf) {
                     doomGuy = gltf.scene;
 					scene.add(doomGuy);
@@ -206,6 +199,7 @@
                     stillToWalk = mixer.clipAction(gltf.animations[2])
 
                    });
+				
                 loader.load('js/Objects/scene.gltf', function (gltf) {
                     building = gltf.scene;
 					scene.add(building);

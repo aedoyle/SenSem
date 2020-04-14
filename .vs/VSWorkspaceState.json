@@ -1,6 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\js",
+    "\\js\\Objects",
+    "\\js\\Objects\\House"
   ],
+  "SelectedNode": "\\js\\Objects\\House\\brokenbedframe.glb",
   "PreviewInSolutionExplorer": false
 }
