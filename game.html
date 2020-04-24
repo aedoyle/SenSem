@@ -278,6 +278,29 @@
                 houseSkullCoords[10] = new THREE.Vector3(126.28113845725635, 9.750945180430723, 65.26094747617822);
                 houseSkullCoords[11] = new THREE.Vector3(134.665341381063, 10, 53.73821895637707);
 
+                var tempRands = {};
+                //var tempSkull1 = 99;
+                //var tempSkull2 = 99;
+                //var tempSkull3 = 99;
+
+                for (i = 0; i < 3;) {
+                    //spawns random number between 0-11
+                    var rand = Math.floor(Math.random() * Math.floor(12));
+                    if (tempRands.includes(rand)) {
+                        continue;
+                    }
+                    else {
+                        tempRands[i] = rand; 
+                        i++;
+                    }
+                }
+
+                //Takes the three random coords and assigns them 
+                houseSkullCoord1 = tempRands[0];
+                houseSkullCoord2 = tempRands[1];
+                houseSkullCoord3 = tempRands[2];
+
+
             }
 
             var backgroundLoader = new THREE.CubeTextureLoader(manager);

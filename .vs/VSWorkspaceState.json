@@ -1,10 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\js",
-    "\\js\\Objects",
-    "\\js\\Objects\\House"
+    "\\js\\Objects"
   ],
-  "SelectedNode": "\\js\\Objects\\House\\house1.5.glb",
+  "SelectedNode": "\\game.html",
   "PreviewInSolutionExplorer": false
 }
