@@ -302,6 +302,7 @@
 				buildingBBoxes[73] = new THREE.Box3(new THREE.Vector3(-82.39892756649978 , -2, -300.29264754281746), new THREE.Vector3(-76.1607012466877 , 5, -295.94942914127597 ));
 				buildingBBoxes[74] = new THREE.Box3(new THREE.Vector3(-68.20932453714468 , -2, -287.37557191188404), new THREE.Vector3( -65.70539730416961, 5, -282.40575901690005));	
 				buildingBBoxes[75] = new THREE.Box3(new THREE.Vector3( -68.86073755404922, -2, -283.139171405475), new THREE.Vector3( -63.04377754185713, 5, -279.95445021432164));
+				buildingBBoxes[76] = new THREE.Box3(new THREE.Vector3( -10.69197313389452, -2, -276.61680443811065), new THREE.Vector3( 5.686852976556122, 5, -271.9440982190688));
 				
 					for (i = 0; i <  buildingBBoxes.length; i++) {
                         scene.add(new THREE.Box3Helper(buildingBBoxes[i], 0xffff00));
@@ -1131,6 +1132,9 @@
             doomGuyBBox.max.x += 3;
             doomGuyBBox.max.y += 3;
             doomGuyBBox.max.z += 3;
+			
+			<!-- scene.add(new THREE.Box3Helper(doomGuyBBox, 0xffff00)); -->
+
             if (doomGuyBBox.containsPoint(camera.position) && !seeDoomGuy) {
                 scene = scene2;
             }
