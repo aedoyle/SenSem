@@ -28,7 +28,7 @@
     <script>
 
 
-
+		var warpBox;
         var scene = new THREE.Scene();
         var scene1 = new THREE.Scene();
         var scene2 = new THREE.Scene();
@@ -72,7 +72,7 @@
         var buildingBBoxes = [];
         var houseBBoxCount = 40;
         var direction = new THREE.Vector3();
-        var seeTitleScreen = true;
+        var seeTitleScreen = false;
         var doomSound;
         var meshTitle;
         var meshStart;
@@ -94,7 +94,7 @@
         var meshVolume4;
         var meshVolume5;
         var menuSelect = new THREE.Raycaster()
-
+			
 
 
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -120,10 +120,11 @@
             setSkullBBoxs();
             chaseSound();
             // ambientNoise();
-            setInterval(logDirection, 1000);
+           setInterval(logDirection, 1000);
             //building.visible = false;
             // house.visible = false;
-            animate();
+            setInterval(doomGuyWarp, 1000);
+			animate();
 
         };
 
@@ -419,7 +420,11 @@
             material.transparent = true;
             material.opacity = 0;
             cube = new THREE.Mesh(geometry, material);
-            camera.add(cube);
+			
+			geometry = new THREE.BoxGeometry(1, 1, 1);
+			 warpBox = new THREE.Mesh(geometry, material);
+			  scene.add(warpBox);
+			  camera.add(cube);
             cube.position.set(0, 0, -75);
             geometry = new THREE.PlaneGeometry(3000, 3000);
             material = new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide });
@@ -1060,12 +1065,31 @@
 
 
         function doomGuyChase() {
-            var player = new THREE.Vector3();				//These two lines create an empty vector and copy the current position of the player into it,
+            let player = new THREE.Vector3();				//These two lines create an empty vector and copy the current position of the player into it,
             camera.getWorldPosition(player);            	//so we can make something chase the player.
             doomGuy.translateOnAxis(doomGuy.worldToLocal(player), .01);
 
         }
+		
+		function doomGuyWarp(){
+            let player = new THREE.Vector3();				//These two lines create an empty vector and copy the current position of the player into it,
+            camera.getWorldPosition(player);            	//so we can make something chase the player.		
+			warpBox.position.y = player.y;
+			warpBox.position.x = player.x;
+			warpBox.position.z = player.z;
 
+			let warpDirection = new THREE.Vector3();
+			camera.getWorldDirection(warpDirection);
+			warpDirection.y = 0;
+			warpDirection.x *= -1;
+			warpDirection.z *= -1;
+			warpBox.translateOnAxis(warpDirection, 10);
+			if(!seeDoomGuy){
+				doomGuy.position.y = warpBox.position.y;
+				doomGuy.position.x = warpBox.position.x;
+				doomGuy.position.z = warpBox.position.z;
+			}
+		}
 
 
 
@@ -1140,7 +1164,7 @@
             doomGuyBBox.max.y += 3;
             doomGuyBBox.max.z += 3;
 			
-			<!-- scene.add(new THREE.Box3Helper(doomGuyBBox, 0xffff00)); -->
+			scene.add(new THREE.Box3Helper(doomGuyBBox, 0xffff00));
 
             if (doomGuyBBox.containsPoint(camera.position) && !seeDoomGuy) {
                 scene = scene2;
@@ -1245,7 +1269,7 @@
             rotateSkulls();
             checkSkulls();
             checkLevelProgression();
-            checkDeath();
+			checkDeath();
             follow();
             dt = (Date.now() - lastFrame) / 1000
 
@@ -1261,7 +1285,7 @@
 
             if (seeDoomGuy == false && seeTitleScreen == false) {
 
-                doomGuyChase();
+         //       doomGuyChase();
                 walk.play();
             }
             if (controlsEnabled) {
@@ -1332,8 +1356,8 @@
             }
         };
         function logDirection() {
-            console.log(camera.position);
-
+         //   console.log(camera.position);
+				console.log(warpBox.position);
 
             //console.log(doomGuyBBox);
             //console.log(skull);
@@ -1342,6 +1366,8 @@
             //console.log(controls.getObject().position);
             //console.log(directionR);
         }
+		
+
 
 
     </script>
