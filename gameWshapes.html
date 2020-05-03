@@ -94,8 +94,9 @@
         var meshVolume4;
         var meshVolume5;
         var menuSelect = new THREE.Raycaster()
-			
-
+		var doomGuyBBox2 = new THREE.Box3();  //For seeing if he is intersecting a wall (smaller than BBox1). 
+        var doomGuyInWall = false; 
+	
 
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
@@ -123,7 +124,7 @@
            setInterval(logDirection, 1000);
             //building.visible = false;
             // house.visible = false;
-            setInterval(doomGuyWarp, 1000);
+           // setInterval(doomGuyWarp, 1000);
 			animate();
 
         };
@@ -1163,15 +1164,26 @@
             doomGuyBBox.max.x += 3;
             doomGuyBBox.max.y += 3;
             doomGuyBBox.max.z += 3;
-			
-			scene.add(new THREE.Box3Helper(doomGuyBBox, 0xffff00));
+
+		//	scene.add(new THREE.Box3Helper(doomGuyBBox, 0xffff00));
 
             if (doomGuyBBox.containsPoint(camera.position) && !seeDoomGuy) {
-                scene = scene2;
+                <!-- scene = scene2; -->
             }
-
         }
 
+					
+		function setDoomGuyBBox2(){
+			doomGuyBBox2.setFromObject(doomGuy);
+            doomGuyBBox2.min.x -= .3;
+            doomGuyBBox2.min.y -= .3;
+            doomGuyBBox2.min.z -= .3;
+            doomGuyBBox2.max.x += .3;
+            doomGuyBBox2.max.y += .3;
+            doomGuyBBox2.max.z += .3;
+		    scene.add(new THREE.Box3Helper(doomGuyBBox2, 0xffff00));
+		}
+		
         function setSkullBBoxs() {
             skullBBox = new THREE.Box3();
             skullBBox.setFromObject(skull);
@@ -1283,11 +1295,13 @@
         //    menuSystem();
             updateRaycasters();
 
-            if (seeDoomGuy == false && seeTitleScreen == false) {
-
-         //       doomGuyChase();
+                doomGuyChase();
                 walk.play();
-            }
+            <!-- if (seeDoomGuy == false && seeTitleScreen == false) { -->
+
+                <!-- doomGuyChase(); -->
+                <!-- walk.play(); -->
+            <!-- } -->
             if (controlsEnabled) {
 
                 var delta = .5;
@@ -1308,26 +1322,30 @@
                 if (collisionsD[0]) {
                     controls.getObject().position.y = collisionsD[0].point.y + 2.5;
                 }
-                for (i = 0; i < buildingBBoxes.length; i++) {
-                        if (moveForward && buildingBBoxes[i].containsPoint(camera.position)) {
-                            moveForward = false;
-                            controls.getObject().translateZ(delta);
-                        }
-                        if (moveBackward && buildingBBoxes[i].containsPoint(camera.position)) {
-                            moveBackward = false;
-                            controls.getObject().translateZ(-delta);
-                        }
-                        if (moveLeft && buildingBBoxes[i].containsPoint(camera.position)) {
-                            moveLeft = false;
-                            controls.getObject().translateX(delta);
-                        }
-                        if (moveRight && buildingBBoxes[i].containsPoint(camera.position)) {
-                            moveRight = false;
-                            controls.getObject().translateX(-delta);
-                        }
-                 }
-				
-				if (house.visible) {
+				setDoomGuyBBox2();
+				doomGuyInWall =  false; 
+				for (i = 0; i < buildingBBoxes.length; i++) {
+					if (moveForward && buildingBBoxes[i].containsPoint(camera.position)) {
+						moveForward = false;
+						controls.getObject().translateZ(delta);
+					}
+					if (moveBackward && buildingBBoxes[i].containsPoint(camera.position)) {
+						moveBackward = false;
+						controls.getObject().translateZ(-delta);
+					}
+					if (moveLeft && buildingBBoxes[i].containsPoint(camera.position)) {
+						moveLeft = false;
+						controls.getObject().translateX(delta);
+					}
+					if (moveRight && buildingBBoxes[i].containsPoint(camera.position)) {
+						moveRight = false;
+						controls.getObject().translateX(-delta);
+					}
+					if(buildingBBoxes[i].intersectsBox(doomGuyBBox2)){
+						doomGuyInWall = true;
+					}
+                }
+                if (house.visible) {
                     for (i = 0; i < houseBBoxCount; i++) {
                         if (moveForward && houseBBoxes[i].containsPoint(camera.position)) {
                             moveForward = false;
@@ -1345,10 +1363,19 @@
                             moveRight = false;
                             controls.getObject().translateX(-delta);
                         }
+						if(houseBBoxes[i].intersectsBox(doomGuyBBox2)){
+							doomGuyInWall = true;
+						}						
                     }
                 }
-            }
-            renderer.render(scene, camera);
+				if(doomGuyInWall){
+					doomGuy.visible = false;
+				}
+				else{
+					doomGuy.visible = true; 
+				}
+			}
+		   renderer.render(scene, camera);
 
 
             if (doomGuy.position.y != -2) {
@@ -1357,7 +1384,7 @@
         };
         function logDirection() {
          //   console.log(camera.position);
-				console.log(warpBox.position);
+				console.log(house.visible);
 
             //console.log(doomGuyBBox);
             //console.log(skull);

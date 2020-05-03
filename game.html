@@ -58,15 +58,16 @@
         var skullBBox2;
         var skullBBox3;
         var skullCount = 0;
-        var doomGuyBBox;
         var mixer;
         var lastFrame = Date.now();
         var walk;
         var run;
         var still;
         var stillToWalk;
-        doomGuyBBox = new THREE.Box3();
-        var cubeBBox = new THREE.Box3();
+        var doomGuyBBox = new THREE.Box3();  //For seeing if he is visible/close enough to player to kill them.
+		var doomGuyBBox2 = new THREE.Box3();  //For seeing if he is intersecting a wall (smaller than BBox1). 
+        var doomGuyInWall = false; 
+		var cubeBBox = new THREE.Box3();
         var cube;
         var houseBBoxes = {};
         var buildingBBoxes = {};
@@ -1162,7 +1163,16 @@
             doomGuyBBox.max.x += 3;
             doomGuyBBox.max.y += 3;
             doomGuyBBox.max.z += 3;
-            if (doomGuyBBox.containsPoint(camera.position) && !seeDoomGuy) {
+			doomGuyBBox2.setFromObject(doomGuy);
+            doomGuyBBox2.min.x -= .3;
+            doomGuyBBox2.min.y -= .3;
+            doomGuyBBox2.min.z -= .3;
+            doomGuyBBox2.max.x += .3;
+            doomGuyBBox2.max.y += .3;
+            doomGuyBBox2.max.z += .3;
+		//	scene.add(new THREE.Box3Helper(doomGuyBBox2, 0xffff00));
+
+            if (doomGuyBBox.containsPoint(camera.position) && !seeDoomGuy && doomGuy.visible) {
                 scene = scene2;
             }
 
@@ -1304,6 +1314,8 @@
                 if (collisionsD[0]) {
                     controls.getObject().position.y = collisionsD[0].point.y + 4;
                 }
+			
+				doomGuyInWall =  false; 
 				for (i = 0; i < buildingBBoxes.length; i++) {
 					if (moveForward && buildingBBoxes[i].containsPoint(camera.position)) {
 						moveForward = false;
@@ -1320,6 +1332,9 @@
 					if (moveRight && buildingBBoxes[i].containsPoint(camera.position)) {
 						moveRight = false;
 						controls.getObject().translateX(-delta);
+					}
+					if(buildingBBoxes[i].intersectsBox(doomGuyBBox2)){
+						doomGuyInWall = true;
 					}
                 }
                 if (house.visible) {
@@ -1340,8 +1355,17 @@
                             moveRight = false;
                             controls.getObject().translateX(-delta);
                         }
+						if(houseBBoxes[i].intersectsBox(doomGuyBBox2)){
+							doomGuyInWall = true;
+						}						
                     }
                 }
+				if(doomGuyInWall){
+					doomGuy.visible = false;
+				}
+				else{
+					doomGuy.visible = true; 
+				}
             }
             renderer.render(scene, camera);
 
