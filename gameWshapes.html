@@ -28,7 +28,7 @@
     <script>
 
 
-
+		var warpBox;
         var scene = new THREE.Scene();
         var scene1 = new THREE.Scene();
         var scene2 = new THREE.Scene();
@@ -72,7 +72,7 @@
         var buildingBBoxes = [];
         var houseBBoxCount = 40;
         var direction = new THREE.Vector3();
-        var seeTitleScreen = true;
+        var seeTitleScreen = false;
         var doomSound;
         var meshTitle;
         var meshStart;
@@ -94,8 +94,9 @@
         var meshVolume4;
         var meshVolume5;
         var menuSelect = new THREE.Raycaster()
-
-
+		var doomGuyBBox2 = new THREE.Box3();  //For seeing if he is intersecting a wall (smaller than BBox1). 
+        var doomGuyInWall = false; 
+	
 
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
@@ -120,10 +121,11 @@
             setSkullBBoxs();
             chaseSound();
             // ambientNoise();
-            setInterval(logDirection, 1000);
+           setInterval(logDirection, 1000);
             //building.visible = false;
             // house.visible = false;
-            animate();
+           // setInterval(doomGuyWarp, 1000);
+			animate();
 
         };
 
@@ -302,6 +304,14 @@
 				buildingBBoxes[73] = new THREE.Box3(new THREE.Vector3(-82.39892756649978 , -2, -300.29264754281746), new THREE.Vector3(-76.1607012466877 , 5, -295.94942914127597 ));
 				buildingBBoxes[74] = new THREE.Box3(new THREE.Vector3(-68.20932453714468 , -2, -287.37557191188404), new THREE.Vector3( -65.70539730416961, 5, -282.40575901690005));	
 				buildingBBoxes[75] = new THREE.Box3(new THREE.Vector3( -68.86073755404922, -2, -283.139171405475), new THREE.Vector3( -63.04377754185713, 5, -279.95445021432164));
+				buildingBBoxes[76] = new THREE.Box3(new THREE.Vector3( -10.69197313389452, -2, -276.61680443811065), new THREE.Vector3( 5.686852976556122, 5, -271.9440982190688));
+				buildingBBoxes[77] = new THREE.Box3(new THREE.Vector3( 1.412403110679043, -2, -289.6288222029865), new THREE.Vector3( 4.676764970150748, 5, -276.6392449242221));
+				buildingBBoxes[78] = new THREE.Box3(new THREE.Vector3( 1.928399773316641, -2, -305.2611586121528), new THREE.Vector3( 12.38925932447001, 5, -288.5774109806207));
+				buildingBBoxes[79] = new THREE.Box3(new THREE.Vector3( 12.38925932447001, -2, -300.25882731422865), new THREE.Vector3( 52.104339746291025, 5, -295.57123702539775));
+				buildingBBoxes[80] = new THREE.Box3(new THREE.Vector3( 48.43432528044186, -2, -297.0886415354927), new THREE.Vector3( 52.30727694981954, 5, -274.57864425357394));
+				buildingBBoxes[81] = new THREE.Box3(new THREE.Vector3( 25.104729638358975, -2, -292.0811476580449), new THREE.Vector3( 28.130982170829608, 5, -279.909302421994));
+				buildingBBoxes[82] = new THREE.Box3(new THREE.Vector3( 17.08212791917644, -2, -272.99585272960144), new THREE.Vector3( 21.83190812817993, 5, -210.53960930315287));
+				buildingBBoxes[83] = new THREE.Box3(new THREE.Vector3( 8.477476697543013, -2, -213.56268384824014), new THREE.Vector3( 21.03417385764482, 5, -196.59374757561594));
 				
 					for (i = 0; i <  buildingBBoxes.length; i++) {
                         scene.add(new THREE.Box3Helper(buildingBBoxes[i], 0xffff00));
@@ -411,7 +421,11 @@
             material.transparent = true;
             material.opacity = 0;
             cube = new THREE.Mesh(geometry, material);
-            camera.add(cube);
+			
+			geometry = new THREE.BoxGeometry(1, 1, 1);
+			 warpBox = new THREE.Mesh(geometry, material);
+			  scene.add(warpBox);
+			  camera.add(cube);
             cube.position.set(0, 0, -75);
             geometry = new THREE.PlaneGeometry(3000, 3000);
             material = new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide });
@@ -1052,12 +1066,31 @@
 
 
         function doomGuyChase() {
-            var player = new THREE.Vector3();				//These two lines create an empty vector and copy the current position of the player into it,
+            let player = new THREE.Vector3();				//These two lines create an empty vector and copy the current position of the player into it,
             camera.getWorldPosition(player);            	//so we can make something chase the player.
             doomGuy.translateOnAxis(doomGuy.worldToLocal(player), .01);
 
         }
+		
+		function doomGuyWarp(){
+            let player = new THREE.Vector3();				//These two lines create an empty vector and copy the current position of the player into it,
+            camera.getWorldPosition(player);            	//so we can make something chase the player.		
+			warpBox.position.y = player.y;
+			warpBox.position.x = player.x;
+			warpBox.position.z = player.z;
 
+			let warpDirection = new THREE.Vector3();
+			camera.getWorldDirection(warpDirection);
+			warpDirection.y = 0;
+			warpDirection.x *= -1;
+			warpDirection.z *= -1;
+			warpBox.translateOnAxis(warpDirection, 10);
+			if(!seeDoomGuy){
+				doomGuy.position.y = warpBox.position.y;
+				doomGuy.position.x = warpBox.position.x;
+				doomGuy.position.z = warpBox.position.z;
+			}
+		}
 
 
 
@@ -1131,12 +1164,26 @@
             doomGuyBBox.max.x += 3;
             doomGuyBBox.max.y += 3;
             doomGuyBBox.max.z += 3;
-            if (doomGuyBBox.containsPoint(camera.position) && !seeDoomGuy) {
-                scene = scene2;
-            }
 
+		//	scene.add(new THREE.Box3Helper(doomGuyBBox, 0xffff00));
+
+            if (doomGuyBBox.containsPoint(camera.position) && !seeDoomGuy) {
+                <!-- scene = scene2; -->
+            }
         }
 
+					
+		function setDoomGuyBBox2(){
+			doomGuyBBox2.setFromObject(doomGuy);
+            doomGuyBBox2.min.x -= .3;
+            doomGuyBBox2.min.y -= .3;
+            doomGuyBBox2.min.z -= .3;
+            doomGuyBBox2.max.x += .3;
+            doomGuyBBox2.max.y += .3;
+            doomGuyBBox2.max.z += .3;
+		    scene.add(new THREE.Box3Helper(doomGuyBBox2, 0xffff00));
+		}
+		
         function setSkullBBoxs() {
             skullBBox = new THREE.Box3();
             skullBBox.setFromObject(skull);
@@ -1234,7 +1281,7 @@
             rotateSkulls();
             checkSkulls();
             checkLevelProgression();
-            checkDeath();
+			checkDeath();
             follow();
             dt = (Date.now() - lastFrame) / 1000
 
@@ -1248,11 +1295,13 @@
         //    menuSystem();
             updateRaycasters();
 
-            if (seeDoomGuy == false && seeTitleScreen == false) {
-
                 doomGuyChase();
                 walk.play();
-            }
+            <!-- if (seeDoomGuy == false && seeTitleScreen == false) { -->
+
+                <!-- doomGuyChase(); -->
+                <!-- walk.play(); -->
+            <!-- } -->
             if (controlsEnabled) {
 
                 var delta = .5;
@@ -1273,26 +1322,30 @@
                 if (collisionsD[0]) {
                     controls.getObject().position.y = collisionsD[0].point.y + 2.5;
                 }
-                for (i = 0; i < buildingBBoxes.length; i++) {
-                        if (moveForward && buildingBBoxes[i].containsPoint(camera.position)) {
-                            moveForward = false;
-                            controls.getObject().translateZ(delta);
-                        }
-                        if (moveBackward && buildingBBoxes[i].containsPoint(camera.position)) {
-                            moveBackward = false;
-                            controls.getObject().translateZ(-delta);
-                        }
-                        if (moveLeft && buildingBBoxes[i].containsPoint(camera.position)) {
-                            moveLeft = false;
-                            controls.getObject().translateX(delta);
-                        }
-                        if (moveRight && buildingBBoxes[i].containsPoint(camera.position)) {
-                            moveRight = false;
-                            controls.getObject().translateX(-delta);
-                        }
-                 }
-				
-				if (house.visible) {
+				setDoomGuyBBox2();
+				doomGuyInWall =  false; 
+				for (i = 0; i < buildingBBoxes.length; i++) {
+					if (moveForward && buildingBBoxes[i].containsPoint(camera.position)) {
+						moveForward = false;
+						controls.getObject().translateZ(delta);
+					}
+					if (moveBackward && buildingBBoxes[i].containsPoint(camera.position)) {
+						moveBackward = false;
+						controls.getObject().translateZ(-delta);
+					}
+					if (moveLeft && buildingBBoxes[i].containsPoint(camera.position)) {
+						moveLeft = false;
+						controls.getObject().translateX(delta);
+					}
+					if (moveRight && buildingBBoxes[i].containsPoint(camera.position)) {
+						moveRight = false;
+						controls.getObject().translateX(-delta);
+					}
+					if(buildingBBoxes[i].intersectsBox(doomGuyBBox2)){
+						doomGuyInWall = true;
+					}
+                }
+                if (house.visible) {
                     for (i = 0; i < houseBBoxCount; i++) {
                         if (moveForward && houseBBoxes[i].containsPoint(camera.position)) {
                             moveForward = false;
@@ -1310,10 +1363,19 @@
                             moveRight = false;
                             controls.getObject().translateX(-delta);
                         }
+						if(houseBBoxes[i].intersectsBox(doomGuyBBox2)){
+							doomGuyInWall = true;
+						}						
                     }
                 }
-            }
-            renderer.render(scene, camera);
+				if(doomGuyInWall){
+					doomGuy.visible = false;
+				}
+				else{
+					doomGuy.visible = true; 
+				}
+			}
+		   renderer.render(scene, camera);
 
 
             if (doomGuy.position.y != -2) {
@@ -1321,8 +1383,8 @@
             }
         };
         function logDirection() {
-            console.log(camera.position);
-
+         //   console.log(camera.position);
+				console.log(house.visible);
 
             //console.log(doomGuyBBox);
             //console.log(skull);
@@ -1331,6 +1393,8 @@
             //console.log(controls.getObject().position);
             //console.log(directionR);
         }
+		
+
 
 
     </script>
