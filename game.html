@@ -54,9 +54,15 @@
         var skull;
         var skull2;
         var skull3;
+		var skull4;
+		var skull5;
+		var skull6;
         var skullBBox;
         var skullBBox2;
         var skullBBox3;
+        var skullBBox4;
+        var skullBBox5;
+        var skullBBox6;		
         var skullCount = 0;
         var mixer;
         var lastFrame = Date.now();
@@ -127,7 +133,7 @@
             building.visible = false;
             house.visible = false;
             setInterval(doomGuyWarp, 5000);
-             //setInterval(logDirection, 1000);
+             setInterval(logDirection, 1000);
 
 			animate();
 
@@ -319,15 +325,28 @@
                 skull = gltf.scene;
                 skull2 = gltf.scene.clone();
                 skull3 = gltf.scene.clone();
+				skull4 = gltf.scene.clone();
+				skull5 = gltf.scene.clone();
+				skull6 = gltf.scene.clone();
                 scene.add(skull);
                 skull.position.set(110, 1, 101);
                 scene.add(skull2);
                 skull2.position.set(125.9, 9.6, 62.69);
                 scene.add(skull3);
                 skull3.position.set(103.38610284366055, 0.5195993892745685, 68.39432633190229);
+				skull4.position.set(-15.801979354965194, 1.5137523464857985, -183.92077689330998);
+				scene.add(skull4);
+				skull5.position.set(31.108425693640278, 1.513750057667513, -285.8471394834819);
+				scene.add(skull5);
+				skull6.position.set(-60.04422669425558, 1.51375440719342, -141.81772516690035);
+				scene.add(skull6);
                 skull.visible = false;
                 skull2.visible = false;
                 skull3.visible = false;
+				skull4.visible = false;
+				skull5.visible = false; 
+				skull6.visible = false; 
+				
             });
             var backgroundLoader = new THREE.CubeTextureLoader(manager);
 
@@ -1173,7 +1192,7 @@
 		//	scene.add(new THREE.Box3Helper(doomGuyBBox2, 0xffff00));
 
             if (doomGuyBBox.containsPoint(camera.position) && !seeDoomGuy && doomGuy.visible) {
-                scene = scene2;
+                <!-- scene = scene2; -->
             }
 
         }
@@ -1203,12 +1222,39 @@
             skullBBox3.max.x += 5;
             skullBBox3.max.y += 5;
             skullBBox3.max.z += 5;
+            skullBBox4 = new THREE.Box3();
+            skullBBox4.setFromObject(skull4);
+            skullBBox4.min.x -= 5;
+            skullBBox4.min.y -= 5;
+            skullBBox4.min.z -= 5;
+            skullBBox4.max.x += 5;
+            skullBBox4.max.y += 5;
+            skullBBox4.max.z += 5;		
+            skullBBox5 = new THREE.Box3();
+            skullBBox5.setFromObject(skull5);
+            skullBBox5.min.x -= 5;
+            skullBBox5.min.y -= 5;
+            skullBBox5.min.z -= 5;
+            skullBBox5.max.x += 5;
+            skullBBox5.max.y += 5;
+            skullBBox5.max.z += 5;
+            skullBBox6 = new THREE.Box3();
+            skullBBox6.setFromObject(skull6);
+            skullBBox6.min.x -= 5;
+            skullBBox6.min.y -= 5;
+            skullBBox6.min.z -= 5;
+            skullBBox6.max.x += 5;
+            skullBBox6.max.y += 5;
+            skullBBox6.max.z += 5;				
         }
 
         function rotateSkulls() {
             skull.rotateY(.1);
             skull2.rotateY(.1);
             skull3.rotateY(.1);
+            skull4.rotateY(.1);
+            skull5.rotateY(.1);
+            skull6.rotateY(.1);
         }
 
         function checkSkulls() {
@@ -1242,6 +1288,30 @@
                 skullCollectSound();
                 skull3.visible = false;
             }
+            if (skullBBox4.containsPoint(camera.position) && skull4.visible) {
+                skullCount++;
+            }
+
+            if (skullBBox4.containsPoint(camera.position) && skull4.visible) {
+                skullCollectSound();
+                skull4.visible = false;
+            }			
+            if (skullBBox5.containsPoint(camera.position) && skull5.visible) {
+                skullCount++;
+            }
+
+            if (skullBBox5.containsPoint(camera.position) && skull5.visible) {
+                skullCollectSound();
+                skull5.visible = false;
+            }	
+            if (skullBBox6.containsPoint(camera.position) && skull6.visible) {
+                skullCount++;
+            }
+
+            if (skullBBox6.containsPoint(camera.position) && skull6.visible) {
+                skullCollectSound();
+                skull6.visible = false;
+            }				
         }
 
         function skullCollectSound() {
@@ -1260,7 +1330,14 @@
             if (skullCount == 3 && building.visible == false) {
                 building.visible = true;
                 house.visible = false;
+				skull4.visible = true; 
+				skull5.visible = true;
+				skull6.visible = true; 
             }
+			if(skullCount == 6){
+				building.visible = false;
+				doomGuy.visible = false; 
+			}
         }
 
         function follow() {
@@ -1316,27 +1393,29 @@
                 }
 			
 				doomGuyInWall =  false; 
-				for (i = 0; i < buildingBBoxes.length; i++) {
-					if (moveForward && buildingBBoxes[i].containsPoint(camera.position)) {
-						moveForward = false;
-						controls.getObject().translateZ(delta);
+				if(building.visible){	
+					for (i = 0; i < buildingBBoxes.length; i++) {
+						if (moveForward && buildingBBoxes[i].containsPoint(camera.position)) {
+							moveForward = false;
+							controls.getObject().translateZ(delta);
+						}
+						if (moveBackward && buildingBBoxes[i].containsPoint(camera.position)) {
+							moveBackward = false;
+							controls.getObject().translateZ(-delta);
+						}
+						if (moveLeft && buildingBBoxes[i].containsPoint(camera.position)) {
+							moveLeft = false;
+							controls.getObject().translateX(delta);
+						}
+						if (moveRight && buildingBBoxes[i].containsPoint(camera.position)) {
+							moveRight = false;
+							controls.getObject().translateX(-delta);
+						}
+						if(buildingBBoxes[i].intersectsBox(doomGuyBBox2)){
+							doomGuyInWall = true;
+						}
 					}
-					if (moveBackward && buildingBBoxes[i].containsPoint(camera.position)) {
-						moveBackward = false;
-						controls.getObject().translateZ(-delta);
-					}
-					if (moveLeft && buildingBBoxes[i].containsPoint(camera.position)) {
-						moveLeft = false;
-						controls.getObject().translateX(delta);
-					}
-					if (moveRight && buildingBBoxes[i].containsPoint(camera.position)) {
-						moveRight = false;
-						controls.getObject().translateX(-delta);
-					}
-					if(buildingBBoxes[i].intersectsBox(doomGuyBBox2)){
-						doomGuyInWall = true;
-					}
-                }
+				}	
                 if (house.visible) {
                     for (i = 0; i < houseBBoxCount; i++) {
                         if (moveForward && houseBBoxes[i].containsPoint(camera.position)) {
@@ -1375,7 +1454,7 @@
             }
         };
         function logDirection() {
-            console.log(seeTitleScreen);
+            <!-- console.log(seeTitleScreen); -->
 	
 
 
@@ -1383,7 +1462,7 @@
             //console.log(skull);
             //console.log(skullCount);
             //console.log(doomGuyBBox.containsPoint(camera.position));
-            //console.log(controls.getObject().position);
+            console.log(controls.getObject().position);
             //console.log(directionR);
         }
 
