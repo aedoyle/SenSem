@@ -133,7 +133,7 @@
             building.visible = false;
             house.visible = false;
             setInterval(doomGuyWarp, 5000);
-             setInterval(logDirection, 1000);
+             <!-- setInterval(logDirection, 1000); -->
 
 			animate();
 
@@ -1192,7 +1192,7 @@
 		//	scene.add(new THREE.Box3Helper(doomGuyBBox2, 0xffff00));
 
             if (doomGuyBBox.containsPoint(camera.position) && !seeDoomGuy && doomGuy.visible) {
-                <!-- scene = scene2; -->
+                scene = scene2;
             }
 
         }
